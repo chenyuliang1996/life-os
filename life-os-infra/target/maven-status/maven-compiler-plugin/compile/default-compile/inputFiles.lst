@@ -1,0 +1,6 @@
+/Users/yuliangchen/codex/学习助手/life-os-infra/src/main/java/io/github/yuliangchen/lifeos/infra/InMemoryConfirmationRequestRepository.java
+/Users/yuliangchen/codex/学习助手/life-os-infra/src/main/java/io/github/yuliangchen/lifeos/infra/InMemoryExecutionRunRepository.java
+/Users/yuliangchen/codex/学习助手/life-os-infra/src/main/java/io/github/yuliangchen/lifeos/infra/InMemoryKnowledgeDocumentRepository.java
+/Users/yuliangchen/codex/学习助手/life-os-infra/src/main/java/io/github/yuliangchen/lifeos/infra/InMemoryLifePlanRepository.java
+/Users/yuliangchen/codex/学习助手/life-os-infra/src/main/java/io/github/yuliangchen/lifeos/infra/InMemoryUserProfileRepository.java
+/Users/yuliangchen/codex/学习助手/life-os-infra/src/main/java/io/github/yuliangchen/lifeos/infra/InfrastructureModuleFacade.java

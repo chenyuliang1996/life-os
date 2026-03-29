@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life OS</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="page-shell">
+    <header class="hero">
+        <div class="hero-copy">
+            <p class="eyebrow">AgentScope Java Demo</p>
+            <h1>Life OS</h1>
+            <p class="subtitle">A consumer-facing orchestration demo for planning travel, learning, and daily routines in one flow.</p>
+            <div class="hero-actions">
+                <button id="run-preview" class="primary">Run Demo Plan</button>
+                <button id="reload-data" class="secondary">Refresh Data</button>
+            </div>
+        </div>
+        <div class="hero-panel">
+            <div class="metric">
+                <span class="metric-label">Modules</span>
+                <strong id="module-count">0</strong>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Connectors</span>
+                <strong id="connector-count">0</strong>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Pending Confirmations</span>
+                <strong id="confirmation-count">0</strong>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-grid">
+        <section class="card chat-card">
+            <div class="section-head">
+                <h2>Mission Control</h2>
+                <span class="pill">Preview Flow</span>
+            </div>
+            <label for="plan-input">Prompt</label>
+            <textarea id="plan-input">5月去东京7天，预算1.5万，不要太累，同时别影响英语学习。</textarea>
+            <div class="form-row">
+                <input id="user-id" type="text" value="demo-user" placeholder="user id">
+                <input id="thread-id" type="text" value="thread-life-os" placeholder="thread id">
+            </div>
+            <div class="result-strip" id="preview-summary">Press "Run Demo Plan" to generate a coordinated plan.</div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <h2>Profile</h2>
+                <span class="pill">Memory</span>
+            </div>
+            <pre id="profile-view" class="code-box">Loading profile...</pre>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <h2>Modules</h2>
+                <span class="pill">Executable</span>
+            </div>
+            <div id="module-list" class="list-stack"></div>
+        </section>
+
+        <section class="card wide">
+            <div class="section-head">
+                <h2>Plan Output</h2>
+                <span class="pill">Structured</span>
+            </div>
+            <div id="plan-view" class="plan-grid">
+                <div class="empty-state">Plan cards will appear here.</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <h2>Timeline</h2>
+                <span class="pill">Execution</span>
+            </div>
+            <div id="timeline-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <h2>Confirmations</h2>
+                <span class="pill">Human Loop</span>
+            </div>
+            <div id="confirmations-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <h2>Knowledge Base</h2>
+                <span class="pill">RAG Seeds</span>
+            </div>
+            <div id="knowledge-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <h2>Connectors</h2>
+                <span class="pill">Tools</span>
+            </div>
+            <div id="connectors-view" class="list-stack"></div>
+        </section>
+    </main>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

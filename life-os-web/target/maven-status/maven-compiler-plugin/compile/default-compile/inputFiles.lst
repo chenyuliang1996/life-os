@@ -1,0 +1,12 @@
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/LifeOsApplication.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/WebModuleFacade.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/agent/LifeOsAguiAgent.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/config/LifeOsRuntimeConfiguration.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/controller/ConfirmationController.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/controller/ExecutionController.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/controller/KnowledgeController.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/controller/ModuleController.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/controller/PlanController.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/controller/ProfileController.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/controller/SystemController.java
+/Users/yuliangchen/codex/学习助手/life-os-web/src/main/java/io/github/yuliangchen/lifeos/web/support/StartupDemoRunner.java

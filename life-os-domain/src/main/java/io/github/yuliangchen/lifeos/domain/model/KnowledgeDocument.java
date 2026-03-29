@@ -1,0 +1,14 @@
+package io.github.yuliangchen.lifeos.domain.model;
+
+import java.time.Instant;
+import java.util.List;
+
+public record KnowledgeDocument(
+        String id,
+        String title,
+        String sourceType,
+        List<String> tags,
+        String summary,
+        Instant updatedAt
+) {
+}

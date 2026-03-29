@@ -1,0 +1,13 @@
+io/github/yuliangchen/lifeos/web/controller/PlanController.class
+io/github/yuliangchen/lifeos/web/controller/ExecutionController.class
+io/github/yuliangchen/lifeos/web/config/LifeOsRuntimeConfiguration$LifeOsStorageProperties.class
+io/github/yuliangchen/lifeos/web/controller/ProfileController.class
+io/github/yuliangchen/lifeos/web/controller/ModuleController.class
+io/github/yuliangchen/lifeos/web/support/StartupDemoRunner.class
+io/github/yuliangchen/lifeos/web/config/LifeOsRuntimeConfiguration.class
+io/github/yuliangchen/lifeos/web/LifeOsApplication.class
+io/github/yuliangchen/lifeos/web/controller/SystemController.class
+io/github/yuliangchen/lifeos/web/agent/LifeOsAguiAgent.class
+io/github/yuliangchen/lifeos/web/controller/KnowledgeController.class
+io/github/yuliangchen/lifeos/web/WebModuleFacade.class
+io/github/yuliangchen/lifeos/web/controller/ConfirmationController.class

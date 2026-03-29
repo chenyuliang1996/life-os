@@ -1,0 +1,4 @@
+io/github/yuliangchen/lifeos/agents/AgentsModuleFacade.class
+io/github/yuliangchen/lifeos/agents/ScheduleAgent.class
+io/github/yuliangchen/lifeos/agents/TravelAgent.class
+io/github/yuliangchen/lifeos/agents/LearningAgent.class
