@@ -1,6 +1,0 @@
-io/github/yuliangchen/lifeos/infra/InMemoryKnowledgeDocumentRepository.class
-io/github/yuliangchen/lifeos/infra/InMemoryConfirmationRequestRepository.class
-io/github/yuliangchen/lifeos/infra/InMemoryLifePlanRepository.class
-io/github/yuliangchen/lifeos/infra/InMemoryExecutionRunRepository.class
-io/github/yuliangchen/lifeos/infra/InfrastructureModuleFacade.class
-io/github/yuliangchen/lifeos/infra/InMemoryUserProfileRepository.class
