@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: life-os
+  namespace: life-os
+spec:
+  rules:
+    - host: life-os.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: life-os
+                port:
+                  number: 80

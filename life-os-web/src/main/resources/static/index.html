@@ -1,38 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life OS</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
+<body data-default-locale="zh-CN">
 <div class="page-shell">
+    <header class="topbar">
+        <p class="eyebrow" data-i18n="topbar.badge">AgentScope Java Demo</p>
+        <nav class="locale-switch" aria-label="Language switch">
+            <a href="/" class="locale-pill is-active">中文</a>
+            <a href="/en/index.html" class="locale-pill">English</a>
+        </nav>
+    </header>
+
     <header class="hero">
         <div class="hero-copy">
-            <p class="eyebrow">AgentScope Java Demo</p>
-            <h1>Life OS</h1>
-            <p class="subtitle">A consumer-facing orchestration demo for planning travel, learning, and daily routines in one flow.</p>
+            <h1 data-i18n="hero.title">Life OS</h1>
+            <p class="subtitle" data-i18n="hero.subtitle">面向 ToC 的个人生活操作系统 Demo，将旅行、学习、日程与执行联动到同一条 Agent 工作流里。</p>
             <div class="hero-actions">
-                <button id="run-preview" class="primary">Run Demo Plan</button>
-                <button id="reload-data" class="secondary">Refresh Data</button>
+                <button id="run-preview" class="primary" data-i18n="hero.runPreview">运行演示方案</button>
+                <button id="reload-data" class="secondary" data-i18n="hero.refresh">刷新数据</button>
             </div>
         </div>
         <div class="hero-panel">
             <div class="metric">
-                <span class="metric-label">Modules</span>
+                <span class="metric-label" data-i18n="metrics.modules">模块数</span>
                 <strong id="module-count">0</strong>
             </div>
             <div class="metric">
-                <span class="metric-label">Connectors</span>
+                <span class="metric-label" data-i18n="metrics.connectors">连接器</span>
                 <strong id="connector-count">0</strong>
             </div>
             <div class="metric">
-                <span class="metric-label">Pending Confirmations</span>
+                <span class="metric-label" data-i18n="metrics.confirmations">待确认</span>
                 <strong id="confirmation-count">0</strong>
             </div>
             <div class="metric">
-                <span class="metric-label">Runtime</span>
+                <span class="metric-label" data-i18n="metrics.runtime">运行时</span>
                 <strong id="runtime-mode">Fallback</strong>
             </div>
         </div>
@@ -41,117 +48,169 @@
     <main class="content-grid">
         <section class="card chat-card">
             <div class="section-head">
-                <h2>Mission Control</h2>
-                <span class="pill">Preview Flow</span>
+                <div>
+                    <h2 data-i18n="sections.control.title">任务控制台</h2>
+                    <p class="section-subtitle" data-i18n="sections.control.subtitle">统一入口，触发规划、运行助手、查看结构化输出。</p>
+                </div>
+                <span class="pill" data-i18n="sections.control.pill">编排流</span>
             </div>
-            <label for="plan-input">Prompt</label>
+            <label for="plan-input" data-i18n="fields.prompt">提示词</label>
             <textarea id="plan-input">5月去东京7天，预算1.5万，不要太累，同时别影响英语学习。</textarea>
             <div class="form-row">
-                <input id="user-id" type="text" value="demo-user" placeholder="user id">
-                <input id="thread-id" type="text" value="thread-life-os" placeholder="thread id">
+                <div>
+                    <label for="user-id" data-i18n="fields.userId">用户 ID</label>
+                    <input id="user-id" type="text" value="demo-user" placeholder="demo-user">
+                </div>
+                <div>
+                    <label for="thread-id" data-i18n="fields.threadId">线程 ID</label>
+                    <input id="thread-id" type="text" value="thread-life-os" placeholder="thread-life-os">
+                </div>
             </div>
             <div class="hero-actions compact">
-                <button id="run-agent" class="secondary">Run Assistant</button>
+                <button id="run-agent" class="secondary" data-i18n="hero.runAssistant">运行助手</button>
             </div>
-            <div class="result-strip" id="preview-summary">Press "Run Demo Plan" to generate a coordinated plan.</div>
+            <div class="result-strip" id="preview-summary" data-i18n="state.previewIdle">点击“运行演示方案”生成协同行动方案。</div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Runtime Status</h2>
-                <span class="pill">AgentScope</span>
+                <div>
+                    <h2 data-i18n="sections.runtime.title">运行时状态</h2>
+                    <p class="section-subtitle" data-i18n="sections.runtime.subtitle">确认当前是 deterministic fallback 还是 AgentScope ReAct 实时运行。</p>
+                </div>
+                <span class="pill" data-i18n="sections.runtime.pill">AgentScope</span>
             </div>
             <div id="runtime-view" class="list-stack"></div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Assistant Reply</h2>
-                <span class="pill">Live Output</span>
+                <div>
+                    <h2 data-i18n="sections.arch.title">部署架构</h2>
+                    <p class="section-subtitle" data-i18n="sections.arch.subtitle">展示当前部署模式、数据库、RAG 存储与会话策略。</p>
+                </div>
+                <span class="pill" data-i18n="sections.arch.pill">Cluster</span>
             </div>
-            <div id="assistant-view" class="empty-state">Run the assistant to see the latest reply.</div>
+            <div id="architecture-view" class="chip-list"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.assistant.title">助手回复</h2>
+                    <p class="section-subtitle" data-i18n="sections.assistant.subtitle">展示当前回复、亮点摘要以及运行模式。</p>
+                </div>
+                <span class="pill" data-i18n="sections.assistant.pill">Live Output</span>
+            </div>
+            <div id="assistant-view" class="empty-state" data-i18n="state.assistantIdle">运行助手后，这里会显示最新回复。</div>
         </section>
 
         <section class="card wide">
             <div class="section-head">
-                <h2>Plan Output</h2>
-                <span class="pill">Structured</span>
+                <div>
+                    <h2 data-i18n="sections.plan.title">计划输出</h2>
+                    <p class="section-subtitle" data-i18n="sections.plan.subtitle">结构化展示当前生成的多 Agent 计划卡片。</p>
+                </div>
+                <span class="pill" data-i18n="sections.plan.pill">Structured</span>
             </div>
             <div id="plan-view" class="plan-grid">
-                <div class="empty-state">Plan cards will appear here.</div>
+                <div class="empty-state" data-i18n="state.planIdle">计划卡片会显示在这里。</div>
             </div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Plan History</h2>
-                <span class="pill">Stored Plans</span>
+                <div>
+                    <h2 data-i18n="sections.history.title">计划历史</h2>
+                    <p class="section-subtitle" data-i18n="sections.history.subtitle">数据库持久化后的历史计划。</p>
+                </div>
+                <span class="pill" data-i18n="sections.history.pill">Stored Plans</span>
             </div>
             <div id="plans-view" class="list-stack"></div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Timeline</h2>
-                <span class="pill">Execution</span>
+                <div>
+                    <h2 data-i18n="sections.timeline.title">执行时间线</h2>
+                    <p class="section-subtitle" data-i18n="sections.timeline.subtitle">查看主控 Agent 和子 Agent 的执行轨迹。</p>
+                </div>
+                <span class="pill" data-i18n="sections.timeline.pill">Execution</span>
             </div>
             <div id="timeline-view" class="list-stack"></div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Confirmations</h2>
-                <span class="pill">Human Loop</span>
+                <div>
+                    <h2 data-i18n="sections.confirmations.title">待确认动作</h2>
+                    <p class="section-subtitle" data-i18n="sections.confirmations.subtitle">写入外部系统前统一经过人工确认。</p>
+                </div>
+                <span class="pill" data-i18n="sections.confirmations.pill">Human Loop</span>
             </div>
             <div id="confirmations-view" class="list-stack"></div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Profile</h2>
-                <span class="pill">Memory</span>
+                <div>
+                    <h2 data-i18n="sections.profile.title">用户画像</h2>
+                    <p class="section-subtitle" data-i18n="sections.profile.subtitle">查看和编辑长期记忆中的偏好。</p>
+                </div>
+                <span class="pill" data-i18n="sections.profile.pill">Memory</span>
             </div>
-            <label for="travel-style">Travel style</label>
+            <label for="travel-style" data-i18n="fields.travelStyle">旅行风格</label>
             <input id="travel-style" type="text" value="relaxed">
-            <label for="budget-level">Budget level</label>
+            <label for="budget-level" data-i18n="fields.budgetLevel">预算等级</label>
             <input id="budget-level" type="text" value="medium">
-            <label for="study-goal">Study goal</label>
+            <label for="study-goal" data-i18n="fields.studyGoal">学习目标</label>
             <input id="study-goal" type="text" value="english">
             <div class="hero-actions compact">
-                <button id="save-profile" class="primary">Save Profile</button>
+                <button id="save-profile" class="primary" data-i18n="actions.saveProfile">保存画像</button>
             </div>
-            <pre id="profile-view" class="code-box">Loading profile...</pre>
+            <pre id="profile-view" class="code-box"></pre>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Knowledge Base</h2>
-                <span class="pill">RAG Seeds</span>
+                <div>
+                    <h2 data-i18n="sections.knowledge.title">知识库</h2>
+                    <p class="section-subtitle" data-i18n="sections.knowledge.subtitle">持久化文档后进入 RAG 检索层，后续可切换到 pgvector。</p>
+                </div>
+                <span class="pill" data-i18n="sections.knowledge.pill">RAG Seeds</span>
             </div>
-            <label for="knowledge-title">Title</label>
-            <input id="knowledge-title" type="text" placeholder="Tokyo family route">
-            <label for="knowledge-tags">Tags</label>
+            <label for="knowledge-title" data-i18n="fields.knowledgeTitle">标题</label>
+            <input id="knowledge-title" type="text" placeholder="东京低疲劳路线">
+            <label for="knowledge-tags" data-i18n="fields.knowledgeTags">标签</label>
             <input id="knowledge-tags" type="text" placeholder="travel,tokyo">
-            <label for="knowledge-summary">Summary</label>
-            <textarea id="knowledge-summary">Neighborhood-first trip idea with low fatigue pacing.</textarea>
+            <label for="knowledge-summary" data-i18n="fields.knowledgeSummary">摘要</label>
+            <textarea id="knowledge-summary">以片区游玩为主的东京路线建议，减少每天换乘次数。</textarea>
+            <label for="knowledge-content" data-i18n="fields.knowledgeContent">正文</label>
+            <textarea id="knowledge-content">建议按上野、浅草、银座、代官山等片区安排行程，每天下午留恢复窗口。</textarea>
             <div class="hero-actions compact">
-                <button id="add-knowledge" class="primary">Add Knowledge</button>
+                <button id="add-knowledge" class="primary" data-i18n="actions.addKnowledge">新增知识</button>
             </div>
             <div id="knowledge-view" class="list-stack"></div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Modules</h2>
-                <span class="pill">Executable</span>
+                <div>
+                    <h2 data-i18n="sections.modules.title">模块执行入口</h2>
+                    <p class="section-subtitle" data-i18n="sections.modules.subtitle">验证每个模块都具备独立执行能力。</p>
+                </div>
+                <span class="pill" data-i18n="sections.modules.pill">Executable</span>
             </div>
             <div id="module-list" class="list-stack"></div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Connectors</h2>
-                <span class="pill">Tools</span>
+                <div>
+                    <h2 data-i18n="sections.connectors.title">连接器</h2>
+                    <p class="section-subtitle" data-i18n="sections.connectors.subtitle">展示工具层可用能力。</p>
+                </div>
+                <span class="pill" data-i18n="sections.connectors.pill">Tools</span>
             </div>
             <div id="connectors-view" class="list-stack"></div>
         </section>

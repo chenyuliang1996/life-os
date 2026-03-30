@@ -27,8 +27,9 @@ public class LifeOsToolset {
     @Tool(name = "life_plan_preview", description = "Generate a grounded Life OS plan preview for a user's request.")
     public String lifePlanPreview(
             @ToolParam(name = "threadId", required = true, description = "Conversation thread id") String threadId,
-            @ToolParam(name = "input", required = true, description = "User request to plan") String input) {
-        var result = lifeOrchestrator.execute(new PlanPreviewRequest("demo-user", threadId, input));
+            @ToolParam(name = "input", required = true, description = "User request to plan") String input,
+            @ToolParam(name = "locale", required = false, description = "Preferred locale, e.g. zh-CN or en-US") String locale) {
+        var result = lifeOrchestrator.execute(new PlanPreviewRequest("demo-user", threadId, input, locale));
         return """
                 Plan title: %s
                 Summary: %s

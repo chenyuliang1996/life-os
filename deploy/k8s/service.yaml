@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: life-os
+  namespace: life-os
+spec:
+  selector:
+    app: life-os
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http

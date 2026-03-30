@@ -1,45 +1,77 @@
-# Life OS API Contracts
+# Life OS API 契约
 
-## REST
+## 1. 页面入口
 
 - `GET /`
-  - Serves the demo dashboard UI.
+  - 中文页面
+- `GET /en/index.html`
+  - 英文页面
+
+## 2. REST API
+
+### 系统与架构
+
 - `GET /api/v1/modules`
-  - Runs module-level `executeDemo()` methods and returns a summary per module.
-- `GET /api/v1/assistant/runtime`
-  - Returns the current runtime mode (`orchestrator-fallback` or `agentscope-react`).
-- `POST /api/v1/assistant/message`
-  - Runs either the deterministic fallback or the model-backed ReAct runtime and returns a consolidated reply.
-- `GET /api/v1/profile`
-  - Returns the current user profile snapshot.
-- `PUT /api/v1/profile`
-  - Updates long-term preferences and goals.
-- `POST /api/v1/plans/preview`
-  - Runs the orchestrator and returns plan, execution timeline, contributions, and pending confirmations.
-- `GET /api/v1/plans`
-  - Lists stored plans filtered by status.
-- `GET /api/v1/plans/{planId}`
-  - Returns a stored plan by id.
-- `GET /api/v1/executions/{runId}`
-  - Returns execution metadata for a specific run.
-- `GET /api/v1/executions/{runId}/timeline`
-  - Returns only the execution timeline events.
-- `GET /api/v1/confirmations`
-  - Lists pending confirmation requests.
-- `POST /api/v1/confirmations/{id}/decision`
-  - Updates the confirmation status to `APPROVE` or `REJECT`.
-- `GET /api/v1/knowledge/documents`
-  - Lists seeded or uploaded knowledge documents.
-- `POST /api/v1/knowledge/documents`
-  - Adds a knowledge document record.
+  - 触发各模块 `executeDemo()`，验证模块执行入口
 - `GET /api/v1/system/connectors`
-  - Lists mock connector availability.
+  - 返回工具层连接器能力
 - `GET /api/v1/system/health`
-  - Basic service health.
+  - 服务健康
+- `GET /api/v1/system/architecture`
+  - 返回部署模式、持久化模式、数据库、RAG 存储和 session 策略
 
-## AG-UI
+### 运行时
 
-- `POST /agui/runs`
+- `GET /api/v1/assistant/runtime`
+  - 返回当前 runtime
+  - 可能值：
+    - `orchestrator-fallback`
+    - `agentscope-react`
+- `POST /api/v1/assistant/message`
+  - 请求体：
+    - `userId`
+    - `threadId`
+    - `input`
+    - `locale`
+
+### 用户画像
+
+- `GET /api/v1/profile?userId=demo-user`
+- `PUT /api/v1/profile?userId=demo-user`
+
+### 计划与执行
+
+- `POST /api/v1/plans/preview`
+  - 请求体：
+    - `userId`
+    - `threadId`
+    - `input`
+    - `locale`
+- `GET /api/v1/plans`
+- `GET /api/v1/plans/{planId}`
+- `GET /api/v1/executions/{runId}`
+- `GET /api/v1/executions/{runId}/timeline`
+
+### 确认流
+
+- `GET /api/v1/confirmations`
+- `POST /api/v1/confirmations/{id}/decision`
+
+### 知识库
+
+- `GET /api/v1/knowledge/documents`
+- `POST /api/v1/knowledge/documents`
+  - 请求体：
+    - `title`
+    - `sourceType`
+    - `tags`
+    - `summary`
+    - `content`
+    - `locale`
+
+## 3. AG-UI
+
 - `POST /agui/agents/default/runs`
+- `POST /agui/runs`
 
-The default AG-UI agent is `LifeOsAguiAgent`, which wraps the orchestrator and stores the latest response in AgentScope `JsonSession`.
+默认 AG-UI agent 为 `LifeOsAguiAgent`。

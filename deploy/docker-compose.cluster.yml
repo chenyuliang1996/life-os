@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: life-os-postgres
+    environment:
+      POSTGRES_DB: life_os
+      POSTGRES_USER: lifeos
+      POSTGRES_PASSWORD: lifeos
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+
+  life-os-1:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: cluster
+      LIFEOS_DATASOURCE_URL: jdbc:postgresql://postgres:5432/life_os
+      LIFEOS_DATASOURCE_USERNAME: lifeos
+      LIFEOS_DATASOURCE_PASSWORD: lifeos
+      LIFEOS_DEPLOYMENT_MODE: distributed-cluster
+      LIFEOS_PRIMARY_DATABASE: postgresql
+      LIFEOS_RAG_STORE: postgresql-plus-pgvector
+      LIFEOS_SESSION_STORE: shared-volume-json-session
+      LIFEOS_TOPOLOGY: ag-ui-gateway-plus-stateless-app-replicas
+      LIFEOS_SESSION_STORAGE_DIR: /data/sessions
+    depends_on:
+      - postgres
+    volumes:
+      - lifeos-sessions:/data/sessions
+
+  life-os-2:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: cluster
+      LIFEOS_DATASOURCE_URL: jdbc:postgresql://postgres:5432/life_os
+      LIFEOS_DATASOURCE_USERNAME: lifeos
+      LIFEOS_DATASOURCE_PASSWORD: lifeos
+      LIFEOS_DEPLOYMENT_MODE: distributed-cluster
+      LIFEOS_PRIMARY_DATABASE: postgresql
+      LIFEOS_RAG_STORE: postgresql-plus-pgvector
+      LIFEOS_SESSION_STORE: shared-volume-json-session
+      LIFEOS_TOPOLOGY: ag-ui-gateway-plus-stateless-app-replicas
+      LIFEOS_SESSION_STORAGE_DIR: /data/sessions
+    depends_on:
+      - postgres
+    volumes:
+      - lifeos-sessions:/data/sessions
+
+  gateway:
+    image: nginx:1.27-alpine
+    container_name: life-os-gateway
+    depends_on:
+      - life-os-1
+      - life-os-2
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/life-os.conf:/etc/nginx/conf.d/default.conf:ro
+
+volumes:
+  postgres-data:
+  lifeos-sessions:

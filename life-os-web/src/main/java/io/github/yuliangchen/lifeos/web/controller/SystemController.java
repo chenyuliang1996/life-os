@@ -1,6 +1,7 @@
 package io.github.yuliangchen.lifeos.web.controller;
 
 import io.github.yuliangchen.lifeos.domain.model.ConnectorStatus;
+import io.github.yuliangchen.lifeos.domain.model.SystemArchitectureStatus;
 import io.github.yuliangchen.lifeos.tools.ToolModuleFacade;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +15,11 @@ import java.util.Map;
 public class SystemController {
 
     private final ToolModuleFacade toolModuleFacade;
+    private final SystemArchitectureStatus systemArchitectureStatus;
 
-    public SystemController(ToolModuleFacade toolModuleFacade) {
+    public SystemController(ToolModuleFacade toolModuleFacade, SystemArchitectureStatus systemArchitectureStatus) {
         this.toolModuleFacade = toolModuleFacade;
+        this.systemArchitectureStatus = systemArchitectureStatus;
     }
 
     @GetMapping("/connectors")
@@ -27,5 +30,10 @@ public class SystemController {
     @GetMapping("/health")
     public Map<String, String> health() {
         return Map.of("status", "UP", "service", "life-os");
+    }
+
+    @GetMapping("/architecture")
+    public SystemArchitectureStatus architecture() {
+        return systemArchitectureStatus;
     }
 }

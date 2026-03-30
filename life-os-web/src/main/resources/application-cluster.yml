@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: ${LIFEOS_DATASOURCE_URL:jdbc:postgresql://postgres:5432/life_os}
+    username: ${LIFEOS_DATASOURCE_USERNAME:lifeos}
+    password: ${LIFEOS_DATASOURCE_PASSWORD:lifeos}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${LIFEOS_JPA_DDL_AUTO:update}
+  h2:
+    console:
+      enabled: false
+
+lifeos:
+  architecture:
+    deployment-mode: distributed-cluster
+    persistence-mode: database
+    primary-database: postgresql
+    rag-store: postgresql-plus-pgvector
+    session-store: shared-volume-json-session
+    topology: ag-ui-gateway-plus-stateless-app-replicas
+  session-storage-dir: ${LIFEOS_SESSION_STORAGE_DIR:/data/sessions}

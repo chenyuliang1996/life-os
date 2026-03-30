@@ -3,6 +3,7 @@ package io.github.yuliangchen.lifeos.infra;
 import io.github.yuliangchen.lifeos.domain.model.ConfirmationRequest;
 import io.github.yuliangchen.lifeos.domain.model.ConfirmationStatus;
 import io.github.yuliangchen.lifeos.domain.repository.ConfirmationRequestRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import java.util.Comparator;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
+@ConditionalOnProperty(name = "lifeos.persistence.mode", havingValue = "memory")
 public class InMemoryConfirmationRequestRepository implements ConfirmationRequestRepository {
 
     private final ConcurrentHashMap<String, ConfirmationRequest> store = new ConcurrentHashMap<>();

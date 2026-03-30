@@ -2,4 +2,5 @@ target/
 /.idea/
 /.DS_Store
 /.data/
+**/.data/
 *.log

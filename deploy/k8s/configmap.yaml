@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: life-os-config
+  namespace: life-os
+data:
+  SPRING_PROFILES_ACTIVE: cluster
+  LIFEOS_DEPLOYMENT_MODE: distributed-cluster
+  LIFEOS_PERSISTENCE_MODE: database
+  LIFEOS_PRIMARY_DATABASE: postgresql
+  LIFEOS_RAG_STORE: postgresql-plus-pgvector
+  LIFEOS_SESSION_STORE: shared-volume-json-session
+  LIFEOS_TOPOLOGY: ag-ui-gateway-plus-stateless-app-replicas
+  LIFEOS_SESSION_STORAGE_DIR: /data/sessions

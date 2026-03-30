@@ -1,36 +1,94 @@
 # Life OS
 
-`Life OS` is a ToC demo scaffold that combines AgentScope Java's multi-agent orchestration, planning, memory, RAG, tools, and AG-UI integration into a consumer-facing "personal life operating system".
+`Life OS` 是一套基于 `agentscope-java` 的 ToC Demo，目标不是只做一个“能聊天”的页面，而是把多 Agent 编排、工具调用、长期记忆、RAG、确认流、AG-UI 和可部署架构整合成一套能继续演进的产品骨架。
 
-## Modules
+## 现在已经具备的能力
 
-- `life-os-domain`: shared contracts, DTOs, enums, repository interfaces
-- `life-os-memory`: user profile and session-oriented memory facade
-- `life-os-rag`: lightweight knowledge retrieval facade
-- `life-os-tools`: mock tool layer for search, weather, calendar, reminder
-- `life-os-agents`: specialist agents for travel, learning, and scheduling
-- `life-os-orchestrator`: the main orchestrator that builds plans and confirmation steps
-- `life-os-infra`: in-memory repositories and shared infrastructure beans
-- `life-os-web`: Spring Boot application, REST API, startup demos
+- 中英文双入口页面：
+  - 中文：`/`
+  - 英文：`/en/index.html`
+- 统一主控编排：
+  - 旅行、学习、日程三个专业 Agent
+  - 主编排器负责拆任务、汇总计划、生成确认节点
+- AgentScope 运行时：
+  - 默认 deterministic fallback
+  - 配置模型后切换到 `ReActAgent + Toolkit + Session`
+- 数据库持久化：
+  - 用户画像
+  - 计划
+  - 执行时间线
+  - 确认请求
+  - 知识文档
+- RAG 基础层：
+  - 当前将知识文档落到数据库并做轻量检索
+  - 生产选型明确收敛到 `PostgreSQL + pgvector`
+- 分布式部署骨架：
+  - `Dockerfile`
+  - `deploy/docker-compose.cluster.yml`
+  - `deploy/k8s/*`
 
-## Design Notes
+## 模块
 
-- Each core module includes an explicit executable entry, either `execute(...)` or `executeDemo()`.
-- The first iteration uses deterministic mock outputs so the architecture can be exercised before wiring a real LLM and external tools.
-- AgentScope dependencies are already declared in the parent POM and `life-os-web`, so the scaffold is ready for AG-UI and ReAct agent registration.
+- `life-os-domain`: 领域模型、DTO、仓储接口、架构状态对象
+- `life-os-memory`: 长期记忆 facade
+- `life-os-rag`: 知识文档检索 facade
+- `life-os-tools`: 工具与连接器 facade
+- `life-os-agents`: Travel / Learning / Schedule 三个专家 Agent
+- `life-os-orchestrator`: 主控编排器
+- `life-os-infra`: 数据库适配、JPA 实体、JSON 序列化适配
+- `life-os-web`: Spring Boot、REST API、AG-UI agent、双语页面
 
-## Run
+## 运行
+
+### 本地单机
 
 ```bash
+mvn test
 mvn -DskipTests install
 mvn -f life-os-web/pom.xml spring-boot:run
 ```
 
-Open `http://127.0.0.1:8080/` for the dashboard.
+打开：
 
-## Demo Highlights
+- 中文：[http://127.0.0.1:8080/](http://127.0.0.1:8080/)
+- 英文：[http://127.0.0.1:8080/en/index.html](http://127.0.0.1:8080/en/index.html)
 
-- Every module has an executable facade via `execute(...)` or `executeDemo()`.
-- `LifeOsAguiAgent` is registered as the default AG-UI agent.
-- The dashboard now supports assistant replies, runtime status, plan history, confirmation approval, profile editing, and knowledge creation.
-- The default path is deterministic and works without API keys, but the runtime can switch to a real AgentScope `ReActAgent` when `OPENAI_API_KEY` or Ollama settings are provided.
+### 集群演示
+
+```bash
+docker compose -f deploy/docker-compose.cluster.yml up --build
+```
+
+这会启动：
+
+- `pgvector/pgvector:pg16`
+- `life-os-1`
+- `life-os-2`
+- `nginx` 负载均衡入口
+
+## 配置
+
+核心配置在 `life-os-web/src/main/resources/application.yml`：
+
+- `LIFEOS_PERSISTENCE_MODE`
+- `LIFEOS_DATASOURCE_URL`
+- `LIFEOS_DATASOURCE_USERNAME`
+- `LIFEOS_DATASOURCE_PASSWORD`
+- `LIFEOS_RAG_STORE`
+- `LIFEOS_SESSION_STORE`
+- `OPENAI_API_KEY`
+- `OPENAI_BASE_URL`
+- `OPENAI_MODEL`
+- `OLLAMA_BASE_URL`
+- `OLLAMA_MODEL`
+
+集群配置见 `application-cluster.yml`。
+
+## 文档导航
+
+- [架构说明](docs/architecture.md)
+- [实现细节](docs/implementation-guide.md)
+- [AgentScope 能力印证](docs/agentscope-validation.md)
+- [RAG 选型](docs/rag-selection.md)
+- [分布式部署说明](docs/deployment-cluster.md)
+- [API 契约](docs/api-contracts.md)

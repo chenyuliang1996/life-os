@@ -9,6 +9,8 @@ public record KnowledgeDocument(
         String sourceType,
         List<String> tags,
         String summary,
+        String content,
+        String locale,
         Instant updatedAt
 ) {
 }

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: life-os
+  namespace: life-os
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: life-os
+  template:
+    metadata:
+      labels:
+        app: life-os
+    spec:
+      containers:
+        - name: life-os
+          image: chenyuliang1996/life-os:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: life-os-config
+          env:
+            - name: LIFEOS_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-db
+                  key: datasource-url
+            - name: LIFEOS_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-db
+                  key: username
+            - name: LIFEOS_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-db
+                  key: password
+          volumeMounts:
+            - name: session-storage
+              mountPath: /data/sessions
+      volumes:
+        - name: session-storage
+          persistentVolumeClaim:
+            claimName: life-os-session-pvc

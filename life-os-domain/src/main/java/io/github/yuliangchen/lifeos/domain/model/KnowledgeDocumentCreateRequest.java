@@ -6,6 +6,8 @@ public record KnowledgeDocumentCreateRequest(
         String title,
         String sourceType,
         List<String> tags,
-        String summary
+        String summary,
+        String content,
+        String locale
 ) {
 }

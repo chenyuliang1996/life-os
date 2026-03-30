@@ -38,6 +38,13 @@ class LifeOsApplicationTests {
     }
 
     @Test
+    void shouldServeEnglishIndexFile() throws Exception {
+        mockMvc.perform(get("/en/index.html"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("data-default-locale=\"en-US\"")));
+    }
+
+    @Test
     void shouldExposeExecutableModules() throws Exception {
         mockMvc.perform(get("/api/v1/modules"))
                 .andExpect(status().isOk())
@@ -69,6 +76,15 @@ class LifeOsApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mode").value("orchestrator-fallback"))
                 .andExpect(jsonPath("$.modelBacked").value(false));
+    }
+
+    @Test
+    void shouldExposeArchitectureStatus() throws Exception {
+        mockMvc.perform(get("/api/v1/system/architecture"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.deploymentMode").value("single-node"))
+                .andExpect(jsonPath("$.persistenceMode").value("database"))
+                .andExpect(jsonPath("$.database").value("h2-file"));
     }
 
     @Test

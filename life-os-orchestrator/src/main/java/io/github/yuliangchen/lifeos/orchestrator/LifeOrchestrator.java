@@ -20,6 +20,7 @@ import io.github.yuliangchen.lifeos.domain.model.TimelineEvent;
 import io.github.yuliangchen.lifeos.domain.repository.ConfirmationRequestRepository;
 import io.github.yuliangchen.lifeos.domain.repository.ExecutionRunRepository;
 import io.github.yuliangchen.lifeos.domain.repository.LifePlanRepository;
+import io.github.yuliangchen.lifeos.domain.support.LocaleSupport;
 import io.github.yuliangchen.lifeos.memory.MemoryModuleFacade;
 import org.springframework.stereotype.Component;
 
@@ -63,6 +64,7 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
 
     @Override
     public OrchestrationResult execute(PlanPreviewRequest input) {
+        String locale = LocaleSupport.resolve(input.locale(), input.input());
         memoryModuleFacade.execute(new MemoryUpdateCommand(
                 input.userId(),
                 Map.of("lastIntent", input.input()),
@@ -70,19 +72,25 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
         ));
 
         AgentContribution travelContribution = travelAgent.execute(new AgentTask(
+                input.userId(),
                 SpecialistType.TRAVEL,
                 input.input(),
-                List.of("prioritize low-fatigue pacing", "keep budget visible")
+                List.of("prioritize low-fatigue pacing", "keep budget visible"),
+                locale
         ));
         AgentContribution learningContribution = learningAgent.execute(new AgentTask(
+                input.userId(),
                 SpecialistType.LEARNING,
                 input.input(),
-                List.of("preserve daily practice", "prefer short sessions")
+                List.of("preserve daily practice", "prefer short sessions"),
+                locale
         ));
         AgentContribution scheduleContribution = scheduleAgent.execute(new AgentTask(
+                input.userId(),
                 SpecialistType.SCHEDULE,
                 input.input(),
-                List.of("protect recovery time", "require confirmation for external writes")
+                List.of("protect recovery time", "require confirmation for external writes"),
+                locale
         ));
 
         List<AgentContribution> contributions = List.of(travelContribution, learningContribution, scheduleContribution);
@@ -91,7 +99,7 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
                 .toList();
 
         String runId = UUID.randomUUID().toString();
-        List<TimelineEvent> timeline = buildTimeline(runId, contributions);
+        List<TimelineEvent> timeline = buildTimeline(runId, contributions, locale);
         ExecutionRun run = executionRunRepository.save(new ExecutionRun(
                 runId,
                 input.userId(),
@@ -104,11 +112,15 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
         LifePlan plan = lifePlanRepository.save(new LifePlan(
                 UUID.randomUUID().toString(),
                 input.userId(),
-                "Composite Life Plan",
-                "A merged travel, learning, and scheduling proposal for the user's current goal.",
+                LocaleSupport.pick(locale, "生活协同行动方案", "Composite Life Plan"),
+                LocaleSupport.pick(
+                        locale,
+                        "围绕当前目标融合旅行、学习与日程协调的综合方案。",
+                        "A merged travel, learning, and scheduling proposal for the user's current goal."
+                ),
                 PlanStatus.ACTIVE,
                 tasks,
-                Map.of("threadId", input.threadId(), "input", input.input())
+                Map.of("threadId", input.threadId(), "input", input.input(), "locale", locale)
         ));
 
         List<ConfirmationRequest> confirmations = buildConfirmations(plan, tasks);
@@ -120,14 +132,21 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
         OrchestrationResult result = execute(new PlanPreviewRequest(
                 "demo-user",
                 "thread-demo",
-                "Plan a relaxed Tokyo trip without interrupting English study"
+                "Plan a relaxed Tokyo trip without interrupting English study",
+                "en-US"
         ));
         return "Orchestrator built plan " + result.plan().id() + " with " + result.plan().tasks().size() + " tasks";
     }
 
-    private List<TimelineEvent> buildTimeline(String runId, List<AgentContribution> contributions) {
+    private List<TimelineEvent> buildTimeline(String runId, List<AgentContribution> contributions, String locale) {
         List<TimelineEvent> events = new ArrayList<>();
-        events.add(new TimelineEvent(UUID.randomUUID().toString(), runId, "PLAN", "Orchestrator split the request into specialist tasks.", Instant.now()));
+        events.add(new TimelineEvent(
+                UUID.randomUUID().toString(),
+                runId,
+                "PLAN",
+                LocaleSupport.pick(locale, "主控 Agent 已拆分子任务。", "Orchestrator split the request into specialist tasks."),
+                Instant.now()
+        ));
         for (AgentContribution contribution : contributions) {
             events.add(new TimelineEvent(
                     UUID.randomUUID().toString(),
@@ -141,6 +160,7 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
     }
 
     private List<ConfirmationRequest> buildConfirmations(LifePlan plan, List<PlanTask> tasks) {
+        String locale = LocaleSupport.resolve((String) plan.metadata().get("locale"), plan.summary());
         List<ConfirmationRequest> confirmations = tasks.stream()
                 .filter(task -> task.status().name().contains("CONFIRMATION"))
                 .map(task -> confirmationRequestRepository.save(new ConfirmationRequest(
@@ -148,7 +168,7 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
                         plan.id(),
                         task.title(),
                         ConfirmationStatus.PENDING,
-                        "Generated automatically from orchestrator",
+                        LocaleSupport.pick(locale, "由编排器自动生成", "Generated automatically from orchestrator"),
                         Instant.now()
                 )))
                 .toList();

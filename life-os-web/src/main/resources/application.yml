@@ -4,6 +4,22 @@ server:
 spring:
   application:
     name: life-os
+  datasource:
+    url: ${LIFEOS_DATASOURCE_URL:jdbc:h2:file:./.data/life-os-db;MODE=PostgreSQL;AUTO_SERVER=TRUE}
+    username: ${LIFEOS_DATASOURCE_USERNAME:sa}
+    password: ${LIFEOS_DATASOURCE_PASSWORD:}
+    driver-class-name: ${LIFEOS_DATASOURCE_DRIVER:org.h2.Driver}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${LIFEOS_JPA_DDL_AUTO:update}
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
 agentscope:
   agent:
@@ -14,9 +30,18 @@ agentscope:
     server-side-memory: true
 
 lifeos:
+  persistence:
+    mode: ${LIFEOS_PERSISTENCE_MODE:database}
   session-storage-dir: .data/sessions
   confirmation:
     enabled: true
+  architecture:
+    deployment-mode: ${LIFEOS_DEPLOYMENT_MODE:single-node}
+    persistence-mode: ${LIFEOS_PERSISTENCE_MODE:database}
+    primary-database: ${LIFEOS_PRIMARY_DATABASE:h2-file}
+    rag-store: ${LIFEOS_RAG_STORE:postgres-text-now-pgvector-target}
+    session-store: ${LIFEOS_SESSION_STORE:json-session}
+    topology: ${LIFEOS_TOPOLOGY:modular-monolith-ready-for-cluster}
   runtime:
     openai-api-key: ${OPENAI_API_KEY:}
     openai-base-url: ${OPENAI_BASE_URL:}

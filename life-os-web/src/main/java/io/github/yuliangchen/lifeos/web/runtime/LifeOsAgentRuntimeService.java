@@ -15,6 +15,7 @@ import io.github.yuliangchen.lifeos.domain.model.AssistantReply;
 import io.github.yuliangchen.lifeos.domain.model.AssistantRequest;
 import io.github.yuliangchen.lifeos.domain.model.OrchestrationResult;
 import io.github.yuliangchen.lifeos.domain.model.PlanPreviewRequest;
+import io.github.yuliangchen.lifeos.domain.support.LocaleSupport;
 import io.github.yuliangchen.lifeos.orchestrator.LifeOrchestrator;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -112,25 +113,37 @@ public class LifeOsAgentRuntimeService {
     }
 
     private AssistantReply runFallbackReply(AssistantRequest request) {
+        String locale = LocaleSupport.resolve(request.locale(), request.input());
         OrchestrationResult result = lifeOrchestrator.execute(new PlanPreviewRequest(
                 request.userId(),
                 request.threadId(),
-                request.input()
+                request.input(),
+                locale
         ));
 
-        String message = """
-                I built a grounded Life OS response using the deterministic planner.
+        String taskLines = result.plan().tasks().stream()
+                .map(task -> LocaleSupport.pick(locale, "- " + task.title() + "（" + task.status() + "）", "- " + task.title() + " (" + task.status() + ")"))
+                .reduce((left, right) -> left + "\n" + right)
+                .orElse(LocaleSupport.pick(locale, "- 暂无任务", "- No tasks"));
 
-                Summary: %s
+        String message = LocaleSupport.pick(
+                locale,
+                """
+                        我已使用确定性编排器生成 Life OS 方案。
 
-                Top tasks:
-                %s
-                """.formatted(
-                result.plan().summary(),
-                result.plan().tasks().stream()
-                        .map(task -> "- " + task.title() + " (" + task.status() + ")")
-                        .reduce((left, right) -> left + "\n" + right)
-                        .orElse("- No tasks")
+                        摘要：%s
+
+                        关键任务：
+                        %s
+                        """.formatted(result.plan().summary(), taskLines),
+                """
+                        I built a grounded Life OS response using the deterministic planner.
+
+                        Summary: %s
+
+                        Top tasks:
+                        %s
+                        """.formatted(result.plan().summary(), taskLines)
         );
 
         return new AssistantReply(

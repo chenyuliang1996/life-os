@@ -36,6 +36,8 @@ public class KnowledgeController {
                 request.sourceType() == null || request.sourceType().isBlank() ? "manual" : request.sourceType(),
                 request.tags() == null ? List.of() : request.tags(),
                 request.summary(),
+                request.content() == null || request.content().isBlank() ? request.summary() : request.content(),
+                request.locale() == null || request.locale().isBlank() ? "en-US" : request.locale(),
                 Instant.now()
         );
         return knowledgeModuleFacade.addDocument(document);

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life OS</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-default-locale="en-US">
+<div class="page-shell">
+    <header class="topbar">
+        <p class="eyebrow" data-i18n="topbar.badge">AgentScope Java Demo</p>
+        <nav class="locale-switch" aria-label="Language switch">
+            <a href="/" class="locale-pill">中文</a>
+            <a href="/en/index.html" class="locale-pill is-active">English</a>
+        </nav>
+    </header>
+
+    <header class="hero">
+        <div class="hero-copy">
+            <h1 data-i18n="hero.title">Life OS</h1>
+            <p class="subtitle" data-i18n="hero.subtitle">A consumer-facing Life OS demo that links travel, learning, schedule, and execution into one Agent workflow.</p>
+            <div class="hero-actions">
+                <button id="run-preview" class="primary" data-i18n="hero.runPreview">Run Demo Plan</button>
+                <button id="reload-data" class="secondary" data-i18n="hero.refresh">Refresh Data</button>
+            </div>
+        </div>
+        <div class="hero-panel">
+            <div class="metric">
+                <span class="metric-label" data-i18n="metrics.modules">Modules</span>
+                <strong id="module-count">0</strong>
+            </div>
+            <div class="metric">
+                <span class="metric-label" data-i18n="metrics.connectors">Connectors</span>
+                <strong id="connector-count">0</strong>
+            </div>
+            <div class="metric">
+                <span class="metric-label" data-i18n="metrics.confirmations">Pending</span>
+                <strong id="confirmation-count">0</strong>
+            </div>
+            <div class="metric">
+                <span class="metric-label" data-i18n="metrics.runtime">Runtime</span>
+                <strong id="runtime-mode">Fallback</strong>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-grid">
+        <section class="card chat-card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.control.title">Mission Control</h2>
+                    <p class="section-subtitle" data-i18n="sections.control.subtitle">Use one entry point to preview plans, run the assistant, and inspect structured results.</p>
+                </div>
+                <span class="pill" data-i18n="sections.control.pill">Flow</span>
+            </div>
+            <label for="plan-input" data-i18n="fields.prompt">Prompt</label>
+            <textarea id="plan-input">Plan a 7-day Tokyo trip in May with a 15k RMB budget. Keep it low-fatigue and protect my English study habit.</textarea>
+            <div class="form-row">
+                <div>
+                    <label for="user-id" data-i18n="fields.userId">User ID</label>
+                    <input id="user-id" type="text" value="demo-user" placeholder="demo-user">
+                </div>
+                <div>
+                    <label for="thread-id" data-i18n="fields.threadId">Thread ID</label>
+                    <input id="thread-id" type="text" value="thread-life-os" placeholder="thread-life-os">
+                </div>
+            </div>
+            <div class="hero-actions compact">
+                <button id="run-agent" class="secondary" data-i18n="hero.runAssistant">Run Assistant</button>
+            </div>
+            <div class="result-strip" id="preview-summary" data-i18n="state.previewIdle">Press "Run Demo Plan" to generate a coordinated plan.</div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.runtime.title">Runtime Status</h2>
+                    <p class="section-subtitle" data-i18n="sections.runtime.subtitle">Check whether the app is using deterministic fallback or live AgentScope ReAct execution.</p>
+                </div>
+                <span class="pill" data-i18n="sections.runtime.pill">AgentScope</span>
+            </div>
+            <div id="runtime-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.arch.title">Deployment Architecture</h2>
+                    <p class="section-subtitle" data-i18n="sections.arch.subtitle">Shows deployment mode, database, RAG storage, and session strategy.</p>
+                </div>
+                <span class="pill" data-i18n="sections.arch.pill">Cluster</span>
+            </div>
+            <div id="architecture-view" class="chip-list"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.assistant.title">Assistant Reply</h2>
+                    <p class="section-subtitle" data-i18n="sections.assistant.subtitle">Shows the latest reply, highlights, and execution mode.</p>
+                </div>
+                <span class="pill" data-i18n="sections.assistant.pill">Live Output</span>
+            </div>
+            <div id="assistant-view" class="empty-state" data-i18n="state.assistantIdle">Run the assistant to see the latest reply.</div>
+        </section>
+
+        <section class="card wide">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.plan.title">Plan Output</h2>
+                    <p class="section-subtitle" data-i18n="sections.plan.subtitle">Structured cards generated by the orchestrator and specialist agents.</p>
+                </div>
+                <span class="pill" data-i18n="sections.plan.pill">Structured</span>
+            </div>
+            <div id="plan-view" class="plan-grid">
+                <div class="empty-state" data-i18n="state.planIdle">Plan cards will appear here.</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.history.title">Plan History</h2>
+                    <p class="section-subtitle" data-i18n="sections.history.subtitle">Plans persisted into the database.</p>
+                </div>
+                <span class="pill" data-i18n="sections.history.pill">Stored Plans</span>
+            </div>
+            <div id="plans-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.timeline.title">Execution Timeline</h2>
+                    <p class="section-subtitle" data-i18n="sections.timeline.subtitle">Inspect orchestrator and specialist execution traces.</p>
+                </div>
+                <span class="pill" data-i18n="sections.timeline.pill">Execution</span>
+            </div>
+            <div id="timeline-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.confirmations.title">Confirmations</h2>
+                    <p class="section-subtitle" data-i18n="sections.confirmations.subtitle">Every external write goes through a human approval gate.</p>
+                </div>
+                <span class="pill" data-i18n="sections.confirmations.pill">Human Loop</span>
+            </div>
+            <div id="confirmations-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.profile.title">Profile</h2>
+                    <p class="section-subtitle" data-i18n="sections.profile.subtitle">Inspect and edit long-term memory preferences.</p>
+                </div>
+                <span class="pill" data-i18n="sections.profile.pill">Memory</span>
+            </div>
+            <label for="travel-style" data-i18n="fields.travelStyle">Travel style</label>
+            <input id="travel-style" type="text" value="relaxed">
+            <label for="budget-level" data-i18n="fields.budgetLevel">Budget level</label>
+            <input id="budget-level" type="text" value="medium">
+            <label for="study-goal" data-i18n="fields.studyGoal">Study goal</label>
+            <input id="study-goal" type="text" value="english">
+            <div class="hero-actions compact">
+                <button id="save-profile" class="primary" data-i18n="actions.saveProfile">Save Profile</button>
+            </div>
+            <pre id="profile-view" class="code-box"></pre>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.knowledge.title">Knowledge Base</h2>
+                    <p class="section-subtitle" data-i18n="sections.knowledge.subtitle">Persist documents into the current RAG layer, with a clear path to pgvector later.</p>
+                </div>
+                <span class="pill" data-i18n="sections.knowledge.pill">RAG Seeds</span>
+            </div>
+            <label for="knowledge-title" data-i18n="fields.knowledgeTitle">Title</label>
+            <input id="knowledge-title" type="text" placeholder="Tokyo low-fatigue route">
+            <label for="knowledge-tags" data-i18n="fields.knowledgeTags">Tags</label>
+            <input id="knowledge-tags" type="text" placeholder="travel,tokyo">
+            <label for="knowledge-summary" data-i18n="fields.knowledgeSummary">Summary</label>
+            <textarea id="knowledge-summary">Neighborhood-first Tokyo guidance to reduce transfers and fatigue.</textarea>
+            <label for="knowledge-content" data-i18n="fields.knowledgeContent">Content</label>
+            <textarea id="knowledge-content">Plan the trip by districts such as Ueno, Asakusa, Ginza, and Daikanyama, leaving recovery windows each afternoon.</textarea>
+            <div class="hero-actions compact">
+                <button id="add-knowledge" class="primary" data-i18n="actions.addKnowledge">Add Knowledge</button>
+            </div>
+            <div id="knowledge-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.modules.title">Executable Modules</h2>
+                    <p class="section-subtitle" data-i18n="sections.modules.subtitle">Verifies that every module still has an executable entry point.</p>
+                </div>
+                <span class="pill" data-i18n="sections.modules.pill">Executable</span>
+            </div>
+            <div id="module-list" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.connectors.title">Connectors</h2>
+                    <p class="section-subtitle" data-i18n="sections.connectors.subtitle">Available tool capabilities exposed by the tool layer.</p>
+                </div>
+                <span class="pill" data-i18n="sections.connectors.pill">Tools</span>
+            </div>
+            <div id="connectors-view" class="list-stack"></div>
+        </section>
+    </main>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@ package io.github.yuliangchen.lifeos.infra;
 
 import io.github.yuliangchen.lifeos.domain.model.KnowledgeDocument;
 import io.github.yuliangchen.lifeos.domain.repository.KnowledgeDocumentRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Repository
+@ConditionalOnProperty(name = "lifeos.persistence.mode", havingValue = "memory")
 public class InMemoryKnowledgeDocumentRepository implements KnowledgeDocumentRepository {
 
     private final CopyOnWriteArrayList<KnowledgeDocument> store = new CopyOnWriteArrayList<>();

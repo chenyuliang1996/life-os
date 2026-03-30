@@ -7,6 +7,7 @@ import io.github.yuliangchen.lifeos.domain.model.KnowledgeQuery;
 import io.github.yuliangchen.lifeos.domain.model.KnowledgeSnippet;
 import io.github.yuliangchen.lifeos.domain.model.PlanTask;
 import io.github.yuliangchen.lifeos.domain.model.TaskStatus;
+import io.github.yuliangchen.lifeos.domain.support.LocaleSupport;
 import io.github.yuliangchen.lifeos.memory.MemoryModuleFacade;
 import io.github.yuliangchen.lifeos.rag.KnowledgeModuleFacade;
 import org.springframework.stereotype.Component;
@@ -33,17 +34,26 @@ public class LearningAgent implements ModuleExecutable<AgentTask, AgentContribut
 
     @Override
     public AgentContribution execute(AgentTask input) {
+        String locale = LocaleSupport.resolve(input.locale(), input.objective());
         List<KnowledgeSnippet> snippets = knowledgeModuleFacade.execute(
-                new KnowledgeQuery("demo-user", "english", List.of("learning", "english"))
+                new KnowledgeQuery(
+                        input.userId(),
+                        LocaleSupport.pick(locale, "英语", "english"),
+                        List.of("learning", "english")
+                )
         );
-        String studyGoal = memoryModuleFacade.getOrCreate("demo-user")
+        String studyGoal = memoryModuleFacade.getOrCreate(input.userId())
                 .preferences()
-                .getOrDefault("studyGoal", "english");
+                .getOrDefault("studyGoal", LocaleSupport.pick(locale, "英语", "english"));
 
         PlanTask task = new PlanTask(
                 "task-learning-plan",
-                "Adjust learning cadence",
-                "Keep " + studyGoal + " practice alive with short daily sessions during the trip.",
+                LocaleSupport.pick(locale, "调整学习节奏", "Adjust learning cadence"),
+                LocaleSupport.pick(
+                        locale,
+                        "通过更短的每日练习，保持" + studyGoal + "目标在旅途中不中断。",
+                        "Keep " + studyGoal + " practice alive with short daily sessions during the trip."
+                ),
                 TaskStatus.PENDING,
                 moduleName(),
                 Instant.now().plusSeconds(172800)
@@ -55,7 +65,11 @@ public class LearningAgent implements ModuleExecutable<AgentTask, AgentContribut
 
         return new AgentContribution(
                 moduleName(),
-                "Replanned daily learning into lightweight sessions that fit around travel days.",
+                LocaleSupport.pick(
+                        locale,
+                        "已将学习安排重排为更轻量的每日片段。",
+                        "Replanned daily learning into lightweight sessions that fit around travel days."
+                ),
                 List.of(task),
                 metadata
         );
@@ -64,9 +78,11 @@ public class LearningAgent implements ModuleExecutable<AgentTask, AgentContribut
     @Override
     public String executeDemo() {
         return execute(new AgentTask(
+                "demo-user",
                 io.github.yuliangchen.lifeos.domain.model.SpecialistType.LEARNING,
                 "Keep English study going during travel",
-                List.of("prefer short sessions")
+                List.of("prefer short sessions"),
+                "en-US"
         )).summary();
     }
 }

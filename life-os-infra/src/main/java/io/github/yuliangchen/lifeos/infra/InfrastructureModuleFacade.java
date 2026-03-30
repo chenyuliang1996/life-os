@@ -1,10 +1,17 @@
 package io.github.yuliangchen.lifeos.infra;
 
 import io.github.yuliangchen.lifeos.domain.ModuleExecutable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class InfrastructureModuleFacade implements ModuleExecutable<String, String> {
+
+    private final String persistenceMode;
+
+    public InfrastructureModuleFacade(@Value("${lifeos.persistence.mode:database}") String persistenceMode) {
+        this.persistenceMode = persistenceMode;
+    }
 
     @Override
     public String moduleName() {
@@ -18,6 +25,6 @@ public class InfrastructureModuleFacade implements ModuleExecutable<String, Stri
 
     @Override
     public String executeDemo() {
-        return "Infra repositories are ready for in-memory demos";
+        return "Infra repositories are ready in " + persistenceMode + " mode";
     }
 }
