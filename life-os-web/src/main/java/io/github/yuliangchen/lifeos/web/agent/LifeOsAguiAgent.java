@@ -4,12 +4,10 @@ import io.agentscope.core.agent.AgentBase;
 import io.agentscope.core.interruption.InterruptContext;
 import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.MsgRole;
-import io.agentscope.core.session.JsonSession;
-import io.agentscope.core.state.SimpleSessionKey;
 import io.agentscope.spring.boot.agui.common.AguiAgentId;
-import io.github.yuliangchen.lifeos.domain.model.OrchestrationResult;
-import io.github.yuliangchen.lifeos.domain.model.PlanPreviewRequest;
-import io.github.yuliangchen.lifeos.orchestrator.LifeOrchestrator;
+import io.github.yuliangchen.lifeos.domain.model.AssistantReply;
+import io.github.yuliangchen.lifeos.domain.model.AssistantRequest;
+import io.github.yuliangchen.lifeos.web.runtime.LifeOsAgentRuntimeService;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -17,63 +15,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @AguiAgentId("default")
 public class LifeOsAguiAgent extends AgentBase {
 
-    private final LifeOrchestrator lifeOrchestrator;
-    private final JsonSession jsonSession;
+    private final LifeOsAgentRuntimeService lifeOsAgentRuntimeService;
 
-    public LifeOsAguiAgent(LifeOrchestrator lifeOrchestrator, JsonSession jsonSession) {
+    public LifeOsAguiAgent(LifeOsAgentRuntimeService lifeOsAgentRuntimeService) {
         super("life-os-default-agent", "Life OS default AG-UI agent");
-        this.lifeOrchestrator = lifeOrchestrator;
-        this.jsonSession = jsonSession;
+        this.lifeOsAgentRuntimeService = lifeOsAgentRuntimeService;
     }
 
     @Override
     protected Mono<Msg> doCall(List<Msg> messages) {
         String userInput = messages.isEmpty() ? "Help me organize life planning" : messages.get(messages.size() - 1).getTextContent();
         String threadId = resolveThreadId(messages);
-        OrchestrationResult result = lifeOrchestrator.execute(new PlanPreviewRequest(
-                "demo-user",
-                threadId,
-                userInput
-        ));
-
-        String responseText = """
-                I turned your request into a coordinated Life OS plan.
-
-                Summary: %s
-
-                Tasks:
-                %s
-
-                Pending confirmations: %d
-                """.formatted(
-                result.plan().summary(),
-                result.plan().tasks().stream()
-                        .map(task -> "- " + task.title() + " (" + task.owner() + ")")
-                        .collect(Collectors.joining("\n")),
-                result.confirmations().size()
-        );
+        AssistantReply reply = lifeOsAgentRuntimeService.reply(new AssistantRequest("demo-user", threadId, userInput));
 
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("threadId", threadId);
-        metadata.put("planId", result.plan().id());
-        metadata.put("runId", result.executionRun().id());
-        metadata.put("confirmations", result.confirmations().stream().map(c -> c.id()).toList());
+        metadata.put("planId", reply.planId());
+        metadata.put("runId", reply.runId());
+        metadata.put("mode", reply.mode());
+        metadata.put("highlights", reply.highlights());
 
         Msg message = Msg.builder()
                 .id(UUID.randomUUID().toString())
                 .name(getName())
                 .role(MsgRole.ASSISTANT)
-                .textContent(responseText)
+                .textContent(reply.message())
                 .metadata(metadata)
                 .build();
 
-        jsonSession.save(SimpleSessionKey.of(threadId), "latest-assistant-message", message);
         return Mono.just(message);
     }
 

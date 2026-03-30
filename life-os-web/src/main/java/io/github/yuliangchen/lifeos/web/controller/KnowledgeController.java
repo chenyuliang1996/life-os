@@ -1,6 +1,7 @@
 package io.github.yuliangchen.lifeos.web.controller;
 
 import io.github.yuliangchen.lifeos.domain.model.KnowledgeDocument;
+import io.github.yuliangchen.lifeos.domain.model.KnowledgeDocumentCreateRequest;
 import io.github.yuliangchen.lifeos.rag.KnowledgeModuleFacade;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +29,12 @@ public class KnowledgeController {
     }
 
     @PostMapping
-    public KnowledgeDocument addDocument(@RequestBody KnowledgeDocument request) {
+    public KnowledgeDocument addDocument(@RequestBody KnowledgeDocumentCreateRequest request) {
         KnowledgeDocument document = new KnowledgeDocument(
-                request.id() == null || request.id().isBlank() ? UUID.randomUUID().toString() : request.id(),
+                UUID.randomUUID().toString(),
                 request.title(),
-                request.sourceType(),
-                request.tags(),
+                request.sourceType() == null || request.sourceType().isBlank() ? "manual" : request.sourceType(),
+                request.tags() == null ? List.of() : request.tags(),
                 request.summary(),
                 Instant.now()
         );

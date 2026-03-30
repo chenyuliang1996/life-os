@@ -31,6 +31,10 @@
                 <span class="metric-label">Pending Confirmations</span>
                 <strong id="confirmation-count">0</strong>
             </div>
+            <div class="metric">
+                <span class="metric-label">Runtime</span>
+                <strong id="runtime-mode">Fallback</strong>
+            </div>
         </div>
     </header>
 
@@ -46,23 +50,26 @@
                 <input id="user-id" type="text" value="demo-user" placeholder="user id">
                 <input id="thread-id" type="text" value="thread-life-os" placeholder="thread id">
             </div>
+            <div class="hero-actions compact">
+                <button id="run-agent" class="secondary">Run Assistant</button>
+            </div>
             <div class="result-strip" id="preview-summary">Press "Run Demo Plan" to generate a coordinated plan.</div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Profile</h2>
-                <span class="pill">Memory</span>
+                <h2>Runtime Status</h2>
+                <span class="pill">AgentScope</span>
             </div>
-            <pre id="profile-view" class="code-box">Loading profile...</pre>
+            <div id="runtime-view" class="list-stack"></div>
         </section>
 
         <section class="card">
             <div class="section-head">
-                <h2>Modules</h2>
-                <span class="pill">Executable</span>
+                <h2>Assistant Reply</h2>
+                <span class="pill">Live Output</span>
             </div>
-            <div id="module-list" class="list-stack"></div>
+            <div id="assistant-view" class="empty-state">Run the assistant to see the latest reply.</div>
         </section>
 
         <section class="card wide">
@@ -73,6 +80,14 @@
             <div id="plan-view" class="plan-grid">
                 <div class="empty-state">Plan cards will appear here.</div>
             </div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <h2>Plan History</h2>
+                <span class="pill">Stored Plans</span>
+            </div>
+            <div id="plans-view" class="list-stack"></div>
         </section>
 
         <section class="card">
@@ -93,10 +108,44 @@
 
         <section class="card">
             <div class="section-head">
+                <h2>Profile</h2>
+                <span class="pill">Memory</span>
+            </div>
+            <label for="travel-style">Travel style</label>
+            <input id="travel-style" type="text" value="relaxed">
+            <label for="budget-level">Budget level</label>
+            <input id="budget-level" type="text" value="medium">
+            <label for="study-goal">Study goal</label>
+            <input id="study-goal" type="text" value="english">
+            <div class="hero-actions compact">
+                <button id="save-profile" class="primary">Save Profile</button>
+            </div>
+            <pre id="profile-view" class="code-box">Loading profile...</pre>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
                 <h2>Knowledge Base</h2>
                 <span class="pill">RAG Seeds</span>
             </div>
+            <label for="knowledge-title">Title</label>
+            <input id="knowledge-title" type="text" placeholder="Tokyo family route">
+            <label for="knowledge-tags">Tags</label>
+            <input id="knowledge-tags" type="text" placeholder="travel,tokyo">
+            <label for="knowledge-summary">Summary</label>
+            <textarea id="knowledge-summary">Neighborhood-first trip idea with low fatigue pacing.</textarea>
+            <div class="hero-actions compact">
+                <button id="add-knowledge" class="primary">Add Knowledge</button>
+            </div>
             <div id="knowledge-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <h2>Modules</h2>
+                <span class="pill">Executable</span>
+            </div>
+            <div id="module-list" class="list-stack"></div>
         </section>
 
         <section class="card">

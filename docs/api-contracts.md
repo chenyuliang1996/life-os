@@ -6,6 +6,10 @@
   - Serves the demo dashboard UI.
 - `GET /api/v1/modules`
   - Runs module-level `executeDemo()` methods and returns a summary per module.
+- `GET /api/v1/assistant/runtime`
+  - Returns the current runtime mode (`orchestrator-fallback` or `agentscope-react`).
+- `POST /api/v1/assistant/message`
+  - Runs either the deterministic fallback or the model-backed ReAct runtime and returns a consolidated reply.
 - `GET /api/v1/profile`
   - Returns the current user profile snapshot.
 - `PUT /api/v1/profile`

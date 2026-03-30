@@ -32,5 +32,5 @@ Open `http://127.0.0.1:8080/` for the dashboard.
 
 - Every module has an executable facade via `execute(...)` or `executeDemo()`.
 - `LifeOsAguiAgent` is registered as the default AG-UI agent.
-- The dashboard renders plan preview, timeline, profile, confirmations, connectors, and knowledge seeds.
-- The first cut is deterministic, so the end-to-end product flow works without external API keys.
+- The dashboard now supports assistant replies, runtime status, plan history, confirmation approval, profile editing, and knowledge creation.
+- The default path is deterministic and works without API keys, but the runtime can switch to a real AgentScope `ReActAgent` when `OPENAI_API_KEY` or Ollama settings are provided.
