@@ -4,6 +4,7 @@ import io.github.yuliangchen.lifeos.domain.model.ConfirmationRequest;
 import io.github.yuliangchen.lifeos.domain.model.ConfirmationDecisionRequest;
 import io.github.yuliangchen.lifeos.domain.model.ConfirmationStatus;
 import io.github.yuliangchen.lifeos.domain.repository.ConfirmationRequestRepository;
+import io.github.yuliangchen.lifeos.web.observability.LifeOsObservabilityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +22,12 @@ import java.util.List;
 public class ConfirmationController {
 
     private final ConfirmationRequestRepository confirmationRequestRepository;
+    private final LifeOsObservabilityService lifeOsObservabilityService;
 
-    public ConfirmationController(ConfirmationRequestRepository confirmationRequestRepository) {
+    public ConfirmationController(ConfirmationRequestRepository confirmationRequestRepository,
+                                  LifeOsObservabilityService lifeOsObservabilityService) {
         this.confirmationRequestRepository = confirmationRequestRepository;
+        this.lifeOsObservabilityService = lifeOsObservabilityService;
     }
 
     @GetMapping
@@ -33,20 +37,32 @@ public class ConfirmationController {
 
     @PostMapping("/{id}/decision")
     public ConfirmationRequest decide(@PathVariable String id, @RequestBody ConfirmationDecisionRequest request) {
-        ConfirmationRequest current = confirmationRequestRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Confirmation not found"));
+        long startedAt = System.nanoTime();
+        try {
+            ConfirmationRequest current = confirmationRequestRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Confirmation not found"));
 
-        ConfirmationStatus targetStatus = ConfirmationStatus.valueOf(
-                request.decision() == null || request.decision().isBlank() ? "REJECTED" : request.decision()
-        );
-        ConfirmationRequest updated = new ConfirmationRequest(
-                current.id(),
-                current.planId(),
-                current.action(),
-                targetStatus,
-                request.comment() == null || request.comment().isBlank() ? current.comment() : request.comment(),
-                Instant.now()
-        );
-        return confirmationRequestRepository.save(updated);
+            ConfirmationStatus targetStatus = ConfirmationStatus.valueOf(
+                    request.decision() == null || request.decision().isBlank() ? "REJECTED" : request.decision()
+            );
+            ConfirmationRequest updated = new ConfirmationRequest(
+                    current.id(),
+                    current.planId(),
+                    current.action(),
+                    targetStatus,
+                    request.comment() == null || request.comment().isBlank() ? current.comment() : request.comment(),
+                    Instant.now()
+            );
+            ConfirmationRequest saved = confirmationRequestRepository.save(updated);
+            lifeOsObservabilityService.recordConfirmationDecision(elapsedMillis(startedAt), true);
+            return saved;
+        } catch (RuntimeException exception) {
+            lifeOsObservabilityService.recordConfirmationDecision(elapsedMillis(startedAt), false);
+            throw exception;
+        }
+    }
+
+    private long elapsedMillis(long startedAt) {
+        return (System.nanoTime() - startedAt) / 1_000_000L;
     }
 }

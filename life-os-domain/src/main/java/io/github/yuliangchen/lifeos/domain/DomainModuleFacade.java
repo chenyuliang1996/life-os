@@ -16,7 +16,7 @@ public class DomainModuleFacade implements ModuleExecutable<String, String> {
     }
 
     @Override
-    public String executeDemo() {
+    public String executeProbe() {
         return "Domain contracts are loaded with plan, profile, confirmation, and execution models";
     }
 }

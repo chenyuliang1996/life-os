@@ -24,7 +24,7 @@ public class InfrastructureModuleFacade implements ModuleExecutable<String, Stri
     }
 
     @Override
-    public String executeDemo() {
+    public String executeProbe() {
         return "Infra repositories are ready in " + persistenceMode + " mode";
     }
 }

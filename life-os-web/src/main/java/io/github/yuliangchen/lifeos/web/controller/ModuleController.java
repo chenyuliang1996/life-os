@@ -46,16 +46,16 @@ public class ModuleController {
     }
 
     @GetMapping
-    public Map<String, String> demos() {
+    public Map<String, String> probes() {
         return Map.of(
-                "domain", domainModuleFacade.executeDemo(),
-                "agents", agentsModuleFacade.executeDemo(),
-                "memory", memoryModuleFacade.executeDemo(),
-                "rag", knowledgeModuleFacade.executeDemo(),
-                "tools", toolModuleFacade.executeDemo(),
-                "orchestrator", lifeOrchestrator.executeDemo(),
-                "infra", infrastructureModuleFacade.executeDemo(),
-                "web", webModuleFacade.executeDemo()
+                "domain", domainModuleFacade.executeProbe(),
+                "agents", agentsModuleFacade.executeProbe(),
+                "memory", memoryModuleFacade.executeProbe(),
+                "rag", knowledgeModuleFacade.executeProbe(),
+                "tools", toolModuleFacade.executeProbe(),
+                "orchestrator", lifeOrchestrator.executeProbe(),
+                "infra", infrastructureModuleFacade.executeProbe(),
+                "web", webModuleFacade.executeProbe()
         );
     }
 }

@@ -12,7 +12,7 @@
 ### 系统与架构
 
 - `GET /api/v1/modules`
-  - 触发各模块 `executeDemo()`，验证模块执行入口
+  - 触发各模块 `executeProbe()`，验证模块探针入口
 - `GET /api/v1/system/connectors`
   - 返回工具层连接器能力
 - `GET /api/v1/system/health`
@@ -44,8 +44,8 @@
 
 ### 用户画像
 
-- `GET /api/v1/profile?userId=demo-user`
-- `PUT /api/v1/profile?userId=demo-user`
+- `GET /api/v1/profile?userId=lifeos-user`
+- `PUT /api/v1/profile?userId=lifeos-user`
 
 ### 计划与执行
 

@@ -34,7 +34,8 @@ class LifeOsApplicationTests {
     void shouldServeStaticIndexFile() throws Exception {
         mockMvc.perform(get("/index.html"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Life OS")));
+                .andExpect(content().string(containsString("Life OS")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("Demo"))));
     }
 
     @Test
@@ -59,7 +60,7 @@ class LifeOsApplicationTests {
                         .contentType("application/json")
                         .content("""
                                 {
-                                  "userId": "demo-user",
+                                  "userId": "lifeos-user",
                                   "threadId": "thread-test",
                                   "input": "Plan a relaxed Tokyo trip without interrupting English study"
                                 }
@@ -90,6 +91,31 @@ class LifeOsApplicationTests {
     }
 
     @Test
+    void shouldExposeOperationsSnapshot() throws Exception {
+        mockMvc.perform(get("/api/v1/system/operations"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.target.dailyActiveUsers").value(200000))
+                .andExpect(jsonPath("$.target.peakQps").value(30.0))
+                .andExpect(jsonPath("$.successRate").exists());
+    }
+
+    @Test
+    void shouldAcceptUxTelemetry() throws Exception {
+        mockMvc.perform(post("/api/v1/telemetry/ux")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "action": "page_bootstrap",
+                                  "surface": "toc",
+                                  "locale": "zh-CN",
+                                  "durationMs": 420,
+                                  "success": true
+                                }
+                                """))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
     void shouldExposeRagRuntimeStatus() throws Exception {
         mockMvc.perform(get("/api/v1/system/rag"))
                 .andExpect(status().isOk())
@@ -112,7 +138,7 @@ class LifeOsApplicationTests {
                         .contentType("application/json")
                         .content("""
                                 {
-                                  "userId": "demo-user",
+                                  "userId": "lifeos-user",
                                   "threadId": "thread-assistant",
                                   "input": "Help me plan a Tokyo trip while keeping my English habit."
                                 }
@@ -129,7 +155,7 @@ class LifeOsApplicationTests {
                         .contentType("application/json")
                         .content("""
                                 {
-                                  "userId": "demo-user",
+                                  "userId": "lifeos-user",
                                   "threadId": "thread-confirmation",
                                   "input": "Create a balanced travel schedule with reminder drafts."
                                 }
@@ -157,7 +183,7 @@ class LifeOsApplicationTests {
 
     @Test
     void shouldUpdateProfilePreferences() throws Exception {
-        mockMvc.perform(put("/api/v1/profile?userId=demo-user")
+        mockMvc.perform(put("/api/v1/profile?userId=lifeos-user")
                         .contentType("application/json")
                         .content("""
                                 {
@@ -180,7 +206,7 @@ class LifeOsApplicationTests {
                         .contentType("application/json")
                         .content("""
                                 {
-                                  "userId": "demo-user",
+                                  "userId": "lifeos-user",
                                   "threadId": "thread-resume",
                                   "input": "Create a balanced travel schedule with reminder drafts."
                                 }

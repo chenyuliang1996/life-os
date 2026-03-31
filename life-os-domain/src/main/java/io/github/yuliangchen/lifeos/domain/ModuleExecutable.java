@@ -6,7 +6,7 @@ public interface ModuleExecutable<I, O> {
 
     O execute(I input);
 
-    default String executeDemo() {
+    default String executeProbe() {
         return moduleName() + " is ready";
     }
 }

@@ -59,7 +59,7 @@
 
 - 领域模型继续保持纯 record，不污染 JPA 注解
 - 持久化对象和领域对象解耦，后续换成 MyBatis / jOOQ / 事件存储都容易
-- `Map`、`List`、`PlanTask`、`TimelineEvent` 这类结构使用 JSON 列存储，便于快速演进 Demo 数据模型
+- `Map`、`List`、`PlanTask`、`TimelineEvent` 这类结构使用 JSON 列存储，便于快速演进服务数据模型
 
 ## 4. RAG 实现
 

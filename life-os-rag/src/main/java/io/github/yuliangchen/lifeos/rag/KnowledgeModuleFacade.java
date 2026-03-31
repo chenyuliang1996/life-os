@@ -74,9 +74,9 @@ public class KnowledgeModuleFacade implements ModuleExecutable<KnowledgeQuery, L
     }
 
     @Override
-    public String executeDemo() {
-        List<KnowledgeSnippet> snippets = execute(new KnowledgeQuery("demo-user", "tokyo", List.of("travel")));
-        return "RAG ready with " + snippets.size() + " demo snippets using " + vectorKnowledgeStore.status().retrievalMode();
+    public String executeProbe() {
+        List<KnowledgeSnippet> snippets = execute(new KnowledgeQuery("lifeos-user", "tokyo", List.of("travel")));
+        return "RAG ready with " + snippets.size() + " service snippets using " + vectorKnowledgeStore.status().retrievalMode();
     }
 
     private void seedDocuments() {

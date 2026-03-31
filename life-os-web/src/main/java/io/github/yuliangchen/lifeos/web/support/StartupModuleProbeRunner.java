@@ -14,9 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class StartupDemoRunner {
+public class StartupModuleProbeRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(StartupDemoRunner.class);
+    private static final Logger log = LoggerFactory.getLogger(StartupModuleProbeRunner.class);
 
     @Bean
     ApplicationRunner applicationRunner(DomainModuleFacade domainModuleFacade,
@@ -27,13 +27,13 @@ public class StartupDemoRunner {
                                         LifeOrchestrator lifeOrchestrator,
                                         InfrastructureModuleFacade infrastructureModuleFacade) {
         return args -> {
-            log.info("domain -> {}", domainModuleFacade.executeDemo());
-            log.info("agents -> {}", agentsModuleFacade.executeDemo());
-            log.info("memory -> {}", memoryModuleFacade.executeDemo());
-            log.info("rag -> {}", knowledgeModuleFacade.executeDemo());
-            log.info("tools -> {}", toolModuleFacade.executeDemo());
-            log.info("infra -> {}", infrastructureModuleFacade.executeDemo());
-            log.info("orchestrator -> {}", lifeOrchestrator.executeDemo());
+            log.info("domain -> {}", domainModuleFacade.executeProbe());
+            log.info("agents -> {}", agentsModuleFacade.executeProbe());
+            log.info("memory -> {}", memoryModuleFacade.executeProbe());
+            log.info("rag -> {}", knowledgeModuleFacade.executeProbe());
+            log.info("tools -> {}", toolModuleFacade.executeProbe());
+            log.info("infra -> {}", infrastructureModuleFacade.executeProbe());
+            log.info("orchestrator -> {}", lifeOrchestrator.executeProbe());
         };
     }
 }

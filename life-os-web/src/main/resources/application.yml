@@ -1,6 +1,21 @@
 server:
   port: 8080
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
 spring:
   application:
     name: life-os
@@ -83,3 +98,11 @@ lifeos:
     openai-model: ${OPENAI_MODEL:gpt-4.1-mini}
     ollama-base-url: ${OLLAMA_BASE_URL:}
     ollama-model: ${OLLAMA_MODEL:qwen2.5:7b}
+  service:
+    target-dau: ${LIFEOS_TARGET_DAU:200000}
+    target-peak-qps: ${LIFEOS_TARGET_PEAK_QPS:30}
+    availability-slo: ${LIFEOS_AVAILABILITY_SLO:99.9}
+    assistant-p95-ms: ${LIFEOS_ASSISTANT_P95_MS:2200}
+    confirmation-p95-ms: ${LIFEOS_CONFIRMATION_P95_MS:900}
+    ux-bootstrap-p95-ms: ${LIFEOS_UX_BOOTSTRAP_P95_MS:1800}
+    ux-interaction-p95-ms: ${LIFEOS_UX_INTERACTION_P95_MS:1200}

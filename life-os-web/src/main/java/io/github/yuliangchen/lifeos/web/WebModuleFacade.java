@@ -20,11 +20,11 @@ public class WebModuleFacade implements ModuleExecutable<String, String> {
 
     @Override
     public String execute(String input) {
-        return lifeOrchestrator.executeDemo() + " | input=" + input;
+        return lifeOrchestrator.executeProbe() + " | input=" + input;
     }
 
     @Override
-    public String executeDemo() {
-        return "Web module ready, orchestrator says: " + lifeOrchestrator.executeDemo();
+    public String executeProbe() {
+        return "Web module ready, orchestrator says: " + lifeOrchestrator.executeProbe();
     }
 }

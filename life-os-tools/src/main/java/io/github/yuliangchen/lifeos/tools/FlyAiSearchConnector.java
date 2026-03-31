@@ -50,6 +50,7 @@ public class FlyAiSearchConnector implements DisposableBean {
         }
 
         try {
+            // Lazy MCP initialization keeps local startup stable / 延迟初始化 MCP，避免未配置外部端点时启动变脆。
             McpClientWrapper wrapper = getOrCreateClient();
             String toolName = getOrResolveToolName(wrapper);
             if (!StringUtils.hasText(toolName)) {
@@ -165,6 +166,7 @@ public class FlyAiSearchConnector implements DisposableBean {
     }
 
     private String callSearchTool(McpClientWrapper wrapper, String toolName, String topic, String locale) {
+        // Different MCP servers use different argument names / 不同 MCP 服务的参数命名并不统一，这里做一层宽松兼容。
         List<Map<String, Object>> attempts = new ArrayList<>();
         attempts.add(Map.of("query", topic, "locale", locale));
         attempts.add(Map.of("topic", topic, "locale", locale));

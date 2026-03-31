@@ -135,10 +135,10 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
     }
 
     @Override
-    public String executeDemo() {
+    public String executeProbe() {
         OrchestrationResult result = execute(new PlanPreviewRequest(
-                "demo-user",
-                "thread-demo",
+                "lifeos-user",
+                "thread-ops-probe",
                 "Plan a relaxed Tokyo trip without interrupting English study",
                 "en-US"
         ));

@@ -13,7 +13,7 @@
 - `deploy/k8s/service.yaml`
 - `deploy/k8s/ingress.yaml`
 
-## 2. Docker Compose 集群演示
+## 2. Docker Compose 集群部署
 
 ```bash
 docker compose -f deploy/docker-compose.cluster.yml up --build
@@ -65,7 +65,7 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 
 ## 5. 为什么 session 先用共享目录
 
-这不是最终最优解，但对 Demo 最务实：
+这不是最终最优解，但对当前服务阶段最务实：
 
 - 复用现有 `JsonSession`
 - 多副本先能跑起来

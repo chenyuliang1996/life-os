@@ -49,7 +49,7 @@ public class ToolModuleFacade implements ModuleExecutable<ToolRequest, ToolResul
     }
 
     @Override
-    public String executeDemo() {
+    public String executeProbe() {
         return execute(new ToolRequest("weather", Map.of("city", "Tokyo"))).summary();
     }
 }

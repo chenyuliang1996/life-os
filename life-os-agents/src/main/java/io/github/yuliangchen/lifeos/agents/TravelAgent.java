@@ -99,9 +99,9 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
     }
 
     @Override
-    public String executeDemo() {
+    public String executeProbe() {
         return execute(new AgentTask(
-                "demo-user",
+                "lifeos-user",
                 io.github.yuliangchen.lifeos.domain.model.SpecialistType.TRAVEL,
                 "Design a low-fatigue Tokyo trip",
                 List.of("stay budget-aware", "prefer neighborhood pacing"),

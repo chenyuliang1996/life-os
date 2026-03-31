@@ -197,6 +197,7 @@ public class AgentScopePgVectorKnowledgeStore implements VectorKnowledgeStore {
     }
 
     private List<String> chunkDocument(KnowledgeDocument document) {
+        // Chunking keeps retrieval granular without introducing a second pipeline / 分块让召回更细，同时不必额外引入另一套离线切片流水线。
         String combined = (document.summary() + "\n\n" + document.content()).trim();
         if (!StringUtils.hasText(combined)) {
             return List.of();

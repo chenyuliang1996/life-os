@@ -26,14 +26,14 @@ public class AgentsModuleFacade implements ModuleExecutable<String, String> {
     @Override
     public String execute(String input) {
         return String.join(" | ",
-                travelAgent.executeDemo(),
-                learningAgent.executeDemo(),
-                scheduleAgent.executeDemo()
+                travelAgent.executeProbe(),
+                learningAgent.executeProbe(),
+                scheduleAgent.executeProbe()
         );
     }
 
     @Override
-    public String executeDemo() {
-        return execute("demo");
+    public String executeProbe() {
+        return execute("probe");
     }
 }

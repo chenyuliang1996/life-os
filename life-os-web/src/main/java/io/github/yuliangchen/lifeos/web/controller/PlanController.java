@@ -6,6 +6,7 @@ import io.github.yuliangchen.lifeos.domain.model.PlanPreviewRequest;
 import io.github.yuliangchen.lifeos.domain.model.PlanStatus;
 import io.github.yuliangchen.lifeos.domain.repository.LifePlanRepository;
 import io.github.yuliangchen.lifeos.orchestrator.LifeOrchestrator;
+import io.github.yuliangchen.lifeos.web.observability.LifeOsObservabilityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,15 +25,27 @@ public class PlanController {
 
     private final LifeOrchestrator lifeOrchestrator;
     private final LifePlanRepository lifePlanRepository;
+    private final LifeOsObservabilityService lifeOsObservabilityService;
 
-    public PlanController(LifeOrchestrator lifeOrchestrator, LifePlanRepository lifePlanRepository) {
+    public PlanController(LifeOrchestrator lifeOrchestrator,
+                          LifePlanRepository lifePlanRepository,
+                          LifeOsObservabilityService lifeOsObservabilityService) {
         this.lifeOrchestrator = lifeOrchestrator;
         this.lifePlanRepository = lifePlanRepository;
+        this.lifeOsObservabilityService = lifeOsObservabilityService;
     }
 
     @PostMapping("/preview")
     public OrchestrationResult preview(@RequestBody PlanPreviewRequest request) {
-        return lifeOrchestrator.execute(request);
+        long startedAt = System.nanoTime();
+        try {
+            OrchestrationResult result = lifeOrchestrator.execute(request);
+            lifeOsObservabilityService.recordPlanPreview(elapsedMillis(startedAt), true);
+            return result;
+        } catch (RuntimeException exception) {
+            lifeOsObservabilityService.recordPlanPreview(elapsedMillis(startedAt), false);
+            throw exception;
+        }
     }
 
     @GetMapping
@@ -44,5 +57,9 @@ public class PlanController {
     public LifePlan getPlan(@PathVariable String planId) {
         return lifePlanRepository.findById(planId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plan not found"));
+    }
+
+    private long elapsedMillis(long startedAt) {
+        return (System.nanoTime() - startedAt) / 1_000_000L;
     }
 }

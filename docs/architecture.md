@@ -28,7 +28,24 @@ flowchart LR
     INFRA --> VDB["pgvector (optional)"]
 ```
 
-## 3. 集群形态
+## 3. 展示面分层
+
+前端现在明确拆成两个展示面，但仍共用同一套后端能力：
+
+- `ToC`
+  - 只展示用户操作动线
+  - 包含请求时序、任务控制台、助手回复、计划输出、确认流、用户画像、知识库
+- `ToB`
+  - 只展示系统与组件状态
+  - 包含运行时状态、部署架构、RAG 运行态、执行时间线、模块执行入口、连接器状态
+
+这样拆分的原因：
+
+- 面向 C 端用户时，重点是任务闭环和体验顺滑度
+- 面向 B 端运营时，重点是组件可观测性、部署形态和能力边界
+- 两种视角共享同一份真实运行数据，避免形成两套脱节系统
+
+## 4. 集群形态
 
 ```mermaid
 flowchart LR
@@ -45,20 +62,50 @@ flowchart LR
     APP2 --> FLY
 ```
 
-## 4. 为什么采用这套架构
+## 5. 请求时序
 
-### 4.1 产品与工程节奏匹配
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant UI as ToC UI
+    participant O as Orchestrator
+    participant T as TravelAgent
+    participant R as Hybrid RAG
+    participant F as FlyAI MCP
+    participant A as A2A Travel Specialist
+    participant H as HITL Gate
+    participant D as Database
 
-- 对 Demo 来说，业务演示链路比微服务数量更重要
+    U->>UI: Submit travel + learning goal
+    UI->>O: POST /api/v1/plans/preview
+    O->>R: Retrieve grounded snippets
+    O->>T: Build travel contribution
+    T->>F: Optional live travel search
+    T->>A: Optional remote travel advice
+    T-->>O: Travel tasks + metadata
+    O->>H: Create confirmation requests
+    O->>D: Persist plan / run / confirmations
+    O-->>UI: Return structured plan
+    U->>UI: Approve pending actions
+    UI->>O: POST /api/v1/assistant/resume
+    O->>D: Update run status and timeline
+    O-->>UI: Return resumed execution result
+```
+
+## 6. 为什么采用这套架构
+
+### 6.1 产品与工程节奏匹配
+
+- 对当前服务阶段来说，业务闭环比微服务数量更重要
 - 对后续演进来说，模块边界比“先拆服务”更重要
 
-### 4.2 为什么主编排器先不拆
+### 6.2 为什么主编排器先不拆
 
 - 主编排负责计划生成、确认流、记忆、知识拼装
 - 这部分对事务一致性和状态写入要求更高
 - 先保留本地编排，集成复杂度最低
 
-### 4.3 为什么旅行能力先外接
+### 6.3 为什么旅行能力先外接
 
 旅行场景很适合作为第一块可拆能力：
 
@@ -66,9 +113,9 @@ flowchart LR
 - 既有本地知识，也有外部动态信息
 - 可以先通过 FlyAI 强化搜索，再通过 A2A 强化垂类专家建议
 
-## 5. 数据与状态
+## 7. 数据与状态
 
-### 5.1 事务型数据
+### 7.1 事务型数据
 
 默认落库对象：
 
@@ -78,15 +125,15 @@ flowchart LR
 - `execution_runs`
 - `knowledge_documents`
 
-### 5.2 检索数据
+### 7.2 检索数据
 
 - 文本内容保存在关系库
 - 启用向量模式时，同步写入 pgvector
 - 查询时做 hybrid merge
 
-### 5.3 会话状态
+### 7.3 会话状态
 
-当前集群 Demo 采用：
+当前集群方案采用：
 
 - `JsonSession`
 - 共享卷挂载
@@ -96,7 +143,7 @@ flowchart LR
 - `Redis Session`
 - 或 AgentScope 提供的数据库 Session 方案
 
-## 6. Agent 拓扑
+## 8. Agent 拓扑
 
 ### 主控 Agent
 
@@ -119,4 +166,4 @@ flowchart LR
 - `FlyAiSearchConnector`
   - 用于旅行搜索增强
 
-每个模块都保留了 `execute(...)` 或 `executeDemo()` 入口，用于单模块验证和后续服务化改造。
+每个模块都保留了 `execute(...)` 或 `executeProbe()` 入口，用于单模块验证和后续服务化改造。

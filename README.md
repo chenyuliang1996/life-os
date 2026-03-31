@@ -1,12 +1,15 @@
 # Life OS
 
-`Life OS` 是一套基于 `agentscope-java` 的 ToC Demo，目标不是只做一个“能聊天”的页面，而是把多 Agent 编排、工具调用、长期记忆、RAG、确认流、AG-UI 和可部署架构整合成一套能继续演进的产品骨架。
+`Life OS` 是一套基于 `agentscope-java` 的 ToC 服务平台，目标不是只做一个“能聊天”的页面，而是把多 Agent 编排、工具调用、长期记忆、RAG、确认流、AG-UI 和可部署架构整合成一套能继续演进的产品骨架。
 
 ## 现在已经具备的能力
 
 - 中英文双入口页面：
   - 中文：`/`
   - 英文：`/en/index.html`
+- 双展示面：
+  - `ToC` 只保留用户操作动线，聚焦输入、计划、确认、画像和知识沉淀
+  - `ToB` 聚焦系统运行态，查看组件、连接器、RAG、执行链路和部署状态
 - 统一主控编排：
   - 旅行、学习、日程三个专业 Agent
   - 主编排器负责拆任务、汇总计划、生成确认节点
@@ -57,7 +60,7 @@ mvn -f life-os-web/pom.xml spring-boot:run
 - 中文：[http://127.0.0.1:8080/](http://127.0.0.1:8080/)
 - 英文：[http://127.0.0.1:8080/en/index.html](http://127.0.0.1:8080/en/index.html)
 
-### 集群演示
+### 集群部署
 
 ```bash
 docker compose -f deploy/docker-compose.cluster.yml up --build

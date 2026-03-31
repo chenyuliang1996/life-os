@@ -46,9 +46,9 @@ public class MemoryModuleFacade implements ModuleExecutable<MemoryUpdateCommand,
     }
 
     @Override
-    public String executeDemo() {
+    public String executeProbe() {
         UserProfile profile = execute(new MemoryUpdateCommand(
-                "demo-user",
+                "lifeos-user",
                 Map.of("travelStyle", "relaxed", "budgetLevel", "medium"),
                 List.<Goal>of()
         ));

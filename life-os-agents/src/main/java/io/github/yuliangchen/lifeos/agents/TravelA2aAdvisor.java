@@ -48,6 +48,7 @@ public class TravelA2aAdvisor {
         }
 
         try {
+            // A2A is additive here, not mandatory / 这里把 A2A 当作增强能力，而不是主流程硬依赖。
             Msg response = getOrCreateAgent().call(List.of(buildPrompt(task, searchResult, snippets))).block(timeout);
             if (response == null || !StringUtils.hasText(response.getTextContent())) {
                 return "";
@@ -95,6 +96,7 @@ public class TravelA2aAdvisor {
 
     private Msg buildPrompt(AgentTask task, ToolResult searchResult, List<KnowledgeSnippet> snippets) {
         String locale = LocaleSupport.resolve(task.locale(), task.objective());
+        // Keep remote prompt grounded with local retrieval / 用本地检索结果给远程专家打底，避免建议飘掉。
         String groundedKnowledge = snippets.stream()
                 .map(snippet -> snippet.title() + ": " + snippet.snippet())
                 .reduce((left, right) -> left + "\n" + right)

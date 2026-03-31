@@ -66,9 +66,9 @@ public class ScheduleAgent implements ModuleExecutable<AgentTask, AgentContribut
     }
 
     @Override
-    public String executeDemo() {
+    public String executeProbe() {
         return execute(new AgentTask(
-                "demo-user",
+                "lifeos-user",
                 io.github.yuliangchen.lifeos.domain.model.SpecialistType.SCHEDULE,
                 "Balance travel and routines",
                 List.of("require confirmation for writes"),

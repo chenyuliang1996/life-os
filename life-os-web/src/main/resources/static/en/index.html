@@ -4,49 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life OS</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css?v=20260331c">
 </head>
-<body data-default-locale="en-US">
+<body data-default-locale="en-US" data-surface="toc">
 <div class="page-shell">
+    <div class="ambient ambient-a" aria-hidden="true"></div>
+    <div class="ambient ambient-b" aria-hidden="true"></div>
     <header class="topbar">
-        <p class="eyebrow" data-i18n="topbar.badge">AgentScope Java Demo</p>
-        <nav class="locale-switch" aria-label="Language switch">
-            <a href="/" class="locale-pill">中文</a>
-            <a href="/en/index.html" class="locale-pill is-active">English</a>
-        </nav>
+        <p class="eyebrow" data-i18n="topbar.badge">Life OS Service Platform</p>
+        <div class="topbar-actions">
+            <div class="surface-switch" aria-label="Surface switch">
+                <button type="button" class="surface-pill is-active" data-surface-target="toc" data-i18n="topbar.surfaceToc">ToC Experience</button>
+                <button type="button" class="surface-pill" data-surface-target="tob" data-i18n="topbar.surfaceTob">ToB Operations</button>
+            </div>
+            <nav class="locale-switch" aria-label="Language switch">
+                <a href="/" class="locale-pill">中文</a>
+                <a href="/en/index.html" class="locale-pill is-active">English</a>
+            </nav>
+        </div>
     </header>
 
     <header class="hero">
         <div class="hero-copy">
             <h1 data-i18n="hero.title">Life OS</h1>
-            <p class="subtitle" data-i18n="hero.subtitle">A consumer-facing Life OS demo that links travel, learning, schedule, and execution into one Agent workflow.</p>
+            <p class="subtitle" data-i18n="hero.subtitle">A real consumer service that connects travel, learning, schedule, and execution in one operating flow.</p>
+            <div class="hero-badges" aria-label="Product highlights">
+                <span class="hero-badge" data-i18n="hero.badgeRag">Hybrid RAG</span>
+                <span class="hero-badge" data-i18n="hero.badgeSearch">FlyAI Search</span>
+                <span class="hero-badge" data-i18n="hero.badgeA2a">A2A Travel</span>
+            </div>
             <div class="hero-actions">
-                <button id="run-preview" class="primary" data-i18n="hero.runPreview">Run Demo Plan</button>
+                <button id="run-preview" class="primary" data-i18n="hero.runPreview">Create Action Plan</button>
                 <button id="reload-data" class="secondary" data-i18n="hero.refresh">Refresh Data</button>
             </div>
         </div>
-        <div class="hero-panel">
+        <div class="hero-panel" data-surface="tob">
             <div class="metric">
-                <span class="metric-label" data-i18n="metrics.modules">Modules</span>
-                <strong id="module-count">0</strong>
+                <span class="metric-label" data-i18n="metrics.targetDau">Target DAU</span>
+                <strong id="target-dau">200k</strong>
             </div>
             <div class="metric">
-                <span class="metric-label" data-i18n="metrics.connectors">Connectors</span>
-                <strong id="connector-count">0</strong>
+                <span class="metric-label" data-i18n="metrics.currentQps">Current QPS</span>
+                <strong id="current-qps">0.0</strong>
             </div>
             <div class="metric">
-                <span class="metric-label" data-i18n="metrics.confirmations">Pending</span>
-                <strong id="confirmation-count">0</strong>
+                <span class="metric-label" data-i18n="metrics.successRate">Success Rate</span>
+                <strong id="success-rate">100%</strong>
             </div>
             <div class="metric">
-                <span class="metric-label" data-i18n="metrics.runtime">Runtime</span>
-                <strong id="runtime-mode">Fallback</strong>
+                <span class="metric-label" data-i18n="metrics.assistantP95">Assistant P95</span>
+                <strong id="assistant-p95">0ms</strong>
             </div>
         </div>
     </header>
 
     <main class="content-grid">
-        <section class="card chat-card">
+        <section class="card full sequence-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.sequence.title">Request Sequence</h2>
+                    <p class="section-subtitle" data-i18n="sections.sequence.subtitle">Shows the full execution order from user intent through RAG, search, remote specialist, approvals, and persistence.</p>
+                </div>
+                <span class="pill" data-i18n="sections.sequence.pill">Sequence</span>
+            </div>
+            <div id="sequence-view" class="sequence-rail"></div>
+        </section>
+
+        <section class="card chat-card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.control.title">Mission Control</h2>
@@ -59,7 +83,7 @@
             <div class="form-row">
                 <div>
                     <label for="user-id" data-i18n="fields.userId">User ID</label>
-                    <input id="user-id" type="text" value="demo-user" placeholder="demo-user">
+                    <input id="user-id" type="text" value="lifeos-user" placeholder="lifeos-user">
                 </div>
                 <div>
                     <label for="thread-id" data-i18n="fields.threadId">Thread ID</label>
@@ -69,10 +93,10 @@
             <div class="hero-actions compact">
                 <button id="run-agent" class="secondary" data-i18n="hero.runAssistant">Run Assistant</button>
             </div>
-            <div class="result-strip" id="preview-summary" data-i18n="state.previewIdle">Press "Run Demo Plan" to generate a coordinated plan.</div>
+            <div class="result-strip" id="preview-summary" data-i18n="state.previewIdle">Press "Create Action Plan" to start planning.</div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="tob">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.runtime.title">Runtime Status</h2>
@@ -83,7 +107,18 @@
             <div id="runtime-view" class="list-stack"></div>
         </section>
 
-        <section class="card">
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.operations.title">Service Metrics</h2>
+                    <p class="section-subtitle" data-i18n="sections.operations.subtitle">Capacity, reliability, and UX signals derived from real requests, approvals, and client telemetry.</p>
+                </div>
+                <span class="pill" data-i18n="sections.operations.pill">SLO</span>
+            </div>
+            <div id="operations-view" class="ops-grid"></div>
+        </section>
+
+        <section class="card" data-surface="tob">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.arch.title">Deployment Architecture</h2>
@@ -94,7 +129,7 @@
             <div id="architecture-view" class="chip-list"></div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="tob">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.rag.title">RAG Runtime</h2>
@@ -105,7 +140,7 @@
             <div id="rag-view" class="list-stack"></div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.assistant.title">Assistant Reply</h2>
@@ -116,7 +151,7 @@
             <div id="assistant-view" class="empty-state" data-i18n="state.assistantIdle">Run the assistant to see the latest reply.</div>
         </section>
 
-        <section class="card wide">
+        <section class="card wide" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.plan.title">Plan Output</h2>
@@ -129,7 +164,7 @@
             </div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.history.title">Plan History</h2>
@@ -137,10 +172,10 @@
                 </div>
                 <span class="pill" data-i18n="sections.history.pill">Stored Plans</span>
             </div>
-            <div id="plans-view" class="list-stack"></div>
+            <div id="plans-view" class="list-stack capped"></div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="tob">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.timeline.title">Execution Timeline</h2>
@@ -151,7 +186,7 @@
             <div id="timeline-view" class="list-stack"></div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.confirmations.title">Confirmations</h2>
@@ -159,10 +194,10 @@
                 </div>
                 <span class="pill" data-i18n="sections.confirmations.pill">Human Loop</span>
             </div>
-            <div id="confirmations-view" class="list-stack"></div>
+            <div id="confirmations-view" class="list-stack capped"></div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.profile.title">Profile</h2>
@@ -182,7 +217,7 @@
             <pre id="profile-view" class="code-box"></pre>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.knowledge.title">Knowledge Base</h2>
@@ -204,7 +239,7 @@
             <div id="knowledge-view" class="list-stack"></div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="tob">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.modules.title">Executable Modules</h2>
@@ -212,10 +247,10 @@
                 </div>
                 <span class="pill" data-i18n="sections.modules.pill">Executable</span>
             </div>
-            <div id="module-list" class="list-stack"></div>
+            <div id="module-list" class="list-stack capped"></div>
         </section>
 
-        <section class="card">
+        <section class="card" data-surface="tob">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.connectors.title">Connectors</h2>
@@ -223,10 +258,10 @@
                 </div>
                 <span class="pill" data-i18n="sections.connectors.pill">Tools</span>
             </div>
-            <div id="connectors-view" class="list-stack"></div>
+            <div id="connectors-view" class="list-stack capped"></div>
         </section>
     </main>
 </div>
-<script src="/app.js"></script>
+<script src="/app.js?v=20260331c"></script>
 </body>
 </html>

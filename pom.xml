@@ -16,7 +16,7 @@
     <packaging>pom</packaging>
 
     <name>life-os</name>
-    <description>Life OS demo scaffold powered by AgentScope Java</description>
+    <description>Life OS service platform powered by AgentScope Java</description>
 
     <modules>
         <module>life-os-domain</module>
