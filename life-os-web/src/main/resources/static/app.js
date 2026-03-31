@@ -20,6 +20,9 @@ const TRANSLATIONS = {
     "sections.arch.title": "部署架构",
     "sections.arch.subtitle": "展示当前部署模式、数据库、RAG 存储与会话策略。",
     "sections.arch.pill": "Cluster",
+    "sections.rag.title": "RAG 运行态",
+    "sections.rag.subtitle": "展示当前是否启用了向量检索、采用什么 embedding provider，以及当前检索模式。",
+    "sections.rag.pill": "Semantic",
     "sections.assistant.title": "助手回复",
     "sections.assistant.subtitle": "展示当前回复、亮点摘要以及运行模式。",
     "sections.assistant.pill": "实时输出",
@@ -39,7 +42,7 @@ const TRANSLATIONS = {
     "sections.profile.subtitle": "查看和编辑长期记忆中的偏好。",
     "sections.profile.pill": "Memory",
     "sections.knowledge.title": "知识库",
-    "sections.knowledge.subtitle": "持久化文档后进入 RAG 检索层，后续可切换到 pgvector。",
+    "sections.knowledge.subtitle": "持久化文档进入混合 RAG 层，支持 PostgreSQL + pgvector，并可叠加 FlyAI 旅行搜索。",
     "sections.knowledge.pill": "RAG Seeds",
     "sections.modules.title": "模块执行入口",
     "sections.modules.subtitle": "验证每个模块都具备独立执行能力。",
@@ -70,11 +73,15 @@ const TRANSLATIONS = {
     "state.timelineEmpty": "执行时间线会显示在这里。",
     "state.confirmationEmpty": "当前没有待确认动作。",
     "state.architectureEmpty": "架构信息加载后会显示在这里。",
+    "state.ragEmpty": "RAG 状态加载后会显示在这里。",
     "state.profileLoading": "正在加载画像...",
     "state.requestFailed": "请求失败，请查看控制台日志。",
     "state.profileSaved": "用户画像已保存。",
     "state.knowledgeSaved": "知识文档已入库。",
     "state.planGenerated": "已生成“{title}”，包含 {tasks} 个任务和 {confirmations} 个确认节点。",
+    "state.resumeWaiting": "确认已记录，仍在等待其他确认。",
+    "state.resumeBlocked": "确认被拒绝，当前运行已阻塞。",
+    "state.resumeApplied": "确认完成，已恢复并执行外部写入。",
     "assistant.highlights": "关键亮点",
     "assistant.mode": "运行模式",
     "assistant.planId": "计划 ID",
@@ -90,7 +97,17 @@ const TRANSLATIONS = {
     "architecture.ragStore": "RAG 存储",
     "architecture.sessionStore": "会话存储",
     "architecture.topology": "集群拓扑",
+    "architecture.travelSearch": "旅行搜索",
+    "architecture.travelSpecialist": "旅行专家模式",
     "architecture.notes": "说明",
+    "rag.enabled": "向量检索",
+    "rag.vectorReady": "向量可用",
+    "rag.retrievalMode": "检索模式",
+    "rag.store": "存储",
+    "rag.provider": "Embedding 提供方",
+    "rag.modelName": "Embedding 模型",
+    "rag.dimensions": "向量维度",
+    "rag.summary": "状态说明",
     "label.owner": "负责人",
     "label.status": "状态",
     "label.comment": "备注",
@@ -104,7 +121,9 @@ const TRANSLATIONS = {
     "status.APPROVED": "已通过",
     "status.REJECTED": "已拒绝",
     "status.PENDING_RUNTIME": "待运行",
-    "status.ACTIVE": "进行中"
+    "status.ACTIVE": "进行中",
+    "status.COMPLETED": "已完成",
+    "status.BLOCKED": "已阻塞"
   },
   "en-US": {
     "app.title": "Life OS",
@@ -127,6 +146,9 @@ const TRANSLATIONS = {
     "sections.arch.title": "Deployment Architecture",
     "sections.arch.subtitle": "Shows deployment mode, database, RAG storage, and session strategy.",
     "sections.arch.pill": "Cluster",
+    "sections.rag.title": "RAG Runtime",
+    "sections.rag.subtitle": "Shows whether vector retrieval is active, which embedding provider is configured, and which retrieval mode is in use.",
+    "sections.rag.pill": "Semantic",
     "sections.assistant.title": "Assistant Reply",
     "sections.assistant.subtitle": "Shows the latest reply, highlights, and execution mode.",
     "sections.assistant.pill": "Live Output",
@@ -146,7 +168,7 @@ const TRANSLATIONS = {
     "sections.profile.subtitle": "Inspect and edit long-term memory preferences.",
     "sections.profile.pill": "Memory",
     "sections.knowledge.title": "Knowledge Base",
-    "sections.knowledge.subtitle": "Persist documents into the current RAG layer, with a clear path to pgvector later.",
+    "sections.knowledge.subtitle": "Persist documents into the hybrid RAG layer with PostgreSQL + pgvector and optional FlyAI travel search.",
     "sections.knowledge.pill": "RAG Seeds",
     "sections.modules.title": "Executable Modules",
     "sections.modules.subtitle": "Verifies that every module still has an executable entry point.",
@@ -177,11 +199,15 @@ const TRANSLATIONS = {
     "state.timelineEmpty": "Execution timeline will appear here.",
     "state.confirmationEmpty": "No pending confirmations.",
     "state.architectureEmpty": "Architecture details will appear here after loading.",
+    "state.ragEmpty": "RAG details will appear here after loading.",
     "state.profileLoading": "Loading profile...",
     "state.requestFailed": "Request failed. Please inspect the console logs.",
     "state.profileSaved": "Profile saved.",
     "state.knowledgeSaved": "Knowledge document persisted.",
     "state.planGenerated": "Generated \"{title}\" with {tasks} tasks and {confirmations} confirmation gates.",
+    "state.resumeWaiting": "The decision was saved, but the run is still waiting on other confirmations.",
+    "state.resumeBlocked": "A confirmation was rejected, so the run is now blocked.",
+    "state.resumeApplied": "Confirmation is complete and external writes have resumed.",
     "assistant.highlights": "Highlights",
     "assistant.mode": "Mode",
     "assistant.planId": "Plan ID",
@@ -197,7 +223,17 @@ const TRANSLATIONS = {
     "architecture.ragStore": "RAG store",
     "architecture.sessionStore": "Session store",
     "architecture.topology": "Topology",
+    "architecture.travelSearch": "Travel search",
+    "architecture.travelSpecialist": "Travel specialist mode",
     "architecture.notes": "Notes",
+    "rag.enabled": "Vector enabled",
+    "rag.vectorReady": "Vector ready",
+    "rag.retrievalMode": "Retrieval mode",
+    "rag.store": "Store",
+    "rag.provider": "Embedding provider",
+    "rag.modelName": "Embedding model",
+    "rag.dimensions": "Vector dimensions",
+    "rag.summary": "Summary",
     "label.owner": "Owner",
     "label.status": "Status",
     "label.comment": "Comment",
@@ -211,7 +247,9 @@ const TRANSLATIONS = {
     "status.APPROVED": "Approved",
     "status.REJECTED": "Rejected",
     "status.PENDING_RUNTIME": "Pending runtime",
-    "status.ACTIVE": "Active"
+    "status.ACTIVE": "Active",
+    "status.COMPLETED": "Completed",
+    "status.BLOCKED": "Blocked"
   }
 };
 
@@ -220,7 +258,8 @@ const state = {
   latestRunId: null,
   latestPlanId: null,
   latestAssistantReply: null,
-  architecture: null
+  architecture: null,
+  rag: null
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -237,6 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function bootstrap() {
   await Promise.all([
     loadArchitecture(),
+    loadRagStatus(),
     loadRuntime(),
     loadModules(),
     loadProfile(),
@@ -292,6 +332,11 @@ async function runAssistant() {
 async function loadArchitecture() {
   state.architecture = await api("/api/v1/system/architecture");
   renderArchitecture(state.architecture);
+}
+
+async function loadRagStatus() {
+  state.rag = await api("/api/v1/system/rag");
+  renderRagStatus(state.rag);
 }
 
 async function loadModules() {
@@ -443,6 +488,8 @@ function renderArchitecture(architecture) {
     ["architecture.ragStore", architecture.ragStore],
     ["architecture.sessionStore", architecture.sessionStore],
     ["architecture.topology", architecture.topology],
+    ["architecture.travelSearch", architecture.travelSearch],
+    ["architecture.travelSpecialist", architecture.travelSpecialist],
     ["architecture.notes", architecture.notes]
   ];
 
@@ -511,12 +558,65 @@ function renderConfirmations(confirmations) {
 }
 
 async function decideConfirmation(id, decision) {
-  await api(`/api/v1/confirmations/${id}/decision`, {
+  const updated = await api(`/api/v1/confirmations/${id}/decision`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ decision, comment: `Decision submitted from dashboard: ${decision}` })
   });
+  if (decision === "APPROVED") {
+    const continuation = await api("/api/v1/assistant/resume", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        planId: updated.planId,
+        locale: state.locale
+      })
+    });
+
+    if (continuation.plan) {
+      renderPlan(continuation.plan);
+      state.latestPlanId = continuation.plan.id;
+    }
+    if (continuation.executionRun) {
+      renderTimeline(continuation.executionRun.timeline);
+      state.latestRunId = continuation.executionRun.id;
+    }
+
+    document.getElementById("preview-summary").textContent = continuation.blocked
+      ? t("state.resumeBlocked")
+      : continuation.resumed
+        ? t("state.resumeApplied")
+        : t("state.resumeWaiting");
+  } else {
+    document.getElementById("preview-summary").textContent = t("state.resumeBlocked");
+  }
   await loadConfirmations();
+  await loadPlans();
+}
+
+function renderRagStatus(rag) {
+  if (!rag) {
+    document.getElementById("rag-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.ragEmpty"))}</div>`;
+    return;
+  }
+
+  const items = [
+    ["rag.enabled", rag.enabled],
+    ["rag.vectorReady", rag.vectorReady],
+    ["rag.retrievalMode", rag.retrievalMode],
+    ["rag.store", rag.store],
+    ["rag.provider", rag.provider],
+    ["rag.modelName", rag.modelName],
+    ["rag.dimensions", rag.dimensions],
+    ["rag.summary", rag.summary]
+  ];
+
+  document.getElementById("rag-view").innerHTML = items.map(([key, value]) => `
+    <div class="list-item">
+      <strong>${escapeHtml(t(key))}</strong>
+      <small>${escapeHtml(String(value))}</small>
+    </div>
+  `).join("");
 }
 
 async function api(url, options) {

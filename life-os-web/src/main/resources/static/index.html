@@ -97,6 +97,17 @@
         <section class="card">
             <div class="section-head">
                 <div>
+                    <h2 data-i18n="sections.rag.title">RAG 运行态</h2>
+                    <p class="section-subtitle" data-i18n="sections.rag.subtitle">展示当前是否启用了向量检索、采用什么 embedding provider，以及当前检索模式。</p>
+                </div>
+                <span class="pill" data-i18n="sections.rag.pill">Semantic</span>
+            </div>
+            <div id="rag-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
                     <h2 data-i18n="sections.assistant.title">助手回复</h2>
                     <p class="section-subtitle" data-i18n="sections.assistant.subtitle">展示当前回复、亮点摘要以及运行模式。</p>
                 </div>
@@ -175,7 +186,7 @@
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.knowledge.title">知识库</h2>
-                    <p class="section-subtitle" data-i18n="sections.knowledge.subtitle">持久化文档后进入 RAG 检索层，后续可切换到 pgvector。</p>
+                    <p class="section-subtitle" data-i18n="sections.knowledge.subtitle">持久化文档进入混合 RAG 层，支持 PostgreSQL + pgvector，并可叠加 FlyAI 旅行搜索。</p>
                 </div>
                 <span class="pill" data-i18n="sections.knowledge.pill">RAG Seeds</span>
             </div>

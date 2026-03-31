@@ -16,3 +16,11 @@ lifeos:
   persistence:
     mode: database
   session-storage-dir: ${java.io.tmpdir}/life-os-test-sessions
+  rag:
+    vector:
+      enabled: false
+  flyai:
+    enabled: false
+  a2a:
+    travel:
+      enabled: false

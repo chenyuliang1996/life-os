@@ -31,6 +31,14 @@ public class InMemoryConfirmationRequestRepository implements ConfirmationReques
     }
 
     @Override
+    public List<ConfirmationRequest> findByPlanId(String planId) {
+        return store.values().stream()
+                .filter(request -> request.planId().equals(planId))
+                .sorted(Comparator.comparing(ConfirmationRequest::createdAt))
+                .toList();
+    }
+
+    @Override
     public List<ConfirmationRequest> findByStatus(ConfirmationStatus status) {
         return store.values().stream()
                 .filter(request -> request.status() == status)

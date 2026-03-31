@@ -67,7 +67,7 @@ class LifeOsApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.plan.title").value("Composite Life Plan"))
                 .andExpect(jsonPath("$.plan.tasks.length()").value(3))
-                .andExpect(jsonPath("$.executionRun.timeline.length()").value(4));
+                .andExpect(jsonPath("$.executionRun.timeline.length()").value(5));
     }
 
     @Test
@@ -84,7 +84,26 @@ class LifeOsApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.deploymentMode").value("single-node"))
                 .andExpect(jsonPath("$.persistenceMode").value("database"))
-                .andExpect(jsonPath("$.database").value("h2-file"));
+                .andExpect(jsonPath("$.database").value("h2-file"))
+                .andExpect(jsonPath("$.travelSearch").value("seeded-search-plus-optional-flyai"))
+                .andExpect(jsonPath("$.travelSpecialist").value("local-travel-agent-plus-optional-a2a"));
+    }
+
+    @Test
+    void shouldExposeRagRuntimeStatus() throws Exception {
+        mockMvc.perform(get("/api/v1/system/rag"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enabled").value(false))
+                .andExpect(jsonPath("$.retrievalMode").value("text-only"));
+    }
+
+    @Test
+    void shouldExposeConnectorsIncludingFlyAi() throws Exception {
+        mockMvc.perform(get("/api/v1/system/connectors"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].connectorName").value("search"))
+                .andExpect(jsonPath("$[1].connectorName").value("flyai-search"))
+                .andExpect(jsonPath("$[1].enabled").value(false));
     }
 
     @Test
@@ -153,5 +172,50 @@ class LifeOsApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.preferences.travelStyle").value("adventurous"))
                 .andExpect(jsonPath("$.preferences.budgetLevel").value("premium"));
+    }
+
+    @Test
+    void shouldResumeExecutionAfterApprovals() throws Exception {
+        String previewResponse = mockMvc.perform(post("/api/v1/plans/preview")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "userId": "demo-user",
+                                  "threadId": "thread-resume",
+                                  "input": "Create a balanced travel schedule with reminder drafts."
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        com.fasterxml.jackson.databind.JsonNode previewJson = new com.fasterxml.jackson.databind.ObjectMapper().readTree(previewResponse);
+        String planId = previewJson.get("plan").get("id").asText();
+        String confirmationId = previewJson.get("confirmations").get(0).get("id").asText();
+
+        mockMvc.perform(post("/api/v1/confirmations/{id}/decision", confirmationId)
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "decision": "APPROVED",
+                                  "comment": "approved in test"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("APPROVED"));
+
+        mockMvc.perform(post("/api/v1/assistant/resume")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "planId": "%s",
+                                  "locale": "en-US"
+                                }
+                                """.formatted(planId)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resumed").value(true))
+                .andExpect(jsonPath("$.executionRun.status").value("COMPLETED"))
+                .andExpect(jsonPath("$.plan.tasks[2].status").value("DONE"));
     }
 }

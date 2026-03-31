@@ -19,6 +19,10 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.github.yuliangchen</groupId>
             <artifactId>life-os-tools</artifactId>
             <version>${project.version}</version>

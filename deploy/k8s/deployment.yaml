@@ -22,6 +22,10 @@ spec:
             - configMapRef:
                 name: life-os-config
           env:
+            - name: LIFEOS_INSTANCE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: LIFEOS_DATASOURCE_URL
               valueFrom:
                 secretKeyRef:
@@ -37,6 +41,36 @@ spec:
                 secretKeyRef:
                   name: life-os-db
                   key: password
+            - name: LIFEOS_FLYAI_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: life-os-config
+                  key: LIFEOS_FLYAI_ENABLED
+                  optional: true
+            - name: LIFEOS_FLYAI_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-external
+                  key: flyai-endpoint
+                  optional: true
+            - name: LIFEOS_FLYAI_TOOL_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-external
+                  key: flyai-tool-name
+                  optional: true
+            - name: LIFEOS_A2A_TRAVEL_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: life-os-config
+                  key: LIFEOS_A2A_TRAVEL_ENABLED
+                  optional: true
+            - name: LIFEOS_A2A_TRAVEL_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-external
+                  key: travel-a2a-base-url
+                  optional: true
           volumeMounts:
             - name: session-storage
               mountPath: /data/sessions

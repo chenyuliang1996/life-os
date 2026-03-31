@@ -1,8 +1,10 @@
 package io.github.yuliangchen.lifeos.web.controller;
 
 import io.github.yuliangchen.lifeos.domain.model.AgentRuntimeStatus;
+import io.github.yuliangchen.lifeos.domain.model.AssistantContinuationRequest;
 import io.github.yuliangchen.lifeos.domain.model.AssistantReply;
 import io.github.yuliangchen.lifeos.domain.model.AssistantRequest;
+import io.github.yuliangchen.lifeos.domain.model.ExecutionContinuationResult;
 import io.github.yuliangchen.lifeos.web.runtime.LifeOsAgentRuntimeService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,5 +30,10 @@ public class AssistantController {
     @PostMapping("/message")
     public AssistantReply message(@RequestBody AssistantRequest request) {
         return lifeOsAgentRuntimeService.reply(request);
+    }
+
+    @PostMapping("/resume")
+    public ExecutionContinuationResult resume(@RequestBody AssistantContinuationRequest request) {
+        return lifeOsAgentRuntimeService.resume(request);
     }
 }

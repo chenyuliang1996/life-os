@@ -2,16 +2,19 @@
 
 ## 1. 当前代码状态
 
-当前 Demo 已经完成两件最关键的事：
+当前 Demo 已经不是“只留接口”的 RAG：
 
 - 知识文档真正落库
-- 规划链路真正消费知识召回结果
+- 文本召回真正接进主编排流程
+- `PgVectorStore` 已接入
+- 文档入库时会先做 chunking，再写入向量索引
+- 向量不可用时自动回退文本召回
 
-当前检索方式是轻量文本匹配，不是最终生产形态。
+换句话说，这套代码已经落成了“**数据库文本召回 + pgvector 可选增强**”的混合 RAG。
 
-## 2. 生产选型结论
+## 2. 正式选型结论
 
-这套项目建议的正式选型是：
+这套项目的正式生产选型仍然是：
 
 **`PostgreSQL + pgvector`**
 
@@ -35,53 +38,70 @@
 
 ### 3.2 AgentScope 依赖里已经包含 PgVectorStore
 
-当前项目使用的 `AgentScope 1.0.9` 依赖里，已经能看到：
+当前项目使用的 `AgentScope 1.0.9` 依赖里，已经能直接使用：
 
 - `io.agentscope.core.rag.store.PgVectorStore`
-- `io.agentscope.core.rag.store.QdrantStore`
-- `io.agentscope.core.rag.store.InMemoryStore`
+- `io.agentscope.core.embedding.openai.OpenAITextEmbedding`
+- `io.agentscope.core.embedding.ollama.OllamaTextEmbedding`
 
-这说明从框架能力上，后续直接接 pgvector 是顺的。
+这说明从框架能力上，`pgvector` 路线是顺的，不是额外硬接。
 
-这里是基于本地依赖包的直接检查结论，不是猜测。
-
-### 3.3 官方文档也明确支持向量存储型 RAG 路线
+### 3.3 官方文档支持这类外部向量库路线
 
 官方 RAG 文档展示了：
 
 - 本地 `SimpleKnowledge`
-- 外部向量库 `QdrantStore`
+- 外部向量库路线
 
 参考：
 
 - [RAG 文档](https://java.agentscope.io/en/task/rag.html)
 
-因此我们选择 `pgvector` 是一个工程上的收敛决策，不是偏离框架能力。
+## 4. 这版实现到底做到了什么
 
-## 4. 为什么当前代码还没直接写成 pgvector 检索
+### 4.1 关系型落库
 
-这是一个有意分阶段的实现：
+- `knowledge_documents` 保存文档元数据和正文
+- 文档录入后立即可被文本召回
 
-### 第一阶段
+### 4.2 向量索引
 
-- 先把知识文档持久化
-- 先把知识录入和知识召回接进主流程
-- 先验证 ToC 体验
+- 当 `lifeos.rag.vector.enabled=true` 时，系统会启用 `PgVectorStore`
+- 当前支持 `OpenAI` 和 `Ollama` embedding
+- 文档会按 chunk 写入向量库，而不是整篇只存一条
 
-### 第二阶段
+### 4.3 混合召回
 
-- 文档切块
-- Embedding 生成
-- `PgVectorStore` 建索引
-- 检索召回替换当前轻量文本匹配
+- 先尝试向量召回
+- 再补文本召回
+- 最终按文档 id 去重并返回
 
-## 5. 结论
+### 4.4 安全回退
+
+下面几种情况下会自动退回文本模式：
+
+- 数据源不是 PostgreSQL
+- 未提供 embedding 凭据
+- pgvector 初始化失败
+- 远程 embedding 服务不可用
+
+## 5. 为什么不是单独上 Qdrant / ES / Milvus
+
+不是说这些库不好，而是对这套 demo 来说，`PostgreSQL + pgvector` 的收敛性最好：
+
+- 已经必须有 PostgreSQL
+- 与事务表共库最省事
+- 对 Demo 和一期产品都足够
+- 后面若需要独立向量库，也能沿着当前 `VectorKnowledgeStore` 接口继续演进
+
+## 6. 结论
 
 当前状态：
 
 - 已落库
-- 已可检索
-- 已参与规划
+- 已召回
+- 已支持 chunk + pgvector
+- 已支持文本回退
 
 正式选型：
 
@@ -89,6 +109,6 @@
 
 原因：
 
-- 共享基础设施最少
-- 和事务数据同库
-- 与当前 AgentScope 依赖能力相容
+- 基础设施最少
+- 和事务数据天然同库
+- 与当前 AgentScope 能力和本项目架构最匹配

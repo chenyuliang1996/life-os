@@ -20,8 +20,12 @@
   - 确认请求
   - 知识文档
 - RAG 基础层：
-  - 当前将知识文档落到数据库并做轻量检索
+  - 当前将知识文档落到数据库
+  - 已支持 `PgVectorStore`、chunking 和文本回退
   - 生产选型明确收敛到 `PostgreSQL + pgvector`
+- 外部能力增强：
+  - 可选 `FlyAI` MCP 旅行搜索
+  - 可选远程 `A2A` 旅行专家
 - 分布式部署骨架：
   - `Dockerfile`
   - `deploy/docker-compose.cluster.yml`
@@ -75,7 +79,15 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - `LIFEOS_DATASOURCE_USERNAME`
 - `LIFEOS_DATASOURCE_PASSWORD`
 - `LIFEOS_RAG_STORE`
+- `LIFEOS_RAG_VECTOR_ENABLED`
+- `LIFEOS_RAG_VECTOR_PROVIDER`
+- `LIFEOS_RAG_VECTOR_MODEL`
 - `LIFEOS_SESSION_STORE`
+- `LIFEOS_FLYAI_ENABLED`
+- `LIFEOS_FLYAI_ENDPOINT`
+- `LIFEOS_FLYAI_TOOL_NAME`
+- `LIFEOS_A2A_TRAVEL_ENABLED`
+- `LIFEOS_A2A_TRAVEL_BASE_URL`
 - `OPENAI_API_KEY`
 - `OPENAI_BASE_URL`
 - `OPENAI_MODEL`
@@ -90,5 +102,6 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - [实现细节](docs/implementation-guide.md)
 - [AgentScope 能力印证](docs/agentscope-validation.md)
 - [RAG 选型](docs/rag-selection.md)
+- [FlyAI 与 A2A 旅行链路](docs/flyai-a2a-travel-search.md)
 - [分布式部署说明](docs/deployment-cluster.md)
 - [API 契约](docs/api-contracts.md)

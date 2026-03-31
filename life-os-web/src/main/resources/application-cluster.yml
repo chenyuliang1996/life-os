@@ -18,5 +18,20 @@ lifeos:
     primary-database: postgresql
     rag-store: postgresql-plus-pgvector
     session-store: shared-volume-json-session
-    topology: ag-ui-gateway-plus-stateless-app-replicas
+    topology: ag-ui-gateway-plus-stateless-app-replicas-with-travel-a2a
+    travel-search: flyai-mcp-plus-seeded-fallback
+    travel-specialist: remote-a2a-travel-specialist-with-local-fallback
   session-storage-dir: ${LIFEOS_SESSION_STORAGE_DIR:/data/sessions}
+  rag:
+    vector:
+      enabled: ${LIFEOS_RAG_VECTOR_ENABLED:true}
+  flyai:
+    enabled: ${LIFEOS_FLYAI_ENABLED:false}
+    transport: ${LIFEOS_FLYAI_TRANSPORT:sse}
+    endpoint: ${LIFEOS_FLYAI_ENDPOINT:}
+    tool-name: ${LIFEOS_FLYAI_TOOL_NAME:}
+  a2a:
+    travel:
+      enabled: ${LIFEOS_A2A_TRAVEL_ENABLED:false}
+      base-url: ${LIFEOS_A2A_TRAVEL_BASE_URL:}
+      card-path: ${LIFEOS_A2A_TRAVEL_CARD_PATH:/.well-known/agent.json}

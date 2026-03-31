@@ -31,6 +31,8 @@ public class LifeOsRuntimeConfiguration {
                 properties.ragStore(),
                 properties.sessionStore(),
                 properties.topology(),
+                properties.travelSearch(),
+                properties.travelSpecialist(),
                 "Session files live at " + storageProperties.sessionStorageDir()
         );
     }
@@ -52,7 +54,9 @@ public class LifeOsRuntimeConfiguration {
             String primaryDatabase,
             String ragStore,
             String sessionStore,
-            String topology
+            String topology,
+            String travelSearch,
+            String travelSpecialist
     ) {
 
         public LifeOsArchitectureProperties {
@@ -73,6 +77,12 @@ public class LifeOsRuntimeConfiguration {
             }
             if (topology == null || topology.isBlank()) {
                 topology = "modular-monolith-ready-for-cluster";
+            }
+            if (travelSearch == null || travelSearch.isBlank()) {
+                travelSearch = "seeded-search-plus-optional-flyai";
+            }
+            if (travelSpecialist == null || travelSpecialist.isBlank()) {
+                travelSpecialist = "local-travel-agent-plus-optional-a2a";
             }
         }
     }

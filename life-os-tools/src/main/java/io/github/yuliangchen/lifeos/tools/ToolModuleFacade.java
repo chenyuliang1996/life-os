@@ -12,6 +12,12 @@ import java.util.Map;
 @Component
 public class ToolModuleFacade implements ModuleExecutable<ToolRequest, ToolResult> {
 
+    private final FlyAiSearchConnector flyAiSearchConnector;
+
+    public ToolModuleFacade(FlyAiSearchConnector flyAiSearchConnector) {
+        this.flyAiSearchConnector = flyAiSearchConnector;
+    }
+
     @Override
     public String moduleName() {
         return "life-os-tools";
@@ -21,7 +27,10 @@ public class ToolModuleFacade implements ModuleExecutable<ToolRequest, ToolResul
     public ToolResult execute(ToolRequest input) {
         String summary = switch (input.toolName()) {
             case "weather" -> "Tokyo weather looks mild with a few light-rain days.";
-            case "search" -> "Found three highly-rated low-fatigue Tokyo neighborhood guides.";
+            case "search" -> flyAiSearchConnector.search(
+                    input.parameters().getOrDefault("topic", "Tokyo travel"),
+                    input.parameters().getOrDefault("locale", "en-US")
+            ).summary();
             case "calendar" -> "Created a draft calendar block named 'Tokyo trip prep'.";
             case "reminder" -> "Prepared a reminder draft for daily English listening.";
             default -> "Tool " + input.toolName() + " is available but not yet wired.";
@@ -31,7 +40,8 @@ public class ToolModuleFacade implements ModuleExecutable<ToolRequest, ToolResul
 
     public List<ConnectorStatus> connectorStatuses() {
         return List.of(
-                new ConnectorStatus("search", true, "Mock search connector enabled"),
+                new ConnectorStatus("search", true, "Unified travel search connector is enabled"),
+                flyAiSearchConnector.connectorStatus(),
                 new ConnectorStatus("weather", true, "Mock weather connector enabled"),
                 new ConnectorStatus("calendar", true, "Mock calendar connector enabled"),
                 new ConnectorStatus("reminder", true, "Mock reminder connector enabled")

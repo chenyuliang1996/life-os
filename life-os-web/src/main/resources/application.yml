@@ -35,13 +35,48 @@ lifeos:
   session-storage-dir: .data/sessions
   confirmation:
     enabled: true
+  rag:
+    vector:
+      enabled: ${LIFEOS_RAG_VECTOR_ENABLED:false}
+      provider: ${LIFEOS_RAG_VECTOR_PROVIDER:openai}
+      model-name: ${LIFEOS_RAG_VECTOR_MODEL:text-embedding-3-small}
+      dimensions: ${LIFEOS_RAG_VECTOR_DIMENSIONS:1536}
+      schema: ${LIFEOS_RAG_VECTOR_SCHEMA:public}
+      table-name: ${LIFEOS_RAG_VECTOR_TABLE:life_os_knowledge_vectors}
+      distance-type: ${LIFEOS_RAG_VECTOR_DISTANCE:cosine}
+      connection-timeout-ms: ${LIFEOS_RAG_VECTOR_TIMEOUT_MS:10000}
+      score-threshold: ${LIFEOS_RAG_VECTOR_SCORE_THRESHOLD:0.2}
+      chunk-size: ${LIFEOS_RAG_VECTOR_CHUNK_SIZE:700}
+      chunk-overlap: ${LIFEOS_RAG_VECTOR_CHUNK_OVERLAP:120}
+      max-chunks: ${LIFEOS_RAG_VECTOR_MAX_CHUNKS:8}
+      openai-api-key: ${OPENAI_API_KEY:}
+      openai-base-url: ${OPENAI_BASE_URL:}
+      ollama-base-url: ${OLLAMA_BASE_URL:}
+  flyai:
+    enabled: ${LIFEOS_FLYAI_ENABLED:false}
+    transport: ${LIFEOS_FLYAI_TRANSPORT:sse}
+    endpoint: ${LIFEOS_FLYAI_ENDPOINT:}
+    tool-name: ${LIFEOS_FLYAI_TOOL_NAME:}
+    auth-header-name: ${LIFEOS_FLYAI_AUTH_HEADER_NAME:}
+    auth-header-value: ${LIFEOS_FLYAI_AUTH_HEADER_VALUE:}
+    timeout-seconds: ${LIFEOS_FLYAI_TIMEOUT_SECONDS:20}
+  a2a:
+    travel:
+      enabled: ${LIFEOS_A2A_TRAVEL_ENABLED:false}
+      base-url: ${LIFEOS_A2A_TRAVEL_BASE_URL:}
+      card-path: ${LIFEOS_A2A_TRAVEL_CARD_PATH:/.well-known/agent.json}
+      auth-header-name: ${LIFEOS_A2A_TRAVEL_AUTH_HEADER_NAME:}
+      auth-header-value: ${LIFEOS_A2A_TRAVEL_AUTH_HEADER_VALUE:}
+      timeout-seconds: ${LIFEOS_A2A_TRAVEL_TIMEOUT_SECONDS:15}
   architecture:
     deployment-mode: ${LIFEOS_DEPLOYMENT_MODE:single-node}
     persistence-mode: ${LIFEOS_PERSISTENCE_MODE:database}
     primary-database: ${LIFEOS_PRIMARY_DATABASE:h2-file}
-    rag-store: ${LIFEOS_RAG_STORE:postgres-text-now-pgvector-target}
+    rag-store: ${LIFEOS_RAG_STORE:hybrid-text-plus-pgvector-ready}
     session-store: ${LIFEOS_SESSION_STORE:json-session}
     topology: ${LIFEOS_TOPOLOGY:modular-monolith-ready-for-cluster}
+    travel-search: ${LIFEOS_TRAVEL_SEARCH:seeded-search-plus-optional-flyai}
+    travel-specialist: ${LIFEOS_TRAVEL_SPECIALIST:local-travel-agent-plus-optional-a2a}
   runtime:
     openai-api-key: ${OPENAI_API_KEY:}
     openai-base-url: ${OPENAI_BASE_URL:}

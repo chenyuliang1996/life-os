@@ -7,6 +7,8 @@ public record SystemArchitectureStatus(
         String ragStore,
         String sessionStore,
         String topology,
+        String travelSearch,
+        String travelSpecialist,
         String notes
 ) {
 }

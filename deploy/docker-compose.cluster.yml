@@ -27,8 +27,16 @@ services:
       LIFEOS_PRIMARY_DATABASE: postgresql
       LIFEOS_RAG_STORE: postgresql-plus-pgvector
       LIFEOS_SESSION_STORE: shared-volume-json-session
-      LIFEOS_TOPOLOGY: ag-ui-gateway-plus-stateless-app-replicas
+      LIFEOS_TOPOLOGY: ag-ui-gateway-plus-stateless-app-replicas-with-travel-a2a
       LIFEOS_SESSION_STORAGE_DIR: /data/sessions
+      LIFEOS_RAG_VECTOR_ENABLED: "true"
+      LIFEOS_TRAVEL_SEARCH: flyai-mcp-plus-seeded-fallback
+      LIFEOS_TRAVEL_SPECIALIST: remote-a2a-travel-specialist-with-local-fallback
+      LIFEOS_FLYAI_ENABLED: ${LIFEOS_FLYAI_ENABLED:-false}
+      LIFEOS_FLYAI_ENDPOINT: ${LIFEOS_FLYAI_ENDPOINT:-}
+      LIFEOS_FLYAI_TOOL_NAME: ${LIFEOS_FLYAI_TOOL_NAME:-}
+      LIFEOS_A2A_TRAVEL_ENABLED: ${LIFEOS_A2A_TRAVEL_ENABLED:-false}
+      LIFEOS_A2A_TRAVEL_BASE_URL: ${LIFEOS_A2A_TRAVEL_BASE_URL:-}
     depends_on:
       - postgres
     volumes:
@@ -47,8 +55,16 @@ services:
       LIFEOS_PRIMARY_DATABASE: postgresql
       LIFEOS_RAG_STORE: postgresql-plus-pgvector
       LIFEOS_SESSION_STORE: shared-volume-json-session
-      LIFEOS_TOPOLOGY: ag-ui-gateway-plus-stateless-app-replicas
+      LIFEOS_TOPOLOGY: ag-ui-gateway-plus-stateless-app-replicas-with-travel-a2a
       LIFEOS_SESSION_STORAGE_DIR: /data/sessions
+      LIFEOS_RAG_VECTOR_ENABLED: "true"
+      LIFEOS_TRAVEL_SEARCH: flyai-mcp-plus-seeded-fallback
+      LIFEOS_TRAVEL_SPECIALIST: remote-a2a-travel-specialist-with-local-fallback
+      LIFEOS_FLYAI_ENABLED: ${LIFEOS_FLYAI_ENABLED:-false}
+      LIFEOS_FLYAI_ENDPOINT: ${LIFEOS_FLYAI_ENDPOINT:-}
+      LIFEOS_FLYAI_TOOL_NAME: ${LIFEOS_FLYAI_TOOL_NAME:-}
+      LIFEOS_A2A_TRAVEL_ENABLED: ${LIFEOS_A2A_TRAVEL_ENABLED:-false}
+      LIFEOS_A2A_TRAVEL_BASE_URL: ${LIFEOS_A2A_TRAVEL_BASE_URL:-}
     depends_on:
       - postgres
     volumes:

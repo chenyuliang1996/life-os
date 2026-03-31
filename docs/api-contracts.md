@@ -18,7 +18,10 @@
 - `GET /api/v1/system/health`
   - 服务健康
 - `GET /api/v1/system/architecture`
-  - 返回部署模式、持久化模式、数据库、RAG 存储和 session 策略
+  - 返回部署模式、持久化模式、数据库、RAG 存储、session 策略、旅行搜索模式、旅行专家模式
+- `GET /api/v1/system/rag`
+  - 返回当前 RAG 运行态
+  - 包含是否启用向量、检索模式、provider、model、summary
 
 ### 运行时
 
@@ -33,6 +36,11 @@
     - `threadId`
     - `input`
     - `locale`
+- `POST /api/v1/assistant/resume`
+  - 请求体：
+    - `planId`
+    - `locale`
+  - 用于在确认流完成后恢复执行
 
 ### 用户画像
 

@@ -97,6 +97,17 @@
         <section class="card">
             <div class="section-head">
                 <div>
+                    <h2 data-i18n="sections.rag.title">RAG Runtime</h2>
+                    <p class="section-subtitle" data-i18n="sections.rag.subtitle">Shows whether vector retrieval is active, which embedding provider is configured, and which retrieval mode is in use.</p>
+                </div>
+                <span class="pill" data-i18n="sections.rag.pill">Semantic</span>
+            </div>
+            <div id="rag-view" class="list-stack"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
                     <h2 data-i18n="sections.assistant.title">Assistant Reply</h2>
                     <p class="section-subtitle" data-i18n="sections.assistant.subtitle">Shows the latest reply, highlights, and execution mode.</p>
                 </div>
@@ -175,7 +186,7 @@
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.knowledge.title">Knowledge Base</h2>
-                    <p class="section-subtitle" data-i18n="sections.knowledge.subtitle">Persist documents into the current RAG layer, with a clear path to pgvector later.</p>
+                    <p class="section-subtitle" data-i18n="sections.knowledge.subtitle">Persist documents into the hybrid RAG layer with PostgreSQL + pgvector and optional FlyAI travel search.</p>
                 </div>
                 <span class="pill" data-i18n="sections.knowledge.pill">RAG Seeds</span>
             </div>

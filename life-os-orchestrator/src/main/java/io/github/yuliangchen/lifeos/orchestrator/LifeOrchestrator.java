@@ -16,6 +16,7 @@ import io.github.yuliangchen.lifeos.domain.model.PlanPreviewRequest;
 import io.github.yuliangchen.lifeos.domain.model.PlanStatus;
 import io.github.yuliangchen.lifeos.domain.model.PlanTask;
 import io.github.yuliangchen.lifeos.domain.model.SpecialistType;
+import io.github.yuliangchen.lifeos.domain.model.TaskStatus;
 import io.github.yuliangchen.lifeos.domain.model.TimelineEvent;
 import io.github.yuliangchen.lifeos.domain.repository.ConfirmationRequestRepository;
 import io.github.yuliangchen.lifeos.domain.repository.ExecutionRunRepository;
@@ -99,16 +100,6 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
                 .toList();
 
         String runId = UUID.randomUUID().toString();
-        List<TimelineEvent> timeline = buildTimeline(runId, contributions, locale);
-        ExecutionRun run = executionRunRepository.save(new ExecutionRun(
-                runId,
-                input.userId(),
-                input.input(),
-                PlanStatus.ACTIVE,
-                Instant.now(),
-                timeline
-        ));
-
         LifePlan plan = lifePlanRepository.save(new LifePlan(
                 UUID.randomUUID().toString(),
                 input.userId(),
@@ -120,10 +111,26 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
                 ),
                 PlanStatus.ACTIVE,
                 tasks,
-                Map.of("threadId", input.threadId(), "input", input.input(), "locale", locale)
+                Map.of(
+                        "threadId", input.threadId(),
+                        "input", input.input(),
+                        "locale", locale,
+                        "runId", runId,
+                        "awaitingConfirmation", tasks.stream().anyMatch(task -> task.status() == TaskStatus.READY_FOR_CONFIRMATION),
+                        "continued", false
+                )
         ));
 
         List<ConfirmationRequest> confirmations = buildConfirmations(plan, tasks);
+        List<TimelineEvent> timeline = buildTimeline(runId, contributions, confirmations, locale);
+        ExecutionRun run = executionRunRepository.save(new ExecutionRun(
+                runId,
+                input.userId(),
+                input.input(),
+                confirmations.isEmpty() ? PlanStatus.COMPLETED : PlanStatus.ACTIVE,
+                Instant.now(),
+                timeline
+        ));
         return new OrchestrationResult(run, plan, contributions, confirmations);
     }
 
@@ -138,7 +145,10 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
         return "Orchestrator built plan " + result.plan().id() + " with " + result.plan().tasks().size() + " tasks";
     }
 
-    private List<TimelineEvent> buildTimeline(String runId, List<AgentContribution> contributions, String locale) {
+    private List<TimelineEvent> buildTimeline(String runId,
+                                              List<AgentContribution> contributions,
+                                              List<ConfirmationRequest> confirmations,
+                                              String locale) {
         List<TimelineEvent> events = new ArrayList<>();
         events.add(new TimelineEvent(
                 UUID.randomUUID().toString(),
@@ -153,6 +163,15 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
                     runId,
                     "AGENT",
                     contribution.agentName() + ": " + contribution.summary(),
+                    Instant.now()
+            ));
+        }
+        if (!confirmations.isEmpty()) {
+            events.add(new TimelineEvent(
+                    UUID.randomUUID().toString(),
+                    runId,
+                    "HITL_WAIT",
+                    LocaleSupport.pick(locale, "执行暂停，等待用户确认外部写入动作。", "Execution paused while waiting for approval on external writes."),
                     Instant.now()
             ));
         }

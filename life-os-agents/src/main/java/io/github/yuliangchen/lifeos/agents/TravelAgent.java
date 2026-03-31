@@ -26,13 +26,16 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
     private final ToolModuleFacade toolModuleFacade;
     private final KnowledgeModuleFacade knowledgeModuleFacade;
     private final MemoryModuleFacade memoryModuleFacade;
+    private final TravelA2aAdvisor travelA2aAdvisor;
 
     public TravelAgent(ToolModuleFacade toolModuleFacade,
                        KnowledgeModuleFacade knowledgeModuleFacade,
-                       MemoryModuleFacade memoryModuleFacade) {
+                       MemoryModuleFacade memoryModuleFacade,
+                       TravelA2aAdvisor travelA2aAdvisor) {
         this.toolModuleFacade = toolModuleFacade;
         this.knowledgeModuleFacade = knowledgeModuleFacade;
         this.memoryModuleFacade = memoryModuleFacade;
+        this.travelA2aAdvisor = travelA2aAdvisor;
     }
 
     @Override
@@ -44,10 +47,14 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
     public AgentContribution execute(AgentTask input) {
         String locale = LocaleSupport.resolve(input.locale(), input.objective());
         ToolResult weather = toolModuleFacade.execute(new ToolRequest("weather", Map.of("city", "Tokyo")));
-        ToolResult search = toolModuleFacade.execute(new ToolRequest("search", Map.of("topic", input.objective())));
+        ToolResult search = toolModuleFacade.execute(new ToolRequest("search", Map.of(
+                "topic", input.objective(),
+                "locale", locale
+        )));
         List<KnowledgeSnippet> snippets = knowledgeModuleFacade.execute(
                 new KnowledgeQuery(input.userId(), LocaleSupport.pick(locale, "东京", "tokyo"), List.of("travel"))
         );
+        String remoteAdvice = travelA2aAdvisor.advise(input, search, snippets);
 
         String travelStyle = memoryModuleFacade.getOrCreate(input.userId())
                 .preferences()
@@ -58,8 +65,8 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
                 LocaleSupport.pick(locale, "生成东京轻松行程", "Build relaxed Tokyo itinerary"),
                 LocaleSupport.pick(
                         locale,
-                        "按" + travelStyle + "风格生成 7 天东京低疲劳路线，并结合天气做片区节奏安排。",
-                        "Create a " + travelStyle + " 7-day itinerary with weather-aware neighborhood pacing."
+                        "按" + travelStyle + "风格生成 7 天东京低疲劳路线，并结合天气、旅行搜索和远程专家建议做片区节奏安排。",
+                        "Create a " + travelStyle + " 7-day itinerary with weather-aware neighborhood pacing, travel search grounding, and remote specialist advice."
                 ),
                 TaskStatus.PENDING,
                 moduleName(),
@@ -70,13 +77,21 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
         metadata.put("weather", weather.summary());
         metadata.put("search", search.summary());
         metadata.put("knowledgeSnippets", snippets);
+        metadata.put("travelResearchMode", travelA2aAdvisor.isEnabled() ? "a2a-remote-plus-local" : "local-grounded");
+        if (!remoteAdvice.isBlank()) {
+            metadata.put("a2aAdvice", remoteAdvice);
+        }
 
         return new AgentContribution(
                 moduleName(),
                 LocaleSupport.pick(
                         locale,
-                        "已结合天气和攻略生成低疲劳旅行建议。",
-                        "Built a low-fatigue travel proposal with weather and guide references."
+                        remoteAdvice.isBlank()
+                                ? "已结合天气、攻略和旅行搜索生成低疲劳旅行建议。"
+                                : "已结合天气、攻略、FlyAI 搜索和远程 A2A 专家建议生成低疲劳旅行建议。",
+                        remoteAdvice.isBlank()
+                                ? "Built a low-fatigue travel proposal with weather, search, and guide references."
+                                : "Built a low-fatigue travel proposal with weather, FlyAI search, guide references, and remote A2A advice."
                 ),
                 List.of(task),
                 metadata

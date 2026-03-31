@@ -36,6 +36,13 @@ public class DatabaseConfirmationRequestRepository implements ConfirmationReques
     }
 
     @Override
+    public List<ConfirmationRequest> findByPlanId(String planId) {
+        return repository.findByPlanIdOrderByCreatedAtAsc(planId).stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
     public List<ConfirmationRequest> findByStatus(ConfirmationStatus status) {
         return repository.findByStatusOrderByCreatedAtDesc(status.name()).stream()
                 .map(this::toDomain)

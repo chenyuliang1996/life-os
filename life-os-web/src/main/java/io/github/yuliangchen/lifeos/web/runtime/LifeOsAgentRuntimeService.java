@@ -11,11 +11,14 @@ import io.agentscope.core.session.JsonSession;
 import io.agentscope.core.state.SimpleSessionKey;
 import io.agentscope.core.tool.Toolkit;
 import io.github.yuliangchen.lifeos.domain.model.AgentRuntimeStatus;
+import io.github.yuliangchen.lifeos.domain.model.AssistantContinuationRequest;
 import io.github.yuliangchen.lifeos.domain.model.AssistantReply;
 import io.github.yuliangchen.lifeos.domain.model.AssistantRequest;
+import io.github.yuliangchen.lifeos.domain.model.ExecutionContinuationResult;
 import io.github.yuliangchen.lifeos.domain.model.OrchestrationResult;
 import io.github.yuliangchen.lifeos.domain.model.PlanPreviewRequest;
 import io.github.yuliangchen.lifeos.domain.support.LocaleSupport;
+import io.github.yuliangchen.lifeos.orchestrator.LifeExecutionContinuationService;
 import io.github.yuliangchen.lifeos.orchestrator.LifeOrchestrator;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,15 +33,18 @@ import java.util.Optional;
 public class LifeOsAgentRuntimeService {
 
     private final LifeOrchestrator lifeOrchestrator;
+    private final LifeExecutionContinuationService lifeExecutionContinuationService;
     private final JsonSession jsonSession;
     private final LifeOsToolset lifeOsToolset;
     private final LifeOsAgentProperties properties;
 
     public LifeOsAgentRuntimeService(LifeOrchestrator lifeOrchestrator,
+                                     LifeExecutionContinuationService lifeExecutionContinuationService,
                                      JsonSession jsonSession,
                                      LifeOsToolset lifeOsToolset,
                                      LifeOsAgentProperties properties) {
         this.lifeOrchestrator = lifeOrchestrator;
+        this.lifeExecutionContinuationService = lifeExecutionContinuationService;
         this.jsonSession = jsonSession;
         this.lifeOsToolset = lifeOsToolset;
         this.properties = properties;
@@ -82,6 +88,11 @@ public class LifeOsAgentRuntimeService {
             }
         }
         return runFallbackReply(request);
+    }
+
+    public ExecutionContinuationResult resume(AssistantContinuationRequest request) {
+        String locale = LocaleSupport.resolve(request.locale(), null);
+        return lifeExecutionContinuationService.resumePlan(request.planId(), locale);
     }
 
     private AssistantReply runReActReply(AssistantRequest request, ModelHolder holder) {
@@ -149,7 +160,11 @@ public class LifeOsAgentRuntimeService {
         return new AssistantReply(
                 request.threadId(),
                 "orchestrator-fallback",
-                message,
+                message + LocaleSupport.pick(
+                        locale,
+                        "\n\n如需继续执行外部动作，请先完成确认。",
+                        "\n\nComplete the pending confirmations before resuming external actions."
+                ),
                 result.plan().id(),
                 result.executionRun().id(),
                 List.of(
