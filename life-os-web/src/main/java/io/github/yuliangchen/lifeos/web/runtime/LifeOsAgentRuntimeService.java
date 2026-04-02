@@ -92,10 +92,11 @@ public class LifeOsAgentRuntimeService {
 
     public ExecutionContinuationResult resume(AssistantContinuationRequest request) {
         String locale = LocaleSupport.resolve(request.locale(), null);
-        return lifeExecutionContinuationService.resumePlan(request.planId(), locale);
+        return lifeExecutionContinuationService.resumePlan(request.planId(), request.userId(), locale);
     }
 
     private AssistantReply runReActReply(AssistantRequest request, ModelHolder holder) {
+        String locale = LocaleSupport.resolve(request.locale(), request.input());
         ReActAgent agent = buildAgent(holder.model());
         SimpleSessionKey sessionKey = SimpleSessionKey.of(request.threadId());
         agent.loadIfExists(jsonSession, sessionKey);
@@ -116,9 +117,9 @@ public class LifeOsAgentRuntimeService {
                 null,
                 null,
                 List.of(
-                        "Used AgentScope ReAct runtime",
-                        "Loaded/saved session state",
-                        "Tool-backed planning available"
+                        LocaleSupport.pick(locale, "已使用 AgentScope ReAct 实时运行时", "Used the AgentScope ReAct runtime"),
+                        LocaleSupport.pick(locale, "已加载并保存会话状态", "Loaded and saved session state"),
+                        LocaleSupport.pick(locale, "可结合工具完成规划与执行判断", "Tool-backed planning is available")
                 )
         );
     }
@@ -168,9 +169,9 @@ public class LifeOsAgentRuntimeService {
                 result.plan().id(),
                 result.executionRun().id(),
                 List.of(
-                        "Generated a stored plan preview",
-                        "Captured execution timeline",
-                        "Queued confirmation steps"
+                        LocaleSupport.pick(locale, "已生成并持久化行动方案", "Generated and stored an action plan"),
+                        LocaleSupport.pick(locale, "已记录执行时间线", "Captured the execution timeline"),
+                        LocaleSupport.pick(locale, "已排入需要确认的外部动作", "Queued the confirmation steps")
                 )
         );
     }

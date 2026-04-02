@@ -26,10 +26,12 @@ public class LifeOsToolset {
 
     @Tool(name = "life_plan_preview", description = "Generate a grounded Life OS plan preview for a user's request.")
     public String lifePlanPreview(
+            @ToolParam(name = "userId", required = false, description = "Logical user id for scoped planning") String userId,
             @ToolParam(name = "threadId", required = true, description = "Conversation thread id") String threadId,
             @ToolParam(name = "input", required = true, description = "User request to plan") String input,
             @ToolParam(name = "locale", required = false, description = "Preferred locale, e.g. zh-CN or en-US") String locale) {
-        var result = lifeOrchestrator.execute(new PlanPreviewRequest("lifeos-user", threadId, input, locale));
+        String scopedUserId = userId == null || userId.isBlank() ? "lifeos-user" : userId;
+        var result = lifeOrchestrator.execute(new PlanPreviewRequest(scopedUserId, threadId, input, locale));
         return """
                 Plan title: %s
                 Summary: %s
@@ -49,8 +51,10 @@ public class LifeOsToolset {
 
     @Tool(name = "search_personal_knowledge", description = "Search the seeded personal knowledge base for grounding.")
     public String searchPersonalKnowledge(
+            @ToolParam(name = "userId", required = false, description = "Logical user id for scoped knowledge search") String userId,
             @ToolParam(name = "query", required = true, description = "Knowledge search query") String query) {
-        return knowledgeModuleFacade.execute(new KnowledgeQuery("lifeos-user", query, java.util.List.of()))
+        String scopedUserId = userId == null || userId.isBlank() ? "lifeos-user" : userId;
+        return knowledgeModuleFacade.execute(new KnowledgeQuery(scopedUserId, query, java.util.List.of()))
                 .stream()
                 .map(snippet -> snippet.title() + ": " + snippet.snippet())
                 .reduce((left, right) -> left + "\n" + right)

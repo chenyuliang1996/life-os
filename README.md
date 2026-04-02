@@ -10,6 +10,12 @@
 - 双展示面：
   - `ToC` 只保留用户操作动线，聚焦输入、计划、确认、画像和知识沉淀
   - `ToB` 聚焦系统运行态，查看组件、连接器、RAG、执行链路和部署状态
+- 多身份模拟与用户作用域：
+  - 内置旅行用户、习惯用户、谨慎体验者、运营观察者 4 类 persona
+  - 计划、确认项、知识文档、审计流水按 `userId` 作用域隔离
+- 只读探针：
+  - ToB 中的模块探针不再写入计划、确认项或画像
+  - 运营视角刷新页面不会继续污染真实业务数据
 - 统一主控编排：
   - 旅行、学习、日程三个专业 Agent
   - 主编排器负责拆任务、汇总计划、生成确认节点
@@ -29,6 +35,11 @@
 - 外部能力增强：
   - 可选 `FlyAI` MCP 旅行搜索
   - 可选远程 `A2A` 旅行专家
+- 安全控制面：
+  - 用户信任分层
+  - 工具权限策略
+  - 外呼白名单
+  - 审计流水
 - 分布式部署骨架：
   - `Dockerfile`
   - `deploy/docker-compose.cluster.yml`
@@ -91,6 +102,11 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - `LIFEOS_FLYAI_TOOL_NAME`
 - `LIFEOS_A2A_TRAVEL_ENABLED`
 - `LIFEOS_A2A_TRAVEL_BASE_URL`
+- `LIFEOS_SECURITY_TRUSTED_PREFIXES`
+- `LIFEOS_SECURITY_OPERATOR_PREFIXES`
+- `LIFEOS_SECURITY_RESTRICTED_PREFIXES`
+- `LIFEOS_SECURITY_MCP_PREFIXES`
+- `LIFEOS_SECURITY_ALLOWLIST`
 - `OPENAI_API_KEY`
 - `OPENAI_BASE_URL`
 - `OPENAI_MODEL`
@@ -106,5 +122,7 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - [AgentScope 能力印证](docs/agentscope-validation.md)
 - [RAG 选型](docs/rag-selection.md)
 - [FlyAI 与 A2A 旅行链路](docs/flyai-a2a-travel-search.md)
+- [安全架构与多身份模拟](docs/security-architecture.md)
+- [真实用户动线验证](docs/user-journey-validation.md)
 - [分布式部署说明](docs/deployment-cluster.md)
 - [API 契约](docs/api-contracts.md)

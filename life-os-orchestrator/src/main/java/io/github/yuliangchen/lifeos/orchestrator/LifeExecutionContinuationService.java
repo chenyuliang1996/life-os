@@ -37,9 +37,13 @@ public class LifeExecutionContinuationService {
         this.executionRunRepository = executionRunRepository;
     }
 
-    public ExecutionContinuationResult resumePlan(String planId, String requestedLocale) {
+    public ExecutionContinuationResult resumePlan(String planId, String userId, String requestedLocale) {
         LifePlan plan = lifePlanRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("Plan not found: " + planId));
+
+        if (userId != null && !userId.isBlank() && !plan.userId().equals(userId)) {
+            throw new IllegalArgumentException("Plan does not belong to the active user: " + planId);
+        }
 
         String locale = LocaleSupport.resolve(requestedLocale, (String) plan.metadata().get("locale"));
         List<ConfirmationRequest> confirmations = confirmationRequestRepository.findByPlanId(planId);

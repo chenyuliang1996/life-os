@@ -13,6 +13,7 @@
 - 前端通过 `data-default-locale` 注入默认语言
 - 动态文案统一由 `TRANSLATIONS` 字典驱动
 - 后端请求统一带 `locale`
+- 默认首屏直接进入干净 persona，避免落到历史测试身份造成脏数据观感
 
 ## 2. 编排链路
 
@@ -151,3 +152,116 @@
 - 共享 session 目录
 - Nginx/Ingress 做统一入口
 - 集群配置支持打开 pgvector、FlyAI 搜索和远程 A2A specialist
+
+## 9. 用户作用域隔离
+
+这次补齐了多身份模拟之后，服务把用户作用域真正收紧到了后端。
+
+### 9.1 已经按 `userId` 收口的对象
+
+- `LifePlan`
+- `ConfirmationRequest`
+- `KnowledgeDocument`
+- `SecurityAuditEntry`
+
+### 9.2 已经按 `userId` 收口的接口
+
+- `GET /api/v1/plans`
+- `GET /api/v1/plans/{planId}`
+- `GET /api/v1/confirmations`
+- `POST /api/v1/confirmations/{id}/decision`
+- `GET /api/v1/knowledge/documents`
+- `POST /api/v1/knowledge/documents`
+- `POST /api/v1/assistant/resume`
+
+### 9.3 为什么这样实现
+
+- 避免多身份模拟时出现串用户数据
+- 让 ToC 页面更接近真实产品行为
+- 为后续接入真正鉴权做接口契约准备
+
+## 10. 安全控制与审计
+
+### 10.1 Security Service
+
+新增 `LifeOsSecurityService`，负责：
+
+- 解析身份信任等级
+- 输出工具权限策略
+- 管理 persona 预设
+- 写入安全审计流水
+
+### 10.2 审计事件
+
+当前会记录：
+
+- `plan.preview`
+- `assistant.message`
+- `assistant.resume`
+- `approval.decision`
+- `profile.update`
+- `knowledge.write`
+- `cross-user read denied`
+
+### 10.3 为什么这一步重要
+
+这不是把安全只放在 ToB 页面上，而是把它变成服务的运行事实：
+
+- 用户能看到当前身份有哪些护栏
+- 运营能看到关键操作的流水
+- 开发能定位跨身份访问和恢复执行问题
+
+## 11. 多身份用户动线优化
+
+### 11.1 Persona 预设
+
+当前内置 4 类身份：
+
+- `urban-traveler`
+- `habit-builder`
+- `guest-explorer`
+- `ops-reviewer`
+
+其中：
+
+- 前 3 类主要服务 `ToC`
+- `ops-reviewer` 默认切到 `ToB`
+
+### 11.2 为什么要加 `guest-explorer`
+
+真实验证里发现，如果所有 ToC 身份都默认可信，用户看不到“受限身份”和“授信后解锁能力”的差异。
+
+所以加入 `guest-explorer` 后，页面能直接验证：
+
+- 受限身份默认禁用实时搜索
+- 远程专家保持关闭
+- 写入动作依旧要求审批
+
+### 11.3 首屏为什么不再使用 `lifeos-user`
+
+真实浏览器模拟时发现，`lifeos-user` 会继承大量历史测试数据，造成：
+
+- 计划历史显得脏
+- 待确认项看起来像无限堆积
+- 用户第一次进入服务就像接手了别人的工作台
+
+因此现在默认首屏直接进入干净 persona，而不是通用测试账号。
+
+## 12. 只读模块探针
+
+之前 `ToB` 的模块探针在读取时会真实生成计划、确认项和画像，属于严重的运行态副作用。
+
+现在探针已改成只读摘要：
+
+- `LifeOrchestrator.executeProbe()`
+- `MemoryModuleFacade.executeProbe()`
+- `TravelAgent.executeProbe()`
+- `LearningAgent.executeProbe()`
+- `ScheduleAgent.executeProbe()`
+- `WebModuleFacade.executeProbe()`
+
+这样实现的原因：
+
+- 运营台刷新不应污染业务数据
+- 探针应该反映服务状态，而不是制造新状态
+- 容量和审批积压指标不能被探针自己放大

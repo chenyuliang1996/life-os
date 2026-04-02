@@ -5,6 +5,7 @@ import io.github.yuliangchen.lifeos.domain.model.ProfileUpdateRequest;
 import io.github.yuliangchen.lifeos.domain.model.UserProfile;
 import io.github.yuliangchen.lifeos.memory.MemoryModuleFacade;
 import io.github.yuliangchen.lifeos.web.observability.LifeOsObservabilityService;
+import io.github.yuliangchen.lifeos.web.security.LifeOsSecurityService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +19,14 @@ public class ProfileController {
 
     private final MemoryModuleFacade memoryModuleFacade;
     private final LifeOsObservabilityService lifeOsObservabilityService;
+    private final LifeOsSecurityService lifeOsSecurityService;
 
     public ProfileController(MemoryModuleFacade memoryModuleFacade,
-                             LifeOsObservabilityService lifeOsObservabilityService) {
+                             LifeOsObservabilityService lifeOsObservabilityService,
+                             LifeOsSecurityService lifeOsSecurityService) {
         this.memoryModuleFacade = memoryModuleFacade;
         this.lifeOsObservabilityService = lifeOsObservabilityService;
+        this.lifeOsSecurityService = lifeOsSecurityService;
     }
 
     @GetMapping
@@ -41,9 +45,27 @@ public class ProfileController {
                     request.goals()
             ));
             lifeOsObservabilityService.recordProfileUpdate(elapsedMillis(startedAt), true);
+            lifeOsSecurityService.recordAudit(
+                    userId,
+                    "n/a",
+                    "profile",
+                    "update",
+                    userId,
+                    "SUCCESS",
+                    "Updated explicit long-term preferences."
+            );
             return profile;
         } catch (RuntimeException exception) {
             lifeOsObservabilityService.recordProfileUpdate(elapsedMillis(startedAt), false);
+            lifeOsSecurityService.recordAudit(
+                    userId,
+                    "n/a",
+                    "profile",
+                    "update",
+                    userId,
+                    "FAILURE",
+                    exception.getMessage()
+            );
             throw exception;
         }
     }

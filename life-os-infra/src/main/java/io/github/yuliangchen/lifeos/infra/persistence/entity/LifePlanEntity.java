@@ -10,6 +10,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "life_plans", indexes = {
+        @Index(name = "idx_life_plans_user_status_created_at", columnList = "user_id, status, created_at"),
         @Index(name = "idx_life_plans_status_created_at", columnList = "status, created_at")
 })
 public class LifePlanEntity {

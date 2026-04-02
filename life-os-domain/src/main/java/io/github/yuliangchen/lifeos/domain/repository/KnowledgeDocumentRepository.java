@@ -9,4 +9,6 @@ public interface KnowledgeDocumentRepository {
     KnowledgeDocument save(KnowledgeDocument document);
 
     List<KnowledgeDocument> findAll();
+
+    List<KnowledgeDocument> findAllForUser(String userId);
 }

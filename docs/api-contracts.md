@@ -12,7 +12,7 @@
 ### 系统与架构
 
 - `GET /api/v1/modules`
-  - 触发各模块 `executeProbe()`，验证模块探针入口
+  - 触发各模块 `executeProbe()`，返回只读探针摘要
 - `GET /api/v1/system/connectors`
   - 返回工具层连接器能力
 - `GET /api/v1/system/health`
@@ -22,6 +22,16 @@
 - `GET /api/v1/system/rag`
   - 返回当前 RAG 运行态
   - 包含是否启用向量、检索模式、provider、model、summary
+
+### 安全与 Persona
+
+- `GET /api/v1/personas?locale=zh-CN`
+  - 返回 persona 预设，用于多身份模拟
+- `GET /api/v1/security/overview?userId=persona-travel&limit=8`
+  - 返回当前身份的信任状态、工具权限和最近审计流水
+- `GET /api/v1/security/audit?userId=persona-travel&limit=12`
+  - 返回当前身份的审计流水
+  - 运营视角可省略 `userId`，查看全局审计流水
 
 ### 运行时
 
@@ -38,6 +48,7 @@
     - `locale`
 - `POST /api/v1/assistant/resume`
   - 请求体：
+    - `userId`
     - `planId`
     - `locale`
   - 用于在确认流完成后恢复执行
@@ -56,19 +67,25 @@
     - `input`
     - `locale`
 - `GET /api/v1/plans`
+  - 必须带 `userId`
 - `GET /api/v1/plans/{planId}`
+  - 必须带 `userId`
 - `GET /api/v1/executions/{runId}`
 - `GET /api/v1/executions/{runId}/timeline`
 
 ### 确认流
 
 - `GET /api/v1/confirmations`
+  - 必须带 `userId`
 - `POST /api/v1/confirmations/{id}/decision`
+  - 必须带 `userId`
 
 ### 知识库
 
 - `GET /api/v1/knowledge/documents`
+  - 必须带 `userId`
 - `POST /api/v1/knowledge/documents`
+  - 必须带 `userId`
   - 请求体：
     - `title`
     - `sourceType`

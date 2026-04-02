@@ -12,4 +12,6 @@ public interface SpringDataConfirmationRequestEntityRepository extends JpaReposi
     List<ConfirmationRequestEntity> findByPlanIdOrderByCreatedAtAsc(String planId);
 
     List<ConfirmationRequestEntity> findByStatusOrderByCreatedAtDesc(String status);
+
+    List<ConfirmationRequestEntity> findByUserIdAndStatusOrderByCreatedAtDesc(String userId, String status);
 }

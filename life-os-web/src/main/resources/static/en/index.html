@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life OS</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="stylesheet" href="/styles.css?v=20260331c">
 </head>
 <body data-default-locale="en-US" data-surface="toc">
@@ -70,6 +71,17 @@
             <div id="sequence-view" class="sequence-rail"></div>
         </section>
 
+        <section class="card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.personas.title">Personas</h2>
+                    <p class="section-subtitle" data-i18n="sections.personas.subtitle">Switch between realistic user identities for travel, learning, and operations review.</p>
+                </div>
+                <span class="pill" data-i18n="sections.personas.pill">Persona</span>
+            </div>
+            <div id="persona-view" class="persona-grid"></div>
+        </section>
+
         <section class="card chat-card" data-surface="toc">
             <div class="section-head">
                 <div>
@@ -79,15 +91,15 @@
                 <span class="pill" data-i18n="sections.control.pill">Flow</span>
             </div>
             <label for="plan-input" data-i18n="fields.prompt">Prompt</label>
-            <textarea id="plan-input">Plan a 7-day Tokyo trip in May with a 15k RMB budget. Keep it low-fatigue and protect my English study habit.</textarea>
+            <textarea id="plan-input">Plan a 7-day Tokyo trip with a 15k RMB budget, low fatigue, and calm evenings.</textarea>
             <div class="form-row">
                 <div>
                     <label for="user-id" data-i18n="fields.userId">User ID</label>
-                    <input id="user-id" type="text" value="lifeos-user" placeholder="lifeos-user">
+                    <input id="user-id" type="text" value="persona-travel" placeholder="persona-travel">
                 </div>
                 <div>
                     <label for="thread-id" data-i18n="fields.threadId">Thread ID</label>
-                    <input id="thread-id" type="text" value="thread-life-os" placeholder="thread-life-os">
+                    <input id="thread-id" type="text" value="thread-travel-primary" placeholder="thread-travel-primary">
                 </div>
             </div>
             <div class="hero-actions compact">
@@ -116,6 +128,17 @@
                 <span class="pill" data-i18n="sections.operations.pill">SLO</span>
             </div>
             <div id="operations-view" class="ops-grid"></div>
+        </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.security.title">Security Controls</h2>
+                    <p class="section-subtitle" data-i18n="sections.security.subtitle">Inspect trust state, tool permissions, and the outbound allowlist for the active identity.</p>
+                </div>
+                <span class="pill" data-i18n="sections.security.pill">Guardrail</span>
+            </div>
+            <div id="security-view" class="security-grid"></div>
         </section>
 
         <section class="card" data-surface="tob">
@@ -149,6 +172,17 @@
                 <span class="pill" data-i18n="sections.assistant.pill">Live Output</span>
             </div>
             <div id="assistant-view" class="empty-state" data-i18n="state.assistantIdle">Run the assistant to see the latest reply.</div>
+        </section>
+
+        <section class="card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.guardrails.title">User Guardrails</h2>
+                    <p class="section-subtitle" data-i18n="sections.guardrails.subtitle">Shows trust level, write approvals, and outbound restrictions for the active identity.</p>
+                </div>
+                <span class="pill" data-i18n="sections.guardrails.pill">Safety</span>
+            </div>
+            <div id="guardrail-view" class="list-stack"></div>
         </section>
 
         <section class="card wide" data-surface="toc">
@@ -260,8 +294,19 @@
             </div>
             <div id="connectors-view" class="list-stack capped"></div>
         </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.audit.title">Audit Ledger</h2>
+                    <p class="section-subtitle" data-i18n="sections.audit.subtitle">Tracks key actions such as planning, approvals, profile edits, and knowledge writes.</p>
+                </div>
+                <span class="pill" data-i18n="sections.audit.pill">Audit</span>
+            </div>
+            <div id="audit-view" class="list-stack capped"></div>
+        </section>
     </main>
 </div>
-<script src="/app.js?v=20260331c"></script>
+<script src="/app.js?v=20260402b"></script>
 </body>
 </html>

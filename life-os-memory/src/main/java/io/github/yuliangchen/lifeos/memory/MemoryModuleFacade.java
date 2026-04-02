@@ -47,12 +47,7 @@ public class MemoryModuleFacade implements ModuleExecutable<MemoryUpdateCommand,
 
     @Override
     public String executeProbe() {
-        UserProfile profile = execute(new MemoryUpdateCommand(
-                "lifeos-user",
-                Map.of("travelStyle", "relaxed", "budgetLevel", "medium"),
-                List.<Goal>of()
-        ));
-        return "Memory ready for " + profile.userId() + " with preferences " + profile.preferences();
+        return "Memory service is ready for persona-scoped profiles and long-term preference lookups.";
     }
 
     private UserProfile defaultProfile(String userId) {

@@ -32,6 +32,15 @@ public class InMemoryLifePlanRepository implements LifePlanRepository {
     }
 
     @Override
+    public List<LifePlan> findByUserIdAndStatus(String userId, PlanStatus status) {
+        return store.values().stream()
+                .filter(plan -> plan.userId().equals(userId))
+                .filter(plan -> plan.status() == status)
+                .sorted(Comparator.comparing(LifePlan::id).reversed())
+                .toList();
+    }
+
+    @Override
     public Optional<LifePlan> findById(String id) {
         return Optional.ofNullable(store.get(id));
     }

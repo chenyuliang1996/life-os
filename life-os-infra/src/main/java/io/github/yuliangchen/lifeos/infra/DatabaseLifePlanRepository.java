@@ -52,6 +52,13 @@ public class DatabaseLifePlanRepository implements LifePlanRepository {
     }
 
     @Override
+    public List<LifePlan> findByUserIdAndStatus(String userId, PlanStatus status) {
+        return repository.findByUserIdAndStatusOrderByCreatedAtDesc(userId, status.name()).stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
     public Optional<LifePlan> findById(String id) {
         return repository.findById(id).map(this::toDomain);
     }

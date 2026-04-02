@@ -2,13 +2,15 @@ package io.github.yuliangchen.lifeos.domain.model;
 
 import java.time.Instant;
 
-public record ConfirmationRequest(
+public record SecurityAuditEntry(
         String id,
         String userId,
-        String planId,
+        String threadId,
+        String category,
         String action,
-        ConfirmationStatus status,
-        String comment,
+        String target,
+        String outcome,
+        String detail,
         Instant createdAt
 ) {
 }

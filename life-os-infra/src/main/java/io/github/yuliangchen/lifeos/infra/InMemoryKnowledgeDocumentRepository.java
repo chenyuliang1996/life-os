@@ -13,6 +13,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @ConditionalOnProperty(name = "lifeos.persistence.mode", havingValue = "memory")
 public class InMemoryKnowledgeDocumentRepository implements KnowledgeDocumentRepository {
 
+    public static final String GLOBAL_USER_ID = "system-seed";
+
     private final CopyOnWriteArrayList<KnowledgeDocument> store = new CopyOnWriteArrayList<>();
 
     @Override
@@ -25,6 +27,14 @@ public class InMemoryKnowledgeDocumentRepository implements KnowledgeDocumentRep
     @Override
     public List<KnowledgeDocument> findAll() {
         return store.stream()
+                .sorted(Comparator.comparing(KnowledgeDocument::updatedAt).reversed())
+                .toList();
+    }
+
+    @Override
+    public List<KnowledgeDocument> findAllForUser(String userId) {
+        return store.stream()
+                .filter(document -> document.userId().equals(GLOBAL_USER_ID) || document.userId().equals(userId))
                 .sorted(Comparator.comparing(KnowledgeDocument::updatedAt).reversed())
                 .toList();
     }

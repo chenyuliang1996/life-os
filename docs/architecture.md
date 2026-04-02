@@ -17,6 +17,7 @@
 flowchart LR
     UI["Bilingual Web UI<br/>/ and /en/index.html"] --> WEB["life-os-web"]
     WEB --> ORCH["life-os-orchestrator"]
+    WEB --> SEC["security / persona / audit controllers"]
     ORCH --> AGENTS["travel / learning / schedule"]
     AGENTS --> FLY["FlyAI MCP Search<br/>(optional)"]
     AGENTS --> A2A["Remote Travel Specialist<br/>(optional A2A)"]
@@ -24,6 +25,7 @@ flowchart LR
     ORCH --> RAG["life-os-rag"]
     ORCH --> TOOLS["life-os-tools"]
     ORCH --> INFRA["life-os-infra"]
+    SEC --> INFRA
     INFRA --> DB["H2(local) / PostgreSQL(cluster)"]
     INFRA --> VDB["pgvector (optional)"]
 ```
@@ -124,6 +126,14 @@ sequenceDiagram
 - `confirmation_requests`
 - `execution_runs`
 - `knowledge_documents`
+- `security_audit_entries`
+
+其中用户作用域对象包括：
+
+- `life_plans`
+- `confirmation_requests`
+- `knowledge_documents`
+- `security_audit_entries`
 
 ### 7.2 检索数据
 
@@ -167,3 +177,8 @@ sequenceDiagram
   - 用于旅行搜索增强
 
 每个模块都保留了 `execute(...)` 或 `executeProbe()` 入口，用于单模块验证和后续服务化改造。
+
+补充约束：
+
+- `executeProbe()` 必须保持只读
+- 探针只能输出健康摘要，不能创建计划、确认项或用户画像

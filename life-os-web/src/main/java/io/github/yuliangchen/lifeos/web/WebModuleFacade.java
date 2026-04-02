@@ -20,11 +20,11 @@ public class WebModuleFacade implements ModuleExecutable<String, String> {
 
     @Override
     public String execute(String input) {
-        return lifeOrchestrator.executeProbe() + " | input=" + input;
+        return "Web surface is ready for bilingual user journeys, telemetry capture, and orchestration endpoints. | input=" + input;
     }
 
     @Override
     public String executeProbe() {
-        return "Web module ready, orchestrator says: " + lifeOrchestrator.executeProbe();
+        return "Web surface is ready for bilingual user journeys, telemetry capture, and orchestration endpoints.";
     }
 }

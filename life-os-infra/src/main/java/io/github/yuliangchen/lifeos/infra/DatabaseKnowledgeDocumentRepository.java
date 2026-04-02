@@ -17,6 +17,8 @@ import java.util.List;
 @ConditionalOnProperty(name = "lifeos.persistence.mode", havingValue = "database", matchIfMissing = true)
 public class DatabaseKnowledgeDocumentRepository implements KnowledgeDocumentRepository {
 
+    public static final String GLOBAL_USER_ID = "system-seed";
+
     private final SpringDataKnowledgeDocumentEntityRepository repository;
     private final JsonValueCodec jsonValueCodec;
 
@@ -37,9 +39,21 @@ public class DatabaseKnowledgeDocumentRepository implements KnowledgeDocumentRep
                 .toList();
     }
 
+    @Override
+    public List<KnowledgeDocument> findAllForUser(String userId) {
+        return repository.findAllByOrderByUpdatedAtDesc().stream()
+                .filter(entity -> {
+                    String owner = normalizeUserId(entity.getUserId());
+                    return GLOBAL_USER_ID.equals(owner) || owner.equals(userId);
+                })
+                .map(this::toDomain)
+                .toList();
+    }
+
     private KnowledgeDocumentEntity toEntity(KnowledgeDocument document) {
         KnowledgeDocumentEntity entity = new KnowledgeDocumentEntity();
         entity.setId(document.id());
+        entity.setUserId(document.userId());
         entity.setTitle(document.title());
         entity.setSourceType(document.sourceType());
         entity.setTagsJson(jsonValueCodec.write(document.tags()));
@@ -53,6 +67,7 @@ public class DatabaseKnowledgeDocumentRepository implements KnowledgeDocumentRep
     private KnowledgeDocument toDomain(KnowledgeDocumentEntity entity) {
         return new KnowledgeDocument(
                 entity.getId(),
+                normalizeUserId(entity.getUserId()),
                 entity.getTitle(),
                 entity.getSourceType(),
                 jsonValueCodec.read(entity.getTagsJson(), new TypeReference<List<String>>() {
@@ -62,5 +77,9 @@ public class DatabaseKnowledgeDocumentRepository implements KnowledgeDocumentRep
                 entity.getLocale(),
                 entity.getUpdatedAt()
         );
+    }
+
+    private String normalizeUserId(String userId) {
+        return userId == null || userId.isBlank() ? GLOBAL_USER_ID : userId;
     }
 }

@@ -16,5 +16,7 @@ public interface ConfirmationRequestRepository {
 
     List<ConfirmationRequest> findByStatus(ConfirmationStatus status);
 
+    List<ConfirmationRequest> findByUserIdAndStatus(String userId, ConfirmationStatus status);
+
     Optional<ConfirmationRequest> findById(String id);
 }

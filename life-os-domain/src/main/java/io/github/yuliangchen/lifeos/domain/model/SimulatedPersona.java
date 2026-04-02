@@ -1,0 +1,15 @@
+package io.github.yuliangchen.lifeos.domain.model;
+
+import java.util.Map;
+
+public record SimulatedPersona(
+        String id,
+        String locale,
+        String displayName,
+        String userId,
+        String threadId,
+        String prompt,
+        String description,
+        Map<String, String> preferences
+) {
+}

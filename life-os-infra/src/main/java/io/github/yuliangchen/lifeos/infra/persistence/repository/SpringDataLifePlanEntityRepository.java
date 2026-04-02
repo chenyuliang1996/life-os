@@ -8,4 +8,6 @@ import java.util.List;
 public interface SpringDataLifePlanEntityRepository extends JpaRepository<LifePlanEntity, String> {
 
     List<LifePlanEntity> findByStatusOrderByCreatedAtDesc(String status);
+
+    List<LifePlanEntity> findByUserIdAndStatusOrderByCreatedAtDesc(String userId, String status);
 }

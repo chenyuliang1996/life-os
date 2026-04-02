@@ -30,8 +30,9 @@ public class LifeOsAguiAgent extends AgentBase {
     @Override
     protected Mono<Msg> doCall(List<Msg> messages) {
         String userInput = messages.isEmpty() ? "Help me organize life planning" : messages.get(messages.size() - 1).getTextContent();
+        String userId = resolveUserId(messages);
         String threadId = resolveThreadId(messages);
-        AssistantReply reply = lifeOsAgentRuntimeService.reply(new AssistantRequest("lifeos-user", threadId, userInput, null));
+        AssistantReply reply = lifeOsAgentRuntimeService.reply(new AssistantRequest(userId, threadId, userInput, null));
 
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("threadId", threadId);
@@ -69,5 +70,15 @@ public class LifeOsAguiAgent extends AgentBase {
             }
         }
         return "thread-" + UUID.randomUUID();
+    }
+
+    private String resolveUserId(List<Msg> messages) {
+        if (!messages.isEmpty() && messages.get(messages.size() - 1).getMetadata() != null) {
+            Object userId = messages.get(messages.size() - 1).getMetadata().get("userId");
+            if (userId != null) {
+                return userId.toString();
+            }
+        }
+        return "lifeos-user";
     }
 }

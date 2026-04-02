@@ -5,6 +5,7 @@ import java.util.List;
 
 public record KnowledgeDocument(
         String id,
+        String userId,
         String title,
         String sourceType,
         List<String> tags,

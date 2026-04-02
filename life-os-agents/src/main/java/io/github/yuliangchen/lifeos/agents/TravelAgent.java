@@ -100,12 +100,7 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
 
     @Override
     public String executeProbe() {
-        return execute(new AgentTask(
-                "lifeos-user",
-                io.github.yuliangchen.lifeos.domain.model.SpecialistType.TRAVEL,
-                "Design a low-fatigue Tokyo trip",
-                List.of("stay budget-aware", "prefer neighborhood pacing"),
-                "en-US"
-        )).summary();
+        // Probe endpoints must stay read-only so operator views do not create user data / 探针接口必须保持只读，避免运营台刷新时写入用户数据。
+        return "Travel specialist is ready for grounded itinerary planning, live search, and optional A2A advice.";
     }
 }

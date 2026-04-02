@@ -100,6 +100,32 @@ class LifeOsApplicationTests {
     }
 
     @Test
+    void shouldExposePersonaPresets() throws Exception {
+        mockMvc.perform(get("/api/v1/personas?locale=en-US"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("urban-traveler"))
+                .andExpect(jsonPath("$[2].userId").value("guest-weekend"))
+                .andExpect(jsonPath("$[3].userId").value("persona-ops"));
+    }
+
+    @Test
+    void shouldExposeSecurityOverview() throws Exception {
+        mockMvc.perform(get("/api/v1/security/overview?userId=persona-ops"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trust.trustTier").value("operator"))
+                .andExpect(jsonPath("$.policies[0].capability").value("knowledge.read"))
+                .andExpect(jsonPath("$.recentAuditEntries").isArray());
+    }
+
+    @Test
+    void shouldExposeRestrictedSecurityOverviewForGuestPersona() throws Exception {
+        mockMvc.perform(get("/api/v1/security/overview?userId=guest-weekend"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trust.trustTier").value("restricted"))
+                .andExpect(jsonPath("$.trust.outboundNetworkAllowed").value(false));
+    }
+
+    @Test
     void shouldAcceptUxTelemetry() throws Exception {
         mockMvc.perform(post("/api/v1/telemetry/ux")
                         .contentType("application/json")
@@ -130,6 +156,32 @@ class LifeOsApplicationTests {
                 .andExpect(jsonPath("$[0].connectorName").value("search"))
                 .andExpect(jsonPath("$[1].connectorName").value("flyai-search"))
                 .andExpect(jsonPath("$[1].enabled").value(false));
+    }
+
+    @Test
+    void shouldKeepModuleProbesReadOnly() throws Exception {
+        int confirmationsBefore = new com.fasterxml.jackson.databind.ObjectMapper().readTree(
+                mockMvc.perform(get("/api/v1/confirmations?userId=lifeos-user"))
+                        .andExpect(status().isOk())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString()
+        ).size();
+
+        mockMvc.perform(get("/api/v1/modules"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memory").exists())
+                .andExpect(jsonPath("$.orchestrator").exists());
+
+        int confirmationsAfter = new com.fasterxml.jackson.databind.ObjectMapper().readTree(
+                mockMvc.perform(get("/api/v1/confirmations?userId=lifeos-user"))
+                        .andExpect(status().isOk())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString()
+        ).size();
+
+        org.junit.jupiter.api.Assertions.assertEquals(confirmationsBefore, confirmationsAfter);
     }
 
     @Test
@@ -201,6 +253,62 @@ class LifeOsApplicationTests {
     }
 
     @Test
+    void shouldScopePlansByUserIdentity() throws Exception {
+        mockMvc.perform(post("/api/v1/plans/preview")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "userId": "persona-travel",
+                                  "threadId": "thread-travel",
+                                  "input": "Plan a calm Tokyo route."
+                                }
+                                """))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/v1/plans/preview")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "userId": "persona-study",
+                                  "threadId": "thread-study",
+                                  "input": "Protect my English habit next week."
+                                }
+                                """))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/v1/plans?userId=persona-travel"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value("persona-travel"));
+
+        mockMvc.perform(get("/api/v1/plans?userId=persona-study"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value("persona-study"));
+    }
+
+    @Test
+    void shouldRejectCrossUserPlanAccess() throws Exception {
+        String previewResponse = mockMvc.perform(post("/api/v1/plans/preview")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "userId": "persona-travel",
+                                  "threadId": "thread-travel",
+                                  "input": "Plan a calm Tokyo route."
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        com.fasterxml.jackson.databind.JsonNode previewJson = new com.fasterxml.jackson.databind.ObjectMapper().readTree(previewResponse);
+        String planId = previewJson.get("plan").get("id").asText();
+
+        mockMvc.perform(get("/api/v1/plans/{planId}?userId=persona-study", planId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void shouldResumeExecutionAfterApprovals() throws Exception {
         String previewResponse = mockMvc.perform(post("/api/v1/plans/preview")
                         .contentType("application/json")
@@ -235,6 +343,7 @@ class LifeOsApplicationTests {
                         .contentType("application/json")
                         .content("""
                                 {
+                                  "userId": "lifeos-user",
                                   "planId": "%s",
                                   "locale": "en-US"
                                 }

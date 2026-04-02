@@ -61,6 +61,18 @@ const TRANSLATIONS = {
     "sections.connectors.title": "连接器",
     "sections.connectors.subtitle": "展示工具层可用能力和外部依赖状态。",
     "sections.connectors.pill": "Tools",
+    "sections.personas.title": "身份场景",
+    "sections.personas.subtitle": "切换真实用户画像，快速验证旅行、学习和运营观察视角。",
+    "sections.personas.pill": "Persona",
+    "sections.guardrails.title": "用户护栏",
+    "sections.guardrails.subtitle": "展示当前身份的信任级别、写入审批和外部连接限制。",
+    "sections.guardrails.pill": "Safety",
+    "sections.security.title": "安全控制",
+    "sections.security.subtitle": "查看当前身份的信任状态、工具权限和外呼白名单。",
+    "sections.security.pill": "Guardrail",
+    "sections.audit.title": "审计流水",
+    "sections.audit.subtitle": "记录计划、审批、画像更新和知识写入等关键操作。",
+    "sections.audit.pill": "Audit",
     "fields.prompt": "提示词",
     "fields.userId": "用户 ID",
     "fields.threadId": "线程 ID",
@@ -76,10 +88,12 @@ const TRANSLATIONS = {
     "actions.openPlan": "打开",
     "actions.approve": "通过",
     "actions.reject": "拒绝",
+    "actions.usePersona": "使用此身份",
     "state.previewIdle": "点击“生成可执行方案”开始规划。",
     "state.assistantIdle": "运行助手后，这里会显示最新回复。",
     "state.planIdle": "计划卡片会显示在这里。",
     "state.knowledgeEmpty": "暂无知识文档。",
+    "state.personaEmpty": "暂无身份场景。",
     "state.planEmpty": "还没有计划。",
     "state.planOverflow": "仅展示最近 {visible} 条，共 {total} 条。",
     "state.timelineEmpty": "执行时间线会显示在这里。",
@@ -88,11 +102,14 @@ const TRANSLATIONS = {
     "state.architectureEmpty": "架构信息加载后会显示在这里。",
     "state.ragEmpty": "RAG 状态加载后会显示在这里。",
     "state.operationsEmpty": "服务指标加载后会显示在这里。",
+    "state.guardrailEmpty": "安全护栏加载后会显示在这里。",
+    "state.auditEmpty": "审计流水会显示在这里。",
     "state.profileLoading": "正在加载画像...",
     "state.requestFailed": "请求失败，请查看控制台日志。",
     "state.profileSaved": "用户画像已保存。",
     "state.knowledgeSaved": "知识文档已入库。",
     "state.planGenerated": "已生成“{title}”，包含 {tasks} 个任务和 {confirmations} 个确认节点。",
+    "state.personaApplied": "已切换到“{name}”，并同步载入该身份画像。",
     "state.resumeWaiting": "确认已记录，仍在等待其他确认。",
     "state.resumeBlocked": "确认被拒绝，当前运行已阻塞。",
     "state.resumeApplied": "确认完成，已恢复并执行外部写入。",
@@ -162,6 +179,41 @@ const TRANSLATIONS = {
     "label.status": "状态",
     "label.comment": "备注",
     "label.locale": "语言",
+    "label.persona": "身份",
+    "label.trustTier": "信任级别",
+    "label.allowlist": "白名单",
+    "label.outcome": "结果",
+    "label.userId": "用户",
+    "label.thread": "线程",
+    "common.enabled": "已启用",
+    "common.disabled": "已关闭",
+    "security.workspaceTrusted": "工作区信任",
+    "security.mcpTrusted": "MCP 信任",
+    "security.network": "外部网络",
+    "security.writeApproval": "写入审批",
+    "security.summary": "说明",
+    "security.allowlist": "外呼白名单",
+    "security.policies": "工具权限",
+    "persona.prompt": "典型诉求",
+    "persona.description": "身份说明",
+    "trust.restricted": "受限",
+    "trust.guarded": "受保护",
+    "trust.trusted": "可信",
+    "trust.operator": "运营级",
+    "access.allowed": "允许",
+    "access.denied": "拒绝",
+    "access.approval-required": "需审批",
+    "access.seeded-only": "仅种子知识",
+    "access.guarded-live": "受控实时",
+    "access.guarded-auto": "受控自动",
+    "outcome.SUCCESS": "成功",
+    "outcome.FAILURE": "失败",
+    "outcome.DENIED": "拒绝",
+    "outcome.APPROVED": "已通过",
+    "outcome.REJECTED": "已拒绝",
+    "outcome.RESUMED": "已恢复",
+    "outcome.WAITING": "等待中",
+    "outcome.BLOCKED": "已阻塞",
     "status.PENDING": "待处理",
     "status.READY_FOR_CONFIRMATION": "待确认",
     "status.SCHEDULED": "已排期",
@@ -237,6 +289,18 @@ const TRANSLATIONS = {
     "sections.connectors.title": "Connectors",
     "sections.connectors.subtitle": "Available tool capabilities and external dependency status exposed by the tool layer.",
     "sections.connectors.pill": "Tools",
+    "sections.personas.title": "Personas",
+    "sections.personas.subtitle": "Switch between realistic user identities for travel, learning, and operations review.",
+    "sections.personas.pill": "Persona",
+    "sections.guardrails.title": "User Guardrails",
+    "sections.guardrails.subtitle": "Shows trust level, write approvals, and outbound restrictions for the active identity.",
+    "sections.guardrails.pill": "Safety",
+    "sections.security.title": "Security Controls",
+    "sections.security.subtitle": "Inspect trust state, tool permissions, and the outbound allowlist for the active identity.",
+    "sections.security.pill": "Guardrail",
+    "sections.audit.title": "Audit Ledger",
+    "sections.audit.subtitle": "Tracks key actions such as planning, approvals, profile edits, and knowledge writes.",
+    "sections.audit.pill": "Audit",
     "fields.prompt": "Prompt",
     "fields.userId": "User ID",
     "fields.threadId": "Thread ID",
@@ -252,10 +316,12 @@ const TRANSLATIONS = {
     "actions.openPlan": "Open",
     "actions.approve": "Approve",
     "actions.reject": "Reject",
+    "actions.usePersona": "Use Persona",
     "state.previewIdle": "Press \"Create Action Plan\" to start planning.",
     "state.assistantIdle": "Run the assistant to see the latest reply.",
     "state.planIdle": "Plan cards will appear here.",
     "state.knowledgeEmpty": "No knowledge documents yet.",
+    "state.personaEmpty": "No persona presets available.",
     "state.planEmpty": "No plans yet.",
     "state.planOverflow": "Showing the latest {visible} plans out of {total}.",
     "state.timelineEmpty": "Execution timeline will appear here.",
@@ -264,11 +330,14 @@ const TRANSLATIONS = {
     "state.architectureEmpty": "Architecture details will appear here after loading.",
     "state.ragEmpty": "RAG details will appear here after loading.",
     "state.operationsEmpty": "Service metrics will appear here after loading.",
+    "state.guardrailEmpty": "Guardrail details will appear here after loading.",
+    "state.auditEmpty": "Audit events will appear here after loading.",
     "state.profileLoading": "Loading profile...",
     "state.requestFailed": "Request failed. Please inspect the console logs.",
     "state.profileSaved": "Profile saved.",
     "state.knowledgeSaved": "Knowledge document persisted.",
     "state.planGenerated": "Generated \"{title}\" with {tasks} tasks and {confirmations} confirmation gates.",
+    "state.personaApplied": "Switched to \"{name}\" and loaded the persona profile.",
     "state.resumeWaiting": "The decision was saved, but the run is still waiting on other confirmations.",
     "state.resumeBlocked": "A confirmation was rejected, so the run is now blocked.",
     "state.resumeApplied": "Confirmation is complete and external writes have resumed.",
@@ -338,6 +407,41 @@ const TRANSLATIONS = {
     "label.status": "Status",
     "label.comment": "Comment",
     "label.locale": "Locale",
+    "label.persona": "Persona",
+    "label.trustTier": "Trust tier",
+    "label.allowlist": "Allowlist",
+    "label.outcome": "Outcome",
+    "label.userId": "User",
+    "label.thread": "Thread",
+    "common.enabled": "Enabled",
+    "common.disabled": "Disabled",
+    "security.workspaceTrusted": "Workspace trust",
+    "security.mcpTrusted": "MCP trust",
+    "security.network": "Outbound network",
+    "security.writeApproval": "Write approvals",
+    "security.summary": "Summary",
+    "security.allowlist": "Outbound allowlist",
+    "security.policies": "Tool permissions",
+    "persona.prompt": "Typical intent",
+    "persona.description": "Description",
+    "trust.restricted": "Restricted",
+    "trust.guarded": "Guarded",
+    "trust.trusted": "Trusted",
+    "trust.operator": "Operator",
+    "access.allowed": "Allowed",
+    "access.denied": "Denied",
+    "access.approval-required": "Approval required",
+    "access.seeded-only": "Seeded only",
+    "access.guarded-live": "Guarded live",
+    "access.guarded-auto": "Guarded auto",
+    "outcome.SUCCESS": "Success",
+    "outcome.FAILURE": "Failure",
+    "outcome.DENIED": "Denied",
+    "outcome.APPROVED": "Approved",
+    "outcome.REJECTED": "Rejected",
+    "outcome.RESUMED": "Resumed",
+    "outcome.WAITING": "Waiting",
+    "outcome.BLOCKED": "Blocked",
     "status.PENDING": "Pending",
     "status.READY_FOR_CONFIRMATION": "Ready for confirmation",
     "status.SCHEDULED": "Scheduled",
@@ -359,12 +463,17 @@ const state = {
   latestRunId: null,
   latestPlanId: null,
   latestAssistantReply: null,
+  activePersonaId: null,
   architecture: null,
   rag: null,
   runtime: null,
   operations: null,
+  personas: [],
+  securityOverview: null,
+  auditEntries: [],
   connectors: [],
-  confirmationCount: 0
+  confirmationCount: 0,
+  identityRefreshTimer: null
 };
 
 const PLAN_HISTORY_LIMIT = 8;
@@ -376,6 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
   prepareMotion();
   restoreSurfaceMode();
   bindSurfaceSwitch();
+  bindIdentityInputs();
   bindActionButton("run-preview", runPreview);
   bindActionButton("run-agent", runAssistant);
   bindActionButton("reload-data", bootstrap);
@@ -399,10 +509,16 @@ async function bootstrap() {
     loadRagStatus(),
     loadRuntime(),
     loadOperations(),
+    loadPersonas(),
+    loadConnectors()
+  ]);
+  initializeDefaultPersona();
+  await Promise.all([
+    loadSecurityOverview(),
+    loadAuditTrail(),
     loadModules(),
     loadProfile(),
     loadKnowledge(),
-    loadConnectors(),
     loadConfirmations(),
     loadPlans()
   ]);
@@ -431,6 +547,25 @@ function bindSurfaceSwitch() {
       renderSequence();
     });
   });
+}
+
+// Re-sync user-scoped views when the active identity changes / 当前身份变化后，重新拉取用户维度的数据，避免跨用户状态残留。
+function bindIdentityInputs() {
+  const userInput = document.getElementById("user-id");
+  if (!userInput) {
+    return;
+  }
+
+  const scheduleRefresh = () => {
+    syncActivePersona();
+    window.clearTimeout(state.identityRefreshTimer);
+    state.identityRefreshTimer = window.setTimeout(() => {
+      runSafely(() => handleIdentityChange());
+    }, 180);
+  };
+
+  userInput.addEventListener("change", scheduleRefresh);
+  userInput.addEventListener("blur", scheduleRefresh);
 }
 
 // Toggle consumer/operator views without reloading the page / 不刷新页面切换 ToC 与 ToB 视角。
@@ -496,6 +631,8 @@ async function runPreview() {
   renderSequence();
   await loadOperations();
   await loadPlans();
+  await loadSecurityOverview();
+  await loadAuditTrail();
 }
 
 async function runAssistant() {
@@ -518,6 +655,8 @@ async function runAssistant() {
     await loadPlans();
   }
   await loadOperations();
+  await loadSecurityOverview();
+  await loadAuditTrail();
   renderSequence();
 }
 
@@ -532,6 +671,25 @@ async function loadOperations() {
   renderOperations(state.operations);
 }
 
+async function loadPersonas() {
+  state.personas = await api(`/api/v1/personas?locale=${encodeURIComponent(state.locale)}`);
+  syncActivePersona();
+  renderPersonas(state.personas);
+}
+
+async function loadSecurityOverview() {
+  state.securityOverview = await api(`/api/v1/security/overview?userId=${encodeURIComponent(currentUserId())}&limit=8`);
+  renderSecurityOverview(state.securityOverview);
+}
+
+async function loadAuditTrail() {
+  const url = shouldUseGlobalAudit()
+    ? "/api/v1/security/audit?limit=12"
+    : `/api/v1/security/audit?userId=${encodeURIComponent(currentUserId())}&limit=12`;
+  state.auditEntries = await api(url);
+  renderAuditTrail(state.auditEntries);
+}
+
 async function loadRagStatus() {
   state.rag = await api("/api/v1/system/rag");
   renderRagStatus(state.rag);
@@ -543,7 +701,7 @@ async function loadModules() {
   const items = Object.entries(data).map(([name, summary]) => `
     <div class="list-item">
       <strong>${escapeHtml(name)}</strong>
-      <small>${escapeHtml(summary)}</small>
+      <small>${escapeHtml(formatModuleSummary(name, summary))}</small>
     </div>
   `).join("");
   document.getElementById("module-list").innerHTML = items;
@@ -555,12 +713,12 @@ async function loadRuntime() {
   state.runtime = runtime;
   document.getElementById("runtime-view").innerHTML = `
     <div class="list-item">
-      <strong>${escapeHtml(runtime.mode)}</strong>
-      <small>${escapeHtml(runtime.summary)}</small>
+      <strong>${escapeHtml(formatRuntimeMode(runtime.mode))}</strong>
+      <small>${escapeHtml(formatRuntimeSummary(runtime))}</small>
     </div>
     <div class="list-item">
-      <strong>${escapeHtml(t("runtime.provider"))}: ${escapeHtml(runtime.provider)}</strong>
-      <small>${escapeHtml(t("runtime.model"))}: ${escapeHtml(runtime.modelName)}</small>
+      <strong>${escapeHtml(t("runtime.provider"))}: ${escapeHtml(formatProvider(runtime.provider))}</strong>
+      <small>${escapeHtml(t("runtime.model"))}: ${escapeHtml(formatModelName(runtime.modelName))}</small>
     </div>
   `;
   animateChildren("runtime-view");
@@ -576,12 +734,15 @@ async function loadProfile() {
 }
 
 async function loadKnowledge() {
-  const docs = await api("/api/v1/knowledge/documents");
+  const docs = await api(`/api/v1/knowledge/documents?userId=${encodeURIComponent(currentUserId())}`);
   const items = docs.map(doc => `
     <div class="list-item">
       <strong>${escapeHtml(doc.title)}</strong>
       <small>${escapeHtml(doc.summary)}</small>
-      <small>${escapeHtml(t("label.locale"))}: ${escapeHtml(doc.locale || "en-US")}</small>
+      <div class="list-item-meta">
+        <span class="source-pill ${doc.userId === currentUserId() ? "is-personal" : "is-shared"}">${escapeHtml(formatKnowledgeScope(doc))}</span>
+        <span class="meta-pill">${escapeHtml(t("label.locale"))}: ${escapeHtml(doc.locale || "en-US")}</span>
+      </div>
     </div>
   `).join("");
   document.getElementById("knowledge-view").innerHTML = items || `<div class="empty-state">${escapeHtml(t("state.knowledgeEmpty"))}</div>`;
@@ -594,7 +755,7 @@ async function loadConnectors() {
   const items = connectors.map(connector => `
     <div class="list-item">
       <strong>${escapeHtml(connector.connectorName)}</strong>
-      <small>${escapeHtml(connector.summary)}</small>
+      <small>${escapeHtml(formatConnectorSummary(connector))}</small>
     </div>
   `).join("");
   document.getElementById("connectors-view").innerHTML = items;
@@ -603,12 +764,12 @@ async function loadConnectors() {
 }
 
 async function loadConfirmations() {
-  const confirmations = await api("/api/v1/confirmations");
+  const confirmations = await api(`/api/v1/confirmations?userId=${encodeURIComponent(currentUserId())}`);
   renderConfirmations(confirmations);
 }
 
 async function loadPlans() {
-  const plans = await api("/api/v1/plans");
+  const plans = await api(`/api/v1/plans?userId=${encodeURIComponent(currentUserId())}`);
   const visiblePlans = plans.slice(0, PLAN_HISTORY_LIMIT);
   const overflow = plans.length > PLAN_HISTORY_LIMIT
     ? `<div class="list-note">${escapeHtml(t("state.planOverflow", { visible: PLAN_HISTORY_LIMIT, total: plans.length }))}</div>`
@@ -626,7 +787,7 @@ async function loadPlans() {
   animateChildren("plans-view");
   document.querySelectorAll("[data-plan-id]").forEach(button => {
     button.addEventListener("click", () => runSafely(async () => {
-      const plan = await api(`/api/v1/plans/${button.dataset.planId}`);
+      const plan = await api(`/api/v1/plans/${button.dataset.planId}?userId=${encodeURIComponent(currentUserId())}`);
       renderPlan(plan);
       flashElement("plan-view");
     }));
@@ -636,6 +797,57 @@ async function loadPlans() {
 async function loadTimeline(runId) {
   const events = await api(`/api/v1/executions/${runId}/timeline`);
   renderTimeline(events);
+}
+
+async function handleIdentityChange() {
+  syncActivePersona();
+  resetUserScopedViews();
+  await Promise.all([
+    loadProfile(),
+    loadKnowledge(),
+    loadConfirmations(),
+    loadPlans(),
+    loadSecurityOverview(),
+    loadAuditTrail()
+  ]);
+  renderSequence();
+}
+
+function resetUserScopedViews() {
+  state.latestRunId = null;
+  state.latestPlanId = null;
+  state.latestAssistantReply = null;
+  state.confirmationCount = 0;
+  document.getElementById("preview-summary").textContent = t("state.previewIdle");
+  document.getElementById("profile-view").textContent = t("state.profileLoading");
+  document.getElementById("assistant-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.assistantIdle"))}</div>`;
+  document.getElementById("plan-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.planIdle"))}</div>`;
+  document.getElementById("timeline-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.timelineEmpty"))}</div>`;
+  document.getElementById("plans-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.planEmpty"))}</div>`;
+  document.getElementById("confirmations-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.confirmationEmpty"))}</div>`;
+}
+
+// Default the first-load experience to a clean persona instead of the legacy generic user / 首次加载优先进入干净 persona，避免历史测试数据污染真实体验。
+function initializeDefaultPersona() {
+  const userInput = document.getElementById("user-id");
+  if (!userInput || state.personas.length === 0) {
+    return;
+  }
+
+  const current = userInput.value.trim();
+  if (current && current !== "lifeos-user") {
+    syncActivePersona();
+    return;
+  }
+
+  const defaultPersona = state.personas.find(persona => persona.id !== "ops-reviewer") || state.personas[0];
+  if (!defaultPersona) {
+    return;
+  }
+
+  setPersonaContext(defaultPersona, { switchSurface: true });
+  syncActivePersona();
+  renderPersonas(state.personas);
 }
 
 async function saveProfile() {
@@ -655,6 +867,8 @@ async function saveProfile() {
   flashElement("preview-summary", "is-updated");
   await loadOperations();
   await loadProfile();
+  await loadSecurityOverview();
+  await loadAuditTrail();
 }
 
 async function addKnowledge() {
@@ -666,7 +880,7 @@ async function addKnowledge() {
     .map(item => item.trim())
     .filter(Boolean);
 
-  await api("/api/v1/knowledge/documents", {
+  await api(`/api/v1/knowledge/documents?userId=${encodeURIComponent(currentUserId())}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -686,6 +900,84 @@ async function addKnowledge() {
   flashElement("preview-summary", "is-updated");
   await loadOperations();
   await loadKnowledge();
+  await loadSecurityOverview();
+  await loadAuditTrail();
+}
+
+function renderPersonas(personas) {
+  const container = document.getElementById("persona-view");
+  if (!container) {
+    return;
+  }
+  if (!personas || personas.length === 0) {
+    container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.personaEmpty"))}</div>`;
+    return;
+  }
+
+  container.innerHTML = personas.map(persona => `
+    <article class="persona-card ${persona.id === state.activePersonaId ? "is-selected" : ""}">
+      <h3>${escapeHtml(persona.displayName)}</h3>
+      <p>${escapeHtml(persona.description)}</p>
+      <div class="persona-meta">
+        <span class="meta-pill">${escapeHtml(t("label.userId"))}: ${escapeHtml(persona.userId)}</span>
+        <span class="meta-pill">${escapeHtml(t("label.thread"))}: ${escapeHtml(shortId(persona.threadId))}</span>
+      </div>
+      <div class="persona-meta">
+        <span class="meta-pill">${escapeHtml(t("persona.prompt"))}</span>
+      </div>
+      <p>${escapeHtml(persona.prompt)}</p>
+      <div class="actions">
+        <button class="primary" data-persona-id="${escapeHtml(persona.id)}">${escapeHtml(t("actions.usePersona"))}</button>
+      </div>
+    </article>
+  `).join("");
+
+  document.querySelectorAll("[data-persona-id]").forEach(button => {
+    button.addEventListener("click", () => runSafely(() => applyPersona(button.dataset.personaId)));
+  });
+  animateChildren("persona-view");
+}
+
+async function applyPersona(personaId) {
+  const persona = state.personas.find(item => item.id === personaId);
+  if (!persona) {
+    return;
+  }
+
+  setPersonaContext(persona, { switchSurface: true });
+
+  await api(`/api/v1/profile?userId=${encodeURIComponent(persona.userId)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      preferences: persona.preferences,
+      goals: []
+    })
+  });
+
+  await handleIdentityChange();
+  renderPersonas(state.personas);
+  document.getElementById("preview-summary").textContent = t("state.personaApplied", { name: persona.displayName });
+  flashElement("preview-summary", "is-updated");
+}
+
+function setPersonaContext(persona, options = {}) {
+  document.getElementById("user-id").value = persona.userId;
+  document.getElementById("thread-id").value = persona.threadId;
+  document.getElementById("plan-input").value = persona.prompt;
+  document.getElementById("travel-style").value = persona.preferences.travelStyle || "";
+  document.getElementById("budget-level").value = persona.preferences.budgetLevel || "";
+  document.getElementById("study-goal").value = persona.preferences.studyGoal || "";
+  state.activePersonaId = persona.id;
+
+  if (options.switchSurface) {
+    applySurfaceMode(persona.id === "ops-reviewer" ? "tob" : "toc");
+  }
+}
+
+function syncActivePersona() {
+  const activePersona = state.personas.find(item => item.userId === currentUserId());
+  state.activePersonaId = activePersona ? activePersona.id : null;
 }
 
 function renderArchitecture(architecture) {
@@ -709,10 +1001,66 @@ function renderArchitecture(architecture) {
   document.getElementById("architecture-view").innerHTML = items.map(([key, value]) => `
     <article class="chip-card">
       <strong>${escapeHtml(t(key))}</strong>
-      <span>${escapeHtml(humanizeValue(value))}</span>
+      <span>${escapeHtml(formatArchitectureValue(key, value))}</span>
     </article>
   `).join("");
   animateChildren("architecture-view");
+}
+
+function renderSecurityOverview(overview) {
+  const guardrailContainer = document.getElementById("guardrail-view");
+  const securityContainer = document.getElementById("security-view");
+  if (!overview) {
+    if (guardrailContainer) {
+      guardrailContainer.innerHTML = `<div class="empty-state">${escapeHtml(t("state.guardrailEmpty"))}</div>`;
+    }
+    if (securityContainer) {
+      securityContainer.innerHTML = `<div class="empty-state">${escapeHtml(t("state.guardrailEmpty"))}</div>`;
+    }
+    return;
+  }
+
+  const trust = overview.trust;
+  const trustHtml = `
+    <div class="list-item">
+      <strong>${escapeHtml(t("label.persona"))}: ${escapeHtml(formatPersonaId(trust.personaId))}</strong>
+      <small>${escapeHtml(t("label.trustTier"))}: ${escapeHtml(formatTrustTier(trust.trustTier))}</small>
+      <small>${escapeHtml(t("security.summary"))}: ${escapeHtml(formatSecuritySummary(trust))}</small>
+    </div>
+    <div class="list-item">
+      <strong>${escapeHtml(t("security.writeApproval"))}</strong>
+      <small>${escapeHtml(booleanLabel(trust.writeRequiresApproval))}</small>
+      <small>${escapeHtml(t("security.network"))}: ${escapeHtml(booleanLabel(trust.outboundNetworkAllowed))}</small>
+    </div>
+  `;
+
+  if (guardrailContainer) {
+    guardrailContainer.innerHTML = trustHtml;
+    animateChildren("guardrail-view");
+  }
+
+  if (securityContainer) {
+    securityContainer.innerHTML = `
+      <article class="chip-card security-card">
+        <h3>${escapeHtml(t("label.trustTier"))}</h3>
+        <p>${escapeHtml(formatTrustTier(trust.trustTier))}</p>
+        <div class="security-meta">
+          <span class="meta-pill">${escapeHtml(t("security.workspaceTrusted"))}: ${escapeHtml(booleanLabel(trust.workspaceTrusted))}</span>
+          <span class="meta-pill">${escapeHtml(t("security.mcpTrusted"))}: ${escapeHtml(booleanLabel(trust.mcpTrusted))}</span>
+          <span class="meta-pill">${escapeHtml(t("security.network"))}: ${escapeHtml(booleanLabel(trust.outboundNetworkAllowed))}</span>
+        </div>
+        <p>${escapeHtml(formatSecuritySummary(trust))}</p>
+      </article>
+      <article class="chip-card security-card">
+        <h3>${escapeHtml(t("security.policies"))}</h3>
+        <ul>
+          ${(overview.policies || []).map(policy => `<li>${escapeHtml(policy.capability)} · ${escapeHtml(formatAccessLevel(policy.accessLevel))} · ${escapeHtml(formatPolicyReason(policy))}</li>`).join("")}
+        </ul>
+        <p>${escapeHtml(t("security.allowlist"))}: ${escapeHtml((trust.outboundAllowlist || []).join(", "))}</p>
+      </article>
+    `;
+    animateChildren("security-view");
+  }
 }
 
 function renderOperations(operations) {
@@ -751,7 +1099,7 @@ function renderOperations(operations) {
       <div class="ops-value">${escapeHtml(formatMillis(operations.assistantP95Ms))}</div>
       <small class="ops-meta">${escapeHtml(t("metrics.assistantP95"))} · ${escapeHtml(t("ops.uxBootstrapP95"))}: ${escapeHtml(formatMillis(operations.uxBootstrapP95Ms))}</small>
       <small class="ops-meta">${escapeHtml(t("ops.uxInteractionP95"))}: ${escapeHtml(formatMillis(operations.uxInteractionP95Ms))} · ${escapeHtml(t("ops.pendingConfirmations"))}: ${escapeHtml(String(operations.pendingConfirmations))}</small>
-      <small class="ops-meta">${escapeHtml(operations.summary)}</small>
+      <small class="ops-meta">${escapeHtml(formatOperationsSummary(operations.summary, operations))}</small>
     </article>
   `;
   animateChildren("operations-view");
@@ -765,7 +1113,7 @@ function renderAssistantReply(reply) {
   const highlights = (reply.highlights || []).map(item => `<li>${escapeHtml(item)}</li>`).join("");
   document.getElementById("assistant-view").innerHTML = `
     <div class="list-item">
-      <strong>${escapeHtml(t("assistant.mode"))}: ${escapeHtml(reply.mode)}</strong>
+      <strong>${escapeHtml(t("assistant.mode"))}: ${escapeHtml(formatRuntimeMode(reply.mode))}</strong>
       <small>${escapeHtml(reply.message)}</small>
       <small>${escapeHtml(t("assistant.planId"))}: ${escapeHtml(reply.planId || "-")}</small>
       <small>${escapeHtml(t("assistant.runId"))}: ${escapeHtml(reply.runId || "-")}</small>
@@ -827,7 +1175,7 @@ function renderConfirmations(confirmations) {
 }
 
 async function decideConfirmation(id, decision) {
-  const updated = await api(`/api/v1/confirmations/${id}/decision`, {
+  const updated = await api(`/api/v1/confirmations/${id}/decision?userId=${encodeURIComponent(currentUserId())}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ decision, comment: `Decision submitted from dashboard: ${decision}` })
@@ -837,6 +1185,7 @@ async function decideConfirmation(id, decision) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        userId: currentUserId(),
         planId: updated.planId,
         locale: state.locale
       })
@@ -863,6 +1212,8 @@ async function decideConfirmation(id, decision) {
   await loadOperations();
   await loadConfirmations();
   await loadPlans();
+  await loadSecurityOverview();
+  await loadAuditTrail();
 }
 
 function renderRagStatus(rag) {
@@ -885,10 +1236,32 @@ function renderRagStatus(rag) {
   document.getElementById("rag-view").innerHTML = items.map(([key, value]) => `
     <div class="list-item">
       <strong>${escapeHtml(t(key))}</strong>
-      <small>${escapeHtml(String(value))}</small>
+      <small>${escapeHtml(formatRagValue(key, value))}</small>
     </div>
   `).join("");
   animateChildren("rag-view");
+}
+
+function renderAuditTrail(entries) {
+  const container = document.getElementById("audit-view");
+  if (!container) {
+    return;
+  }
+  if (!entries || entries.length === 0) {
+    container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.auditEmpty"))}</div>`;
+    return;
+  }
+
+  container.innerHTML = entries.map(entry => `
+    <div class="list-item">
+      <strong>${escapeHtml(formatAuditTitle(entry))}</strong>
+      <small>${escapeHtml(t("label.outcome"))}: ${escapeHtml(formatOutcome(entry.outcome))}</small>
+      <small>${escapeHtml(t("label.userId"))}: ${escapeHtml(entry.userId)} · ${escapeHtml(t("label.thread"))}: ${escapeHtml(entry.threadId)}</small>
+      <small>${escapeHtml(formatAuditDetail(entry))}</small>
+      <span class="audit-outcome ${outcomeClass(entry.outcome)}">${escapeHtml(formatOutcome(entry.outcome))}</span>
+    </div>
+  `).join("");
+  animateChildren("audit-view");
 }
 
 // Render a lightweight sequence diagram in the page / 在页面里渲染轻量时序图，帮助解释请求如何流动。
@@ -911,13 +1284,13 @@ function renderSequence() {
     {
       title: t("sequence.orchestrator.title"),
       meta: t("sequence.orchestrator.meta"),
-      detail: humanizeValue(state.runtime?.mode || "orchestrator-fallback"),
+      detail: formatRuntimeMode(state.runtime?.mode || "orchestrator-fallback"),
       live: true
     },
     {
       title: t("sequence.rag.title"),
       meta: t("sequence.rag.meta"),
-      detail: state.rag ? humanizeValue(state.rag.retrievalMode) : "loading",
+      detail: state.rag ? formatRagValue("rag.retrievalMode", state.rag.retrievalMode) : (isChineseLocale() ? "加载中" : "Loading"),
       live: Boolean(state.rag),
       optional: !state.rag?.vectorReady
     },
@@ -930,7 +1303,7 @@ function renderSequence() {
     {
       title: t("sequence.a2a.title"),
       meta: t("sequence.a2a.meta"),
-      detail: humanizeValue(specialistMode),
+      detail: formatArchitectureValue("architecture.travelSpecialist", specialistMode),
       optional: true
     },
     {
@@ -1047,6 +1420,14 @@ function currentUserId() {
   return document.getElementById("user-id").value.trim() || "lifeos-user";
 }
 
+function isChineseLocale() {
+  return state.locale.startsWith("zh");
+}
+
+function shouldUseGlobalAudit() {
+  return state.activePersonaId === "ops-reviewer" || state.securityOverview?.trust?.trustTier === "operator";
+}
+
 function applyTranslations() {
   document.title = t("app.title");
   document.querySelectorAll("[data-i18n]").forEach(node => {
@@ -1067,9 +1448,307 @@ function formatStatus(status) {
   return t(`status.${status}`, status);
 }
 
+function formatTrustTier(trustTier) {
+  return t(`trust.${trustTier}`, humanizeValue(trustTier));
+}
+
+function formatAccessLevel(accessLevel) {
+  return t(`access.${accessLevel}`, humanizeValue(accessLevel));
+}
+
+function formatOutcome(outcome) {
+  return t(`outcome.${outcome}`, humanizeValue(outcome));
+}
+
+function booleanLabel(value) {
+  return value ? t("common.enabled") : t("common.disabled");
+}
+
+function outcomeClass(outcome) {
+  if (["SUCCESS", "APPROVED", "RESUMED"].includes(outcome)) {
+    return "is-good";
+  }
+  if (["DENIED", "FAILURE", "REJECTED", "BLOCKED"].includes(outcome)) {
+    return "is-danger";
+  }
+  return "is-warn";
+}
+
 function connectorSummary(name, fallback) {
   const connector = state.connectors.find(item => item.connectorName === name);
-  return connector ? connector.summary : humanizeValue(fallback);
+  return connector ? formatConnectorSummary(connector) : formatArchitectureValue("architecture.travelSearch", fallback);
+}
+
+function formatRuntimeMode(mode) {
+  const mappings = {
+    "orchestrator-fallback": isChineseLocale() ? "确定性编排" : "Deterministic Orchestrator",
+    "agentscope-react": "AgentScope ReAct"
+  };
+  return mappings[mode] || humanizeValue(mode);
+}
+
+function formatRuntimeSummary(runtime) {
+  if (runtime?.mode === "agentscope-react") {
+    return isChineseLocale()
+      ? "已启用真实模型与 AgentScope ReAct 运行时，可进行带工具的推理与会话延续。"
+      : "AgentScope ReAct is active with real model access, tool use, and persisted session context.";
+  }
+  if (runtime?.mode === "orchestrator-fallback") {
+    return isChineseLocale()
+      ? "当前未配置外部模型，服务使用确定性编排器提供稳定、可审计的响应。"
+      : "No external model is configured, so the service stays on the deterministic orchestrator for stable, auditable responses.";
+  }
+  return runtime?.summary || "";
+}
+
+function formatProvider(provider) {
+  if (provider === "deterministic") {
+    return isChineseLocale() ? "内置稳定编排" : "Built-in deterministic runtime";
+  }
+  return humanizeValue(provider);
+}
+
+function formatModelName(modelName) {
+  if (!modelName || modelName === "none") {
+    return isChineseLocale() ? "未配置" : "Not configured";
+  }
+  return modelName;
+}
+
+function formatPersonaId(personaId) {
+  const mappings = {
+    "urban-traveler": isChineseLocale() ? "都市旅行者" : "Urban Traveler",
+    "habit-builder": isChineseLocale() ? "习惯坚持者" : "Habit Builder",
+    "guest-explorer": isChineseLocale() ? "谨慎体验者" : "Cautious Explorer",
+    "ops-reviewer": isChineseLocale() ? "运营观察者" : "Operations Reviewer",
+    "general-user": isChineseLocale() ? "通用用户" : "General User"
+  };
+  return mappings[personaId] || humanizeValue(personaId);
+}
+
+function formatSecuritySummary(trust) {
+  const summaries = {
+    restricted: isChineseLocale()
+      ? "当前身份仍处于受限状态，只允许查看建议，不开放实时外呼和远程专家。"
+      : "This identity stays restricted to safe planning. Live search and remote specialists remain disabled.",
+    guarded: isChineseLocale()
+      ? "当前身份可进行本地规划，但网络与外部写入仍受策略约束。"
+      : "This identity can plan locally while network access and external writes remain policy-bound.",
+    trusted: isChineseLocale()
+      ? "当前身份已被信任，可在审批护栏下使用实时搜索与远程专家。"
+      : "This identity is trusted and can use live search plus remote specialists behind approval guardrails.",
+    operator: isChineseLocale()
+      ? "运营身份可查看系统控制面，但写操作仍需经过审批。"
+      : "Operator identities can inspect system controls, while write actions remain approval-gated."
+  };
+  return summaries[trust?.trustTier] || trust?.summary || "";
+}
+
+function formatPolicyReason(policy) {
+  const key = `${policy.capability}|${policy.accessLevel}`;
+  const mappings = {
+    "knowledge.read|allowed": isChineseLocale()
+      ? "种子知识与个人文档始终可用于生成有依据的回答。"
+      : "Seeded knowledge plus personal documents are always available for grounded answers.",
+    "travel.search|guarded-live": isChineseLocale()
+      ? "可在白名单范围内调用 FlyAI 或实时旅行搜索。"
+      : "FlyAI and live travel search can run only against the outbound allowlist.",
+    "travel.search|seeded-only": isChineseLocale()
+      ? "当前仅使用内置知识，不会访问外部搜索。"
+      : "Search stays on seeded knowledge only until the identity becomes trusted.",
+    "remote.specialist|approval-required": isChineseLocale()
+      ? "A2A 与 MCP 远程专家需要先通过信任检查与人工审批。"
+      : "A2A and MCP specialists remain behind trust checks and manual approvals.",
+    "remote.specialist|disabled": isChineseLocale()
+      ? "未授信身份暂不开放远程专家调用。"
+      : "Remote specialists remain disabled for untrusted identities.",
+    "external.write|approval-required": isChineseLocale()
+      ? "日历、提醒等外部写入必须先经过用户确认。"
+      : "Calendar writes, reminders, and other external mutations require explicit approval.",
+    "external.write|guarded-auto": isChineseLocale()
+      ? "仅在批准的维护窗口内允许运营自动化继续执行。"
+      : "Operator automation can continue only inside approved maintenance windows.",
+    "system.exec|approval-required": isChineseLocale()
+      ? "系统执行始终需要额外授权，且不会自动触发。"
+      : "System execution always requires extra approval and never runs automatically.",
+    "system.exec|denied": isChineseLocale()
+      ? "系统执行默认禁用，不会自动向宿主环境发出命令。"
+      : "System execution stays disabled by default and never runs against the host automatically."
+  };
+  return mappings[key] || policy.reason;
+}
+
+function formatConnectorSummary(connector) {
+  const mappings = {
+    search: connector.enabled
+      ? (isChineseLocale() ? "旅行搜索聚合连接器已启用。" : "Unified travel search is available.")
+      : (isChineseLocale() ? "旅行搜索聚合连接器当前不可用。" : "Unified travel search is currently unavailable."),
+    "flyai-search": connector.enabled
+      ? (isChineseLocale() ? "FlyAI 搜索已接入，可为旅行建议补充实时信息。" : "FlyAI search is connected and can enrich travel planning with live results.")
+      : (isChineseLocale() ? "FlyAI 搜索未启用，当前回退到内置种子知识。" : "FlyAI search is disabled, so the service falls back to seeded knowledge."),
+    weather: connector.enabled
+      ? (isChineseLocale() ? "天气连接器已启用，可补充节奏和体感判断。" : "Weather data is available for pacing and comfort checks.")
+      : connector.summary,
+    calendar: connector.enabled
+      ? (isChineseLocale() ? "日历连接器已启用，但写入仍需审批。" : "Calendar drafts are available, with writes still behind approvals.")
+      : connector.summary,
+    reminder: connector.enabled
+      ? (isChineseLocale() ? "提醒连接器已启用，但创建提醒仍需确认。" : "Reminder drafts are available, with creation still gated by confirmation.")
+      : connector.summary
+  };
+  return mappings[connector.connectorName] || connector.summary;
+}
+
+function formatKnowledgeScope(doc) {
+  const personal = doc.userId === currentUserId();
+  return personal
+    ? (isChineseLocale() ? "个人知识" : "Personal knowledge")
+    : (isChineseLocale() ? "共享知识" : "Shared knowledge");
+}
+
+function formatArchitectureValue(key, value) {
+  const raw = String(value ?? "");
+  const mappings = {
+    "architecture.deploymentMode": {
+      "single-node": isChineseLocale() ? "单节点" : "Single node"
+    },
+    "architecture.persistenceMode": {
+      database: isChineseLocale() ? "数据库持久化" : "Database persistence"
+    },
+    "architecture.database": {
+      "h2-file": isChineseLocale() ? "H2 文件数据库" : "H2 file database",
+      postgresql: "PostgreSQL"
+    },
+    "architecture.ragStore": {
+      "postgres-text-now-pgvector-target": isChineseLocale() ? "数据库文本检索，随时可切 pgvector" : "Database text retrieval with a pgvector upgrade path",
+      "hybrid-text-plus-pgvector-ready": isChineseLocale() ? "混合文本检索，已具备 pgvector 接入条件" : "Hybrid text retrieval, pgvector ready"
+    },
+    "architecture.sessionStore": {
+      "json-session": isChineseLocale() ? "JSON 会话文件" : "JSON session files"
+    },
+    "architecture.topology": {
+      "modular-monolith-ready-for-cluster": isChineseLocale() ? "模块化单体，可平滑演进到集群" : "Modular monolith with a clean path to cluster deployment"
+    },
+    "architecture.travelSearch": {
+      "seeded-search-plus-optional-flyai": isChineseLocale() ? "内置知识检索 + 可选 FlyAI 实时搜索" : "Seeded retrieval with optional FlyAI live search"
+    },
+    "architecture.travelSpecialist": {
+      "local-travel-agent-plus-optional-a2a": isChineseLocale() ? "本地旅行专家 + 可选 A2A 远程专家" : "Local travel specialist with optional A2A remote advisor"
+    }
+  };
+
+  if (key === "architecture.notes" && raw.startsWith("Session files live at ")) {
+    const path = raw.replace("Session files live at ", "");
+    return isChineseLocale() ? `会话文件目录：${path}` : `Session files directory: ${path}`;
+  }
+
+  return mappings[key]?.[raw] || humanizeValue(raw);
+}
+
+function formatRagValue(key, value) {
+  if (key === "rag.enabled" || key === "rag.vectorReady") {
+    return booleanLabel(Boolean(value));
+  }
+  if (key === "rag.retrievalMode") {
+    return value === "text-only"
+      ? (isChineseLocale() ? "仅文本召回" : "Text-only retrieval")
+      : humanizeValue(value);
+  }
+  if (key === "rag.store") {
+    return value === "database-text"
+      ? (isChineseLocale() ? "数据库文本存储" : "Database text store")
+      : humanizeValue(value);
+  }
+  if (key === "rag.provider" || key === "rag.modelName") {
+    return !value || value === "none" ? (isChineseLocale() ? "未配置" : "Not configured") : String(value);
+  }
+  if (key === "rag.summary" && String(value).startsWith("Vector retrieval is not configured")) {
+    return isChineseLocale()
+      ? "当前未配置向量检索，因此服务仅使用已持久化的文本召回。"
+      : "Vector retrieval is not configured, so the service uses persisted text retrieval only.";
+  }
+  return String(value);
+}
+
+function formatOperationsSummary(summary, operations) {
+  if (operations.withinCapacity && operations.withinSlo) {
+    return isChineseLocale()
+      ? "当前容量、可用性与体验指标都处于目标区间内。"
+      : "Capacity, reliability, and UX metrics are all within the target envelope.";
+  }
+  if (!operations.withinCapacity) {
+    return isChineseLocale()
+      ? "当前流量正在逼近峰值预算，建议检查自动扩缩容策略。"
+      : "Traffic is approaching the configured peak budget. Review autoscaling policy.";
+  }
+  if (operations.pendingConfirmations > 10) {
+    return isChineseLocale()
+      ? "审批积压正在上升，建议检查确认吞吐和升级规则。"
+      : "Approval backlog is rising. Review confirmation throughput and escalation rules.";
+  }
+  return summary;
+}
+
+function formatModuleSummary(name, summary) {
+  const mappings = {
+    domain: isChineseLocale()
+      ? "领域契约已就绪，覆盖计划、画像、确认和执行模型。"
+      : "Domain contracts are ready for plans, profiles, confirmations, and execution records.",
+    agents: isChineseLocale()
+      ? "专业智能体已就绪，可处理旅行、学习与日程协同。"
+      : "Specialist agents are ready for travel, learning, and schedule coordination.",
+    memory: isChineseLocale()
+      ? "记忆服务已就绪，可按 persona 维护长期偏好与画像。"
+      : "Memory services are ready for persona-scoped preferences and long-term profiles.",
+    rag: isChineseLocale()
+      ? "RAG 层已就绪，可使用数据库文本召回并切换到 pgvector。"
+      : "RAG is ready with database text retrieval and a path to pgvector.",
+    tools: isChineseLocale()
+      ? "工具层已就绪，可提供天气、搜索、日历和提醒能力。"
+      : "Tooling is ready for weather, search, calendar, and reminder capabilities.",
+    orchestrator: isChineseLocale()
+      ? "编排器已就绪，可协调旅行、学习与日程专家且不产生副作用。"
+      : "The orchestrator is ready to coordinate travel, learning, and schedule specialists without side effects.",
+    infra: isChineseLocale()
+      ? "基础设施已就绪，当前使用数据库持久化模式。"
+      : "Infrastructure is ready and currently runs with database-backed persistence.",
+    web: isChineseLocale()
+      ? "前台与运营台入口已就绪，支持双语视图和埋点采集。"
+      : "The web surface is ready for bilingual views, telemetry capture, and orchestration endpoints."
+  };
+  return mappings[name] || summary;
+}
+
+function formatAuditTitle(entry) {
+  const key = `${entry.category}.${entry.action}`;
+  const mappings = {
+    "plan.preview": isChineseLocale() ? "计划 · 预览" : "Plan · Preview",
+    "assistant.message": isChineseLocale() ? "助手 · 回复" : "Assistant · Reply",
+    "assistant.resume": isChineseLocale() ? "助手 · 恢复执行" : "Assistant · Resume",
+    "profile.update": isChineseLocale() ? "画像 · 更新" : "Profile · Update",
+    "knowledge.write": isChineseLocale() ? "知识 · 写入" : "Knowledge · Write",
+    "plan.denied": isChineseLocale() ? "计划 · 拒绝跨用户访问" : "Plan · Cross-user access denied",
+    "confirmation.decision": isChineseLocale() ? "确认流 · 审批决策" : "Confirmation · Decision"
+  };
+  return mappings[key] || `${entry.category} · ${entry.action}`;
+}
+
+function formatAuditDetail(entry) {
+  const detail = entry.detail || "";
+  if (detail.startsWith("Created a user-scoped action plan")) {
+    return isChineseLocale() ? "已为当前身份生成并持久化一份作用域隔离的行动方案。" : "Created and persisted a user-scoped action plan.";
+  }
+  if (detail === "Updated explicit long-term preferences.") {
+    return isChineseLocale() ? "已更新用户显式维护的长期偏好。" : detail;
+  }
+  if (detail.startsWith("Persisted manual document: ")) {
+    const title = detail.replace("Persisted manual document: ", "");
+    return isChineseLocale() ? `已持久化一条手动知识文档：${title}` : detail;
+  }
+  if (detail.startsWith("Blocked cross-user")) {
+    return isChineseLocale() ? "已拦截跨身份访问请求。" : detail;
+  }
+  return detail;
 }
 
 function formatPercentage(value) {

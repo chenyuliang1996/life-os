@@ -17,6 +17,8 @@ import java.util.Optional;
 @ConditionalOnProperty(name = "lifeos.persistence.mode", havingValue = "database", matchIfMissing = true)
 public class DatabaseConfirmationRequestRepository implements ConfirmationRequestRepository {
 
+    private static final String LEGACY_DEFAULT_USER_ID = "lifeos-user";
+
     private final SpringDataConfirmationRequestEntityRepository repository;
 
     public DatabaseConfirmationRequestRepository(SpringDataConfirmationRequestEntityRepository repository) {
@@ -50,6 +52,14 @@ public class DatabaseConfirmationRequestRepository implements ConfirmationReques
     }
 
     @Override
+    public List<ConfirmationRequest> findByUserIdAndStatus(String userId, ConfirmationStatus status) {
+        return repository.findByStatusOrderByCreatedAtDesc(status.name()).stream()
+                .filter(entity -> normalizeUserId(entity.getUserId()).equals(userId))
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
     public Optional<ConfirmationRequest> findById(String id) {
         return repository.findById(id).map(this::toDomain);
     }
@@ -57,6 +67,7 @@ public class DatabaseConfirmationRequestRepository implements ConfirmationReques
     private ConfirmationRequestEntity toEntity(ConfirmationRequest request) {
         ConfirmationRequestEntity entity = new ConfirmationRequestEntity();
         entity.setId(request.id());
+        entity.setUserId(request.userId());
         entity.setPlanId(request.planId());
         entity.setAction(request.action());
         entity.setStatus(request.status().name());
@@ -68,11 +79,16 @@ public class DatabaseConfirmationRequestRepository implements ConfirmationReques
     private ConfirmationRequest toDomain(ConfirmationRequestEntity entity) {
         return new ConfirmationRequest(
                 entity.getId(),
+                normalizeUserId(entity.getUserId()),
                 entity.getPlanId(),
                 entity.getAction(),
                 ConfirmationStatus.valueOf(entity.getStatus()),
                 entity.getComment(),
                 entity.getCreatedAt()
         );
+    }
+
+    private String normalizeUserId(String userId) {
+        return userId == null || userId.isBlank() ? LEGACY_DEFAULT_USER_ID : userId;
     }
 }

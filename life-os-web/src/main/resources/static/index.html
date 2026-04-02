@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life OS</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="stylesheet" href="/styles.css?v=20260331c">
 </head>
 <body data-default-locale="zh-CN" data-surface="toc">
@@ -70,6 +71,17 @@
             <div id="sequence-view" class="sequence-rail"></div>
         </section>
 
+        <section class="card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.personas.title">身份场景</h2>
+                    <p class="section-subtitle" data-i18n="sections.personas.subtitle">切换真实用户画像，快速验证旅行、学习和运营观察视角。</p>
+                </div>
+                <span class="pill" data-i18n="sections.personas.pill">Persona</span>
+            </div>
+            <div id="persona-view" class="persona-grid"></div>
+        </section>
+
         <section class="card chat-card" data-surface="toc">
             <div class="section-head">
                 <div>
@@ -79,15 +91,15 @@
                 <span class="pill" data-i18n="sections.control.pill">编排流</span>
             </div>
             <label for="plan-input" data-i18n="fields.prompt">提示词</label>
-            <textarea id="plan-input">5月去东京7天，预算1.5万，不要太累，同时别影响英语学习。</textarea>
+            <textarea id="plan-input">五一去东京 7 天，预算 1.5 万，尽量少换乘，晚上保留散步时间。</textarea>
             <div class="form-row">
                 <div>
                     <label for="user-id" data-i18n="fields.userId">用户 ID</label>
-                    <input id="user-id" type="text" value="lifeos-user" placeholder="lifeos-user">
+                    <input id="user-id" type="text" value="persona-travel" placeholder="persona-travel">
                 </div>
                 <div>
                     <label for="thread-id" data-i18n="fields.threadId">线程 ID</label>
-                    <input id="thread-id" type="text" value="thread-life-os" placeholder="thread-life-os">
+                    <input id="thread-id" type="text" value="thread-travel-primary" placeholder="thread-travel-primary">
                 </div>
             </div>
             <div class="hero-actions compact">
@@ -116,6 +128,17 @@
                 <span class="pill" data-i18n="sections.operations.pill">SLO</span>
             </div>
             <div id="operations-view" class="ops-grid"></div>
+        </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.security.title">安全控制</h2>
+                    <p class="section-subtitle" data-i18n="sections.security.subtitle">查看当前身份的信任状态、工具权限和外呼白名单。</p>
+                </div>
+                <span class="pill" data-i18n="sections.security.pill">Guardrail</span>
+            </div>
+            <div id="security-view" class="security-grid"></div>
         </section>
 
         <section class="card" data-surface="tob">
@@ -149,6 +172,17 @@
                 <span class="pill" data-i18n="sections.assistant.pill">Live Output</span>
             </div>
             <div id="assistant-view" class="empty-state" data-i18n="state.assistantIdle">运行助手后，这里会显示最新回复。</div>
+        </section>
+
+        <section class="card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.guardrails.title">用户护栏</h2>
+                    <p class="section-subtitle" data-i18n="sections.guardrails.subtitle">展示当前身份的信任级别、写入审批和外部连接限制。</p>
+                </div>
+                <span class="pill" data-i18n="sections.guardrails.pill">Safety</span>
+            </div>
+            <div id="guardrail-view" class="list-stack"></div>
         </section>
 
         <section class="card wide" data-surface="toc">
@@ -260,8 +294,19 @@
             </div>
             <div id="connectors-view" class="list-stack capped"></div>
         </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.audit.title">审计流水</h2>
+                    <p class="section-subtitle" data-i18n="sections.audit.subtitle">记录计划、审批、画像更新和知识写入等关键操作。</p>
+                </div>
+                <span class="pill" data-i18n="sections.audit.pill">Audit</span>
+            </div>
+            <div id="audit-view" class="list-stack capped"></div>
+        </section>
     </main>
 </div>
-<script src="/app.js?v=20260331c"></script>
+<script src="/app.js?v=20260402b"></script>
 </body>
 </html>

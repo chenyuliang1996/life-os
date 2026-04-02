@@ -136,13 +136,7 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
 
     @Override
     public String executeProbe() {
-        OrchestrationResult result = execute(new PlanPreviewRequest(
-                "lifeos-user",
-                "thread-ops-probe",
-                "Plan a relaxed Tokyo trip without interrupting English study",
-                "en-US"
-        ));
-        return "Orchestrator built plan " + result.plan().id() + " with " + result.plan().tasks().size() + " tasks";
+        return "Orchestrator is ready to coordinate travel, learning, and schedule specialists without side effects.";
     }
 
     private List<TimelineEvent> buildTimeline(String runId,
@@ -184,6 +178,7 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
                 .filter(task -> task.status().name().contains("CONFIRMATION"))
                 .map(task -> confirmationRequestRepository.save(new ConfirmationRequest(
                         UUID.randomUUID().toString(),
+                        plan.userId(),
                         plan.id(),
                         task.title(),
                         ConfirmationStatus.PENDING,

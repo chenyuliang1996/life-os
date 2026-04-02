@@ -77,12 +77,6 @@ public class LearningAgent implements ModuleExecutable<AgentTask, AgentContribut
 
     @Override
     public String executeProbe() {
-        return execute(new AgentTask(
-                "lifeos-user",
-                io.github.yuliangchen.lifeos.domain.model.SpecialistType.LEARNING,
-                "Keep English study going during travel",
-                List.of("prefer short sessions"),
-                "en-US"
-        )).summary();
+        return "Learning specialist is ready to rebalance short practice loops around busy schedules.";
     }
 }

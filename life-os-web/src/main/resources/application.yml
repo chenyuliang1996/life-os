@@ -98,6 +98,15 @@ lifeos:
     openai-model: ${OPENAI_MODEL:gpt-4.1-mini}
     ollama-base-url: ${OLLAMA_BASE_URL:}
     ollama-model: ${OLLAMA_MODEL:qwen2.5:7b}
+  security:
+    trusted-user-prefixes: ${LIFEOS_SECURITY_TRUSTED_PREFIXES:lifeos-,persona-}
+    operator-user-prefixes: ${LIFEOS_SECURITY_OPERATOR_PREFIXES:persona-ops,ops-,admin-}
+    restricted-user-prefixes: ${LIFEOS_SECURITY_RESTRICTED_PREFIXES:guest-,external-}
+    mcp-trusted-user-prefixes: ${LIFEOS_SECURITY_MCP_PREFIXES:lifeos-,persona-travel,persona-ops}
+    outbound-allowlist: ${LIFEOS_SECURITY_ALLOWLIST:api.openai.com,localhost,127.0.0.1,flyai.example}
+    outbound-network-enabled: ${LIFEOS_SECURITY_OUTBOUND_ENABLED:true}
+    exec-enabled: ${LIFEOS_SECURITY_EXEC_ENABLED:false}
+    force-approval-for-operators: ${LIFEOS_SECURITY_FORCE_APPROVAL_OPERATORS:true}
   service:
     target-dau: ${LIFEOS_TARGET_DAU:200000}
     target-peak-qps: ${LIFEOS_TARGET_PEAK_QPS:30}

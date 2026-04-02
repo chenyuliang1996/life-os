@@ -10,6 +10,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "knowledge_documents", indexes = {
+        @Index(name = "idx_knowledge_documents_user_updated_at", columnList = "user_id, updated_at"),
         @Index(name = "idx_knowledge_documents_updated_at", columnList = "updated_at")
 })
 public class KnowledgeDocumentEntity {
@@ -17,6 +18,9 @@ public class KnowledgeDocumentEntity {
     @Id
     @Column(nullable = false, length = 128)
     private String id;
+
+    @Column(name = "user_id", length = 128)
+    private String userId;
 
     @Column(nullable = false, length = 255)
     private String title;
@@ -45,6 +49,14 @@ public class KnowledgeDocumentEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getTitle() {

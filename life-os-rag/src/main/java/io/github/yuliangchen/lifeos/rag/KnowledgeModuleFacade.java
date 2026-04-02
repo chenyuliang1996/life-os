@@ -20,6 +20,8 @@ import java.util.UUID;
 @Component
 public class KnowledgeModuleFacade implements ModuleExecutable<KnowledgeQuery, List<KnowledgeSnippet>> {
 
+    private static final String GLOBAL_USER_ID = "system-seed";
+
     private final KnowledgeDocumentRepository knowledgeDocumentRepository;
     private final VectorKnowledgeStore vectorKnowledgeStore;
 
@@ -42,7 +44,7 @@ public class KnowledgeModuleFacade implements ModuleExecutable<KnowledgeQuery, L
 
         vectorKnowledgeStore.search(input, 3).forEach(snippet -> merged.put(snippet.documentId(), snippet));
 
-        knowledgeDocumentRepository.findAll().stream()
+        knowledgeDocumentRepository.findAllForUser(input.userId()).stream()
                 .filter(document -> document.title().toLowerCase(Locale.ROOT).contains(loweredQuery)
                         || document.summary().toLowerCase(Locale.ROOT).contains(loweredQuery)
                         || document.content().toLowerCase(Locale.ROOT).contains(loweredQuery)
@@ -65,8 +67,8 @@ public class KnowledgeModuleFacade implements ModuleExecutable<KnowledgeQuery, L
         return saved;
     }
 
-    public List<KnowledgeDocument> listDocuments() {
-        return knowledgeDocumentRepository.findAll();
+    public List<KnowledgeDocument> listDocuments(String userId) {
+        return knowledgeDocumentRepository.findAllForUser(userId);
     }
 
     public RagRuntimeStatus ragRuntimeStatus() {
@@ -86,6 +88,7 @@ public class KnowledgeModuleFacade implements ModuleExecutable<KnowledgeQuery, L
 
         addDocument(new KnowledgeDocument(
                 UUID.randomUUID().toString(),
+                GLOBAL_USER_ID,
                 "Tokyo Relaxed Itinerary",
                 "seed",
                 List.of("travel", "tokyo"),
@@ -96,6 +99,7 @@ public class KnowledgeModuleFacade implements ModuleExecutable<KnowledgeQuery, L
         ));
         addDocument(new KnowledgeDocument(
                 UUID.randomUUID().toString(),
+                GLOBAL_USER_ID,
                 "English Sprint Notes",
                 "seed",
                 List.of("learning", "english"),
@@ -106,6 +110,7 @@ public class KnowledgeModuleFacade implements ModuleExecutable<KnowledgeQuery, L
         ));
         addDocument(new KnowledgeDocument(
                 UUID.randomUUID().toString(),
+                GLOBAL_USER_ID,
                 "东京轻松路线笔记",
                 "seed",
                 List.of("travel", "tokyo", "zh"),

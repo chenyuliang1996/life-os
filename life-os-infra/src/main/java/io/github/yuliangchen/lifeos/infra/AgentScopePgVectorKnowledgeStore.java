@@ -25,6 +25,7 @@ import java.util.Map;
 public class AgentScopePgVectorKnowledgeStore implements VectorKnowledgeStore {
 
     private static final Logger log = LoggerFactory.getLogger(AgentScopePgVectorKnowledgeStore.class);
+    private static final String GLOBAL_USER_ID = "system-seed";
 
     private final RagRuntimeStatus status;
     private final EmbeddingModel embeddingModel;
@@ -154,6 +155,7 @@ public class AgentScopePgVectorKnowledgeStore implements VectorKnowledgeStore {
                     .blockOptional()
                     .orElse(List.of())
                     .stream()
+                    .filter(document -> isVisibleToUser(document.getMetadata().getPayloadValue("userId"), query.userId()))
                     .map(document -> new KnowledgeSnippet(
                             document.getMetadata().getDocId(),
                             String.valueOf(document.getMetadata().getPayloadValue("title")),
@@ -183,6 +185,7 @@ public class AgentScopePgVectorKnowledgeStore implements VectorKnowledgeStore {
                             "title", document.title(),
                             "summary", document.summary(),
                             "locale", document.locale(),
+                            "userId", document.userId(),
                             "sourceType", document.sourceType(),
                             "tags", String.join(",", document.tags()),
                             "chunkIndex", index
@@ -265,6 +268,14 @@ public class AgentScopePgVectorKnowledgeStore implements VectorKnowledgeStore {
         }
         chunks.add(current.toString());
         current.setLength(0);
+    }
+
+    private boolean isVisibleToUser(Object payloadUserId, String queryUserId) {
+        if (payloadUserId == null) {
+            return true;
+        }
+        String owner = String.valueOf(payloadUserId);
+        return GLOBAL_USER_ID.equals(owner) || owner.equals(queryUserId);
     }
 
     private EmbeddingModel createEmbeddingModel(VectorRagProperties properties) {

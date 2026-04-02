@@ -8,4 +8,6 @@ import java.util.List;
 public interface SpringDataKnowledgeDocumentEntityRepository extends JpaRepository<KnowledgeDocumentEntity, String> {
 
     List<KnowledgeDocumentEntity> findAllByOrderByUpdatedAtDesc();
+
+    List<KnowledgeDocumentEntity> findByUserIdInOrderByUpdatedAtDesc(List<String> userIds);
 }

@@ -12,5 +12,7 @@ public interface LifePlanRepository {
 
     List<LifePlan> findByStatus(PlanStatus status);
 
+    List<LifePlan> findByUserIdAndStatus(String userId, PlanStatus status);
+
     Optional<LifePlan> findById(String id);
 }
