@@ -1,11 +1,11 @@
 const TRANSLATIONS = {
   "zh-CN": {
-    "app.title": "Life OS",
-    "topbar.badge": "Life OS Service Platform",
+    "app.title": "OtterLife",
+    "topbar.badge": "OtterLife Service Platform",
     "topbar.surfaceToc": "ToC 体验",
     "topbar.surfaceTob": "ToB 运营台",
-    "hero.title": "Life OS",
-    "hero.subtitle": "面向真实用户的生活服务平台，统一承接旅行、学习、日程与执行闭环。",
+    "hero.title": "OtterLife",
+    "hero.subtitle": "面向真实用户的出行与生活协同服务，统一承接节日灵感、行程规划、多人协作与执行闭环。",
     "hero.badgeRag": "Hybrid RAG",
     "hero.badgeSearch": "FlyAI Search",
     "hero.badgeA2a": "A2A Travel",
@@ -25,9 +25,18 @@ const TRANSLATIONS = {
     "sections.operations.title": "服务指标",
     "sections.operations.subtitle": "基于真实请求、审批和前端体验埋点汇总容量、可靠性与体验指标。",
     "sections.operations.pill": "SLO",
-    "sections.sequence.title": "请求时序",
-    "sections.sequence.subtitle": "展示从用户输入到 RAG、搜索、远程专家、确认流和持久化的完整执行顺序。",
-    "sections.sequence.pill": "Sequence",
+    "sections.sequence.title": "用户动线引导",
+    "sections.sequence.subtitle": "告诉用户下一步该做什么，把规划、确认和执行变成可理解的操作路径。",
+    "sections.sequence.pill": "Journey",
+    "sections.festivals.title": "近期节日灵感",
+    "sections.festivals.subtitle": "根据近期节日推荐可玩 POI，并自动轮播刷新。",
+    "sections.festivals.pill": "POI Feed",
+    "sections.calendar.title": "行程日历",
+    "sections.calendar.subtitle": "默认月视图，可切换年/日；点击日期可直接修改每日规划。",
+    "sections.calendar.pill": "Calendar",
+    "sections.group.title": "多人出行协同",
+    "sections.group.subtitle": "添加同行成员和偏好，自动生成兼顾多人诉求的规划上下文。",
+    "sections.group.pill": "Group Trip",
     "sections.arch.title": "部署架构",
     "sections.arch.subtitle": "展示当前部署模式、数据库、RAG 存储与会话策略。",
     "sections.arch.pill": "Cluster",
@@ -82,6 +91,8 @@ const TRANSLATIONS = {
     "fields.personaSearch": "搜索人格",
     "fields.personaTemperament": "气质分组",
     "fields.personaCount": "展示 {visible}/{total} 个身份",
+    "fields.memberName": "成员名称",
+    "fields.memberStyle": "偏好类型",
     "fields.knowledgeTitle": "标题",
     "fields.knowledgeTags": "标签",
     "fields.knowledgeSummary": "摘要",
@@ -92,6 +103,13 @@ const TRANSLATIONS = {
     "actions.approve": "通过",
     "actions.reject": "拒绝",
     "actions.usePersona": "使用此身份",
+    "actions.prev": "上一个",
+    "actions.next": "下一个",
+    "actions.addMember": "添加成员",
+    "actions.applyGroupContext": "应用多人偏好",
+    "actions.editDayPlan": "编辑当天规划",
+    "actions.clearDayPlan": "清空当天规划",
+    "actions.applyFestivalPoi": "用于本次规划",
     "state.previewIdle": "点击“生成可执行方案”开始规划。",
     "state.assistantIdle": "运行助手后，这里会显示最新回复。",
     "state.planIdle": "计划卡片会显示在这里。",
@@ -110,6 +128,9 @@ const TRANSLATIONS = {
     "state.auditEmpty": "审计流水会显示在这里。",
     "state.profileLoading": "正在加载画像...",
     "state.requestFailed": "请求失败，请查看控制台日志。",
+    "state.groupEmpty": "暂无同行成员，默认按单人出行规划。",
+    "state.festivalEmpty": "暂无可用节日灵感。",
+    "state.calendarEmpty": "当天还没有规划内容，点击“编辑当天规划”开始记录。",
     "state.profileSaved": "用户画像已保存。",
     "state.knowledgeSaved": "知识文档已入库。",
     "state.planGenerated": "已生成“{title}”，包含 {tasks} 个任务和 {confirmations} 个确认节点。",
@@ -161,6 +182,22 @@ const TRANSLATIONS = {
     "sequence.hitlWaiting": "待确认动作将阻断外部写入。",
     "sequence.hitlClear": "当前没有待确认动作，执行可继续推进。",
     "sequence.persistSummary": "计划、运行记录、确认单和知识文档都会写入数据库。",
+    "sequence.nextAction": "下一步建议",
+    "sequence.actionDraft": "先在任务控制台输入目标，或选择节日 POI 自动填入。",
+    "sequence.actionCalendar": "检查日历并补齐当天规划，避免排期冲突。",
+    "sequence.actionGroup": "如有同行人，请先添加成员偏好再生成方案。",
+    "sequence.actionRun": "点击“生成可执行方案”，查看任务和确认点。",
+    "sequence.actionConfirm": "完成待确认动作后，系统会继续执行外部写入。",
+    "calendar.view.month": "月",
+    "calendar.view.year": "年",
+    "calendar.view.day": "日",
+    "calendar.editPrompt": "请输入 {date} 的主要规划内容",
+    "calendar.groupSummary": "共 {count} 天有计划",
+    "group.style.culture": "文化体验",
+    "group.style.food": "美食探索",
+    "group.style.family": "亲子友好",
+    "group.style.photo": "拍照打卡",
+    "group.style.night": "夜间活动",
     "ops.card.target": "服务目标",
     "ops.card.traffic": "流量与容量",
     "ops.card.reliability": "可靠性",
@@ -236,12 +273,12 @@ const TRANSLATIONS = {
     "status.BLOCKED": "已阻塞"
   },
   "en-US": {
-    "app.title": "Life OS",
-    "topbar.badge": "Life OS Service Platform",
+    "app.title": "OtterLife",
+    "topbar.badge": "OtterLife Service Platform",
     "topbar.surfaceToc": "ToC Experience",
     "topbar.surfaceTob": "ToB Operations",
-    "hero.title": "Life OS",
-    "hero.subtitle": "A real consumer service that connects travel, learning, schedule, and execution in one operating flow.",
+    "hero.title": "OtterLife",
+    "hero.subtitle": "A user-facing travel service that connects holiday inspiration, itinerary planning, collaboration, and execution in one flow.",
     "hero.badgeRag": "Hybrid RAG",
     "hero.badgeSearch": "FlyAI Search",
     "hero.badgeA2a": "A2A Travel",
@@ -261,9 +298,18 @@ const TRANSLATIONS = {
     "sections.operations.title": "Service Metrics",
     "sections.operations.subtitle": "Capacity, reliability, and UX signals derived from real requests, approvals, and client telemetry.",
     "sections.operations.pill": "SLO",
-    "sections.sequence.title": "Request Sequence",
-    "sections.sequence.subtitle": "Shows the full execution order from user intent through RAG, search, remote specialist, approvals, and persistence.",
-    "sections.sequence.pill": "Sequence",
+    "sections.sequence.title": "User Journey Guide",
+    "sections.sequence.subtitle": "Shows what users should do next, not only technical execution order.",
+    "sections.sequence.pill": "Journey",
+    "sections.festivals.title": "Upcoming Holiday POIs",
+    "sections.festivals.subtitle": "A rotating feed of nearby holiday ideas and playable POIs.",
+    "sections.festivals.pill": "POI Feed",
+    "sections.calendar.title": "Trip Calendar",
+    "sections.calendar.subtitle": "Month by default, switchable to year/day; click a date to edit daily plans.",
+    "sections.calendar.pill": "Calendar",
+    "sections.group.title": "Group Travel Collaboration",
+    "sections.group.subtitle": "Add companions and preferences to generate balanced multi-person planning context.",
+    "sections.group.pill": "Group Trip",
     "sections.arch.title": "Deployment Architecture",
     "sections.arch.subtitle": "Shows deployment mode, database, RAG storage, and session strategy.",
     "sections.arch.pill": "Cluster",
@@ -318,6 +364,8 @@ const TRANSLATIONS = {
     "fields.personaSearch": "Search personas",
     "fields.personaTemperament": "Temperament",
     "fields.personaCount": "Showing {visible}/{total} personas",
+    "fields.memberName": "Member name",
+    "fields.memberStyle": "Preference type",
     "fields.knowledgeTitle": "Title",
     "fields.knowledgeTags": "Tags",
     "fields.knowledgeSummary": "Summary",
@@ -328,6 +376,13 @@ const TRANSLATIONS = {
     "actions.approve": "Approve",
     "actions.reject": "Reject",
     "actions.usePersona": "Use Persona",
+    "actions.prev": "Previous",
+    "actions.next": "Next",
+    "actions.addMember": "Add Member",
+    "actions.applyGroupContext": "Apply Group Context",
+    "actions.editDayPlan": "Edit day plan",
+    "actions.clearDayPlan": "Clear day plan",
+    "actions.applyFestivalPoi": "Use for planning",
     "state.previewIdle": "Press \"Create Action Plan\" to start planning.",
     "state.assistantIdle": "Run the assistant to see the latest reply.",
     "state.planIdle": "Plan cards will appear here.",
@@ -346,6 +401,9 @@ const TRANSLATIONS = {
     "state.auditEmpty": "Audit events will appear here after loading.",
     "state.profileLoading": "Loading profile...",
     "state.requestFailed": "Request failed. Please inspect the console logs.",
+    "state.groupEmpty": "No companions yet, planning as a solo trip.",
+    "state.festivalEmpty": "No holiday ideas available right now.",
+    "state.calendarEmpty": "No plan yet for this day. Click \"Edit day plan\" to add one.",
     "state.profileSaved": "Profile saved.",
     "state.knowledgeSaved": "Knowledge document persisted.",
     "state.planGenerated": "Generated \"{title}\" with {tasks} tasks and {confirmations} confirmation gates.",
@@ -397,6 +455,22 @@ const TRANSLATIONS = {
     "sequence.hitlWaiting": "Pending confirmations will pause external writes.",
     "sequence.hitlClear": "No confirmations are pending, so execution can continue.",
     "sequence.persistSummary": "Plans, runs, confirmations, and knowledge documents are stored in the database.",
+    "sequence.nextAction": "Next suggested action",
+    "sequence.actionDraft": "Start with your travel goal, or apply a holiday POI suggestion.",
+    "sequence.actionCalendar": "Review the calendar and add day-level highlights to avoid conflicts.",
+    "sequence.actionGroup": "If traveling with others, add companion preferences before planning.",
+    "sequence.actionRun": "Run \"Create Action Plan\" to generate executable tasks and gates.",
+    "sequence.actionConfirm": "Approve pending confirmations to continue external writes safely.",
+    "calendar.view.month": "Month",
+    "calendar.view.year": "Year",
+    "calendar.view.day": "Day",
+    "calendar.editPrompt": "Enter the main plan for {date}",
+    "calendar.groupSummary": "{count} planned day(s)",
+    "group.style.culture": "Culture",
+    "group.style.food": "Food",
+    "group.style.family": "Family-friendly",
+    "group.style.photo": "Photo spots",
+    "group.style.night": "Night life",
     "ops.card.target": "Service Targets",
     "ops.card.traffic": "Traffic and Capacity",
     "ops.card.reliability": "Reliability",
@@ -487,6 +561,17 @@ const state = {
   personas: [],
   personaSearch: "",
   personaTemperament: "all",
+  festivalFeed: [],
+  festivalIndex: 0,
+  festivalTimer: null,
+  calendarView: "month",
+  calendarAnchor: null,
+  selectedDate: null,
+  dayPlans: {},
+  groupMembers: [],
+  festivalBound: false,
+  calendarBound: false,
+  groupBound: false,
   securityOverview: null,
   auditEntries: [],
   connectors: [],
@@ -496,9 +581,31 @@ const state = {
 
 const PLAN_HISTORY_LIMIT = 8;
 const CONFIRMATION_LIST_LIMIT = 6;
+const FESTIVAL_ROTATE_MS = 12000;
+const MAX_GROUP_MEMBERS = 8;
+
+const FESTIVAL_LIBRARY = {
+  "zh-CN": [
+    { id: "labor-day", date: "2026-05-01", name: "五一假期", city: "上海", pois: ["武康路", "愚园路", "苏州河步道"], vibe: "城市漫游 + 轻体力夜游" },
+    { id: "dragon-boat", date: "2026-06-19", name: "端午假期", city: "杭州", pois: ["西湖环线", "河坊街", "良渚博物院"], vibe: "湖景慢节奏 + 文化体验" },
+    { id: "summer-weekend", date: "2026-07-11", name: "盛夏周末", city: "青岛", pois: ["八大关", "小麦岛", "奥帆中心"], vibe: "海风散步 + 傍晚观景" },
+    { id: "mid-autumn", date: "2026-09-25", name: "中秋假期", city: "苏州", pois: ["平江路", "拙政园", "金鸡湖"], vibe: "园林夜景 + 月下散步" },
+    { id: "national-day", date: "2026-10-01", name: "国庆假期", city: "成都", pois: ["宽窄巷子", "东郊记忆", "望江楼公园"], vibe: "美食密度 + 慢生活节奏" }
+  ],
+  "en-US": [
+    { id: "labor-day", date: "2026-05-01", name: "Labor Day Break", city: "Shanghai", pois: ["Wukang Rd", "Yuyuan Rd", "Suzhou Creek Walk"], vibe: "Urban stroll + low-fatigue evenings" },
+    { id: "dragon-boat", date: "2026-06-19", name: "Dragon Boat Holiday", city: "Hangzhou", pois: ["West Lake Loop", "Hefang Street", "Liangzhu Museum"], vibe: "Lake-side pace + culture" },
+    { id: "summer-weekend", date: "2026-07-11", name: "Summer Weekend", city: "Qingdao", pois: ["Badaguan", "Xiaomai Island", "Olympic Sailing Center"], vibe: "Sea breeze + sunset route" },
+    { id: "mid-autumn", date: "2026-09-25", name: "Mid-Autumn Holiday", city: "Suzhou", pois: ["Pingjiang Road", "Humble Administrator's Garden", "Jinji Lake"], vibe: "Gardens + moonlight walk" },
+    { id: "national-day", date: "2026-10-01", name: "National Day Golden Week", city: "Chengdu", pois: ["Kuanzhai Alley", "Eastern Suburb Memory", "Wangjianglou Park"], vibe: "Food-focused + relaxed rhythm" }
+  ]
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   const bootStartedAt = performance.now();
+  const today = toIsoDate(new Date());
+  state.calendarAnchor = today;
+  state.selectedDate = today;
   applyTranslations();
   prepareMotion();
   restoreSurfaceMode();
@@ -531,6 +638,13 @@ async function bootstrap() {
     loadConnectors()
   ]);
   initializeDefaultPersona();
+  loadWorkbenchState();
+  initFestivalExperience();
+  initCalendarExperience();
+  initGroupExperience();
+  renderFestivalView();
+  renderCalendarView();
+  renderGroupMembers();
   await Promise.all([
     loadSecurityOverview(),
     loadAuditTrail(),
@@ -820,6 +934,9 @@ async function loadTimeline(runId) {
 async function handleIdentityChange() {
   syncActivePersona();
   resetUserScopedViews();
+  loadWorkbenchState();
+  renderCalendarView();
+  renderGroupMembers();
   await Promise.all([
     loadProfile(),
     loadKnowledge(),
@@ -829,6 +946,7 @@ async function handleIdentityChange() {
     loadAuditTrail()
   ]);
   renderSequence();
+  renderFestivalView();
 }
 
 function resetUserScopedViews() {
@@ -843,6 +961,486 @@ function resetUserScopedViews() {
   document.getElementById("timeline-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.timelineEmpty"))}</div>`;
   document.getElementById("plans-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.planEmpty"))}</div>`;
   document.getElementById("confirmations-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.confirmationEmpty"))}</div>`;
+}
+
+function workbenchStorageKey() {
+  return `otterlife-workbench:${currentUserId()}`;
+}
+
+function loadWorkbenchState() {
+  const today = toIsoDate(new Date());
+  const fallback = {
+    calendarView: "month",
+    calendarAnchor: today,
+    selectedDate: today,
+    dayPlans: {},
+    groupMembers: []
+  };
+  try {
+    const raw = window.localStorage.getItem(workbenchStorageKey());
+    const stored = raw ? JSON.parse(raw) : {};
+    state.calendarView = ["month", "year", "day"].includes(stored.calendarView) ? stored.calendarView : fallback.calendarView;
+    state.calendarAnchor = stored.calendarAnchor || fallback.calendarAnchor;
+    state.selectedDate = stored.selectedDate || fallback.selectedDate;
+    state.dayPlans = stored.dayPlans && typeof stored.dayPlans === "object" ? stored.dayPlans : {};
+    state.groupMembers = Array.isArray(stored.groupMembers) ? stored.groupMembers.slice(0, MAX_GROUP_MEMBERS) : [];
+  } catch (error) {
+    state.calendarView = fallback.calendarView;
+    state.calendarAnchor = fallback.calendarAnchor;
+    state.selectedDate = fallback.selectedDate;
+    state.dayPlans = fallback.dayPlans;
+    state.groupMembers = fallback.groupMembers;
+  }
+}
+
+function persistWorkbenchState() {
+  const payload = {
+    calendarView: state.calendarView,
+    calendarAnchor: state.calendarAnchor,
+    selectedDate: state.selectedDate,
+    dayPlans: state.dayPlans,
+    groupMembers: state.groupMembers
+  };
+  window.localStorage.setItem(workbenchStorageKey(), JSON.stringify(payload));
+}
+
+function initFestivalExperience() {
+  const container = document.getElementById("festival-view");
+  if (!container) {
+    return;
+  }
+  if (!state.festivalBound) {
+    container.addEventListener("click", event => {
+      const button = event.target.closest("[data-festival-action]");
+      if (!button) {
+        return;
+      }
+      const action = button.dataset.festivalAction;
+      if (action === "prev") {
+        shiftFestival(-1);
+      } else if (action === "next") {
+        shiftFestival(1);
+      } else if (action === "apply") {
+        applyFestivalToPrompt();
+      }
+    });
+    state.festivalBound = true;
+  }
+  if (state.festivalTimer) {
+    window.clearInterval(state.festivalTimer);
+  }
+  state.festivalTimer = window.setInterval(() => {
+    if (document.body.dataset.surface === "toc") {
+      shiftFestival(1, true);
+    }
+  }, FESTIVAL_ROTATE_MS);
+}
+
+function renderFestivalView() {
+  const container = document.getElementById("festival-view");
+  if (!container) {
+    return;
+  }
+  state.festivalFeed = resolveFestivalFeed();
+  if (state.festivalFeed.length === 0) {
+    container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.festivalEmpty"))}</div>`;
+    return;
+  }
+  state.festivalIndex = ((state.festivalIndex % state.festivalFeed.length) + state.festivalFeed.length) % state.festivalFeed.length;
+  const current = state.festivalFeed[state.festivalIndex];
+  const poiHtml = current.pois.map(poi => `<span class="festival-poi">${escapeHtml(poi)}</span>`).join("");
+  container.innerHTML = `
+    <article class="festival-card-panel">
+      <div class="festival-head">
+        <div>
+          <h3>${escapeHtml(current.name)} · ${escapeHtml(current.city)}</h3>
+          <p>${escapeHtml(current.vibe)}</p>
+        </div>
+        <span class="meta-pill">${escapeHtml(current.date)}</span>
+      </div>
+      <div class="festival-pois">${poiHtml}</div>
+      <div class="actions">
+        <button class="secondary" type="button" data-festival-action="prev">${escapeHtml(t("actions.prev"))}</button>
+        <button class="secondary" type="button" data-festival-action="next">${escapeHtml(t("actions.next"))}</button>
+        <button class="primary" type="button" data-festival-action="apply">${escapeHtml(t("actions.applyFestivalPoi"))}</button>
+      </div>
+    </article>
+  `;
+}
+
+function resolveFestivalFeed() {
+  const bundle = FESTIVAL_LIBRARY[state.locale] || FESTIVAL_LIBRARY["en-US"];
+  const today = new Date(`${toIsoDate(new Date())}T00:00:00`);
+  const upcoming = bundle.filter(item => new Date(`${item.date}T00:00:00`) >= today);
+  if (upcoming.length >= 3) {
+    return upcoming.slice(0, 5);
+  }
+  const history = bundle.filter(item => new Date(`${item.date}T00:00:00`) < today);
+  return [...upcoming, ...history].slice(0, 5);
+}
+
+function shiftFestival(delta, auto = false) {
+  if (state.festivalFeed.length === 0) {
+    return;
+  }
+  state.festivalIndex = (state.festivalIndex + delta + state.festivalFeed.length) % state.festivalFeed.length;
+  renderFestivalView();
+  if (auto) {
+    const element = document.querySelector("#festival-view .festival-card-panel");
+    if (element) {
+      flashElement(element, "is-festival-flash");
+    }
+  }
+  renderSequence();
+}
+
+function applyFestivalToPrompt() {
+  if (state.festivalFeed.length === 0) {
+    return;
+  }
+  const selected = state.festivalFeed[state.festivalIndex];
+  const suggestion = isChineseLocale()
+    ? `围绕${selected.name}${selected.city}的 ${selected.pois.join("、")} 规划 3 天低疲劳路线，晚上保留恢复时段。`
+    : `Build a 3-day low-fatigue itinerary around ${selected.name} in ${selected.city}, covering ${selected.pois.join(", ")} with calm evenings.`;
+  document.getElementById("plan-input").value = suggestion;
+  document.getElementById("preview-summary").textContent = suggestion;
+  flashElement("preview-summary", "is-updated");
+  renderSequence();
+}
+
+function initCalendarExperience() {
+  if (!state.calendarBound) {
+    document.querySelectorAll("[data-calendar-view]").forEach(button => {
+      button.addEventListener("click", () => {
+        state.calendarView = button.dataset.calendarView;
+        persistWorkbenchState();
+        renderCalendarView();
+        renderSequence();
+      });
+    });
+
+    const prev = document.getElementById("calendar-prev");
+    const next = document.getElementById("calendar-next");
+    if (prev) {
+      prev.addEventListener("click", () => {
+        shiftCalendar(-1);
+      });
+    }
+    if (next) {
+      next.addEventListener("click", () => {
+        shiftCalendar(1);
+      });
+    }
+
+    const calendarView = document.getElementById("calendar-view");
+    if (calendarView) {
+      calendarView.addEventListener("click", event => {
+        const dayButton = event.target.closest("[data-date]");
+        if (dayButton) {
+          state.selectedDate = dayButton.dataset.date;
+          if (state.calendarView === "day") {
+            editDayPlan();
+          } else {
+            renderCalendarView();
+          }
+          persistWorkbenchState();
+          renderSequence();
+          return;
+        }
+        const monthButton = event.target.closest("[data-month]");
+        if (monthButton) {
+          state.calendarAnchor = toIsoDate(new Date(Number(monthButton.dataset.year), Number(monthButton.dataset.month), 1));
+          state.calendarView = "month";
+          persistWorkbenchState();
+          renderCalendarView();
+        }
+      });
+    }
+
+    const detail = document.getElementById("calendar-detail");
+    if (detail) {
+      detail.addEventListener("click", event => {
+        const action = event.target.closest("[data-calendar-action]")?.dataset.calendarAction;
+        if (action === "edit") {
+          editDayPlan();
+        }
+        if (action === "clear") {
+          delete state.dayPlans[state.selectedDate];
+          persistWorkbenchState();
+          renderCalendarView();
+          renderSequence();
+        }
+      });
+    }
+    state.calendarBound = true;
+  }
+}
+
+function renderCalendarView() {
+  const container = document.getElementById("calendar-view");
+  const detail = document.getElementById("calendar-detail");
+  const range = document.getElementById("calendar-range-label");
+  if (!container || !detail || !range) {
+    return;
+  }
+
+  document.querySelectorAll("[data-calendar-view]").forEach(button => {
+    button.classList.toggle("is-active", button.dataset.calendarView === state.calendarView);
+  });
+
+  range.textContent = calendarRangeLabel();
+  if (state.calendarView === "year") {
+    container.innerHTML = renderCalendarYear();
+  } else if (state.calendarView === "day") {
+    container.innerHTML = renderCalendarDay();
+  } else {
+    container.innerHTML = renderCalendarMonth();
+  }
+
+  const plan = state.dayPlans[state.selectedDate];
+  detail.innerHTML = `
+    <div class="list-item">
+      <strong>${escapeHtml(state.selectedDate)}</strong>
+      <small>${escapeHtml(plan || t("state.calendarEmpty"))}</small>
+      <div class="actions">
+        <button type="button" class="secondary" data-calendar-action="edit">${escapeHtml(t("actions.editDayPlan"))}</button>
+        <button type="button" class="secondary" data-calendar-action="clear">${escapeHtml(t("actions.clearDayPlan"))}</button>
+      </div>
+    </div>
+  `;
+  flashElement("calendar-detail", "is-calendar-updated");
+}
+
+function renderCalendarMonth() {
+  const anchor = new Date(`${state.calendarAnchor}T00:00:00`);
+  const year = anchor.getFullYear();
+  const month = anchor.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const weekdayLabels = isChineseLocale()
+    ? ["日", "一", "二", "三", "四", "五", "六"]
+    : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const cells = [];
+  for (let i = 0; i < firstDay; i += 1) {
+    cells.push(`<span class="calendar-blank"></span>`);
+  }
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const date = toIsoDate(new Date(year, month, day));
+    const note = state.dayPlans[date] || "";
+    const shortNote = note.length > 16 ? `${note.slice(0, 16)}...` : note;
+    cells.push(`
+      <button type="button" class="calendar-day ${state.selectedDate === date ? "is-selected" : ""} ${note ? "is-planned" : ""}" data-date="${date}">
+        <strong>${day}</strong>
+        <small>${escapeHtml(shortNote)}</small>
+      </button>
+    `);
+  }
+
+  return `
+    <div class="calendar-weekdays">${weekdayLabels.map(label => `<span>${label}</span>`).join("")}</div>
+    <div class="calendar-grid">${cells.join("")}</div>
+  `;
+}
+
+function renderCalendarYear() {
+  const anchor = new Date(`${state.calendarAnchor}T00:00:00`);
+  const year = anchor.getFullYear();
+  const monthLabels = isChineseLocale()
+    ? ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+    : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  return `
+    <div class="calendar-year-grid">
+      ${monthLabels.map((label, month) => {
+        const count = Object.keys(state.dayPlans).filter(date => {
+          const parsed = new Date(`${date}T00:00:00`);
+          return parsed.getFullYear() === year && parsed.getMonth() === month;
+        }).length;
+        return `
+          <button type="button" class="calendar-month" data-year="${year}" data-month="${month}">
+            <strong>${label}</strong>
+            <small>${escapeHtml(t("calendar.groupSummary", { count: String(count) }))}</small>
+          </button>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderCalendarDay() {
+  const plan = state.dayPlans[state.selectedDate] || t("state.calendarEmpty");
+  return `
+    <article class="calendar-day-focus">
+      <strong>${escapeHtml(state.selectedDate)}</strong>
+      <p>${escapeHtml(plan)}</p>
+      <button type="button" class="primary" data-calendar-action="edit">${escapeHtml(t("actions.editDayPlan"))}</button>
+    </article>
+  `;
+}
+
+function shiftCalendar(delta) {
+  const anchor = new Date(`${state.calendarAnchor}T00:00:00`);
+  const selected = new Date(`${state.selectedDate}T00:00:00`);
+  if (state.calendarView === "year") {
+    anchor.setFullYear(anchor.getFullYear() + delta);
+    selected.setFullYear(selected.getFullYear() + delta);
+  } else if (state.calendarView === "day") {
+    selected.setDate(selected.getDate() + delta);
+    anchor.setFullYear(selected.getFullYear(), selected.getMonth(), 1);
+  } else {
+    anchor.setMonth(anchor.getMonth() + delta);
+    selected.setFullYear(anchor.getFullYear(), anchor.getMonth(), Math.min(selected.getDate(), 28));
+  }
+  state.calendarAnchor = toIsoDate(anchor);
+  state.selectedDate = toIsoDate(selected);
+  persistWorkbenchState();
+  renderCalendarView();
+  renderSequence();
+}
+
+function editDayPlan() {
+  const current = state.dayPlans[state.selectedDate] || "";
+  const next = window.prompt(t("calendar.editPrompt", { date: state.selectedDate }), current);
+  if (next === null) {
+    return;
+  }
+  const trimmed = next.trim();
+  if (!trimmed) {
+    delete state.dayPlans[state.selectedDate];
+  } else {
+    state.dayPlans[state.selectedDate] = trimmed;
+  }
+  persistWorkbenchState();
+  renderCalendarView();
+  renderSequence();
+}
+
+function calendarRangeLabel() {
+  const anchor = new Date(`${state.calendarAnchor}T00:00:00`);
+  if (state.calendarView === "year") {
+    return String(anchor.getFullYear());
+  }
+  if (state.calendarView === "day") {
+    return state.selectedDate;
+  }
+  const monthLabel = isChineseLocale()
+    ? `${anchor.getFullYear()}年${anchor.getMonth() + 1}月`
+    : `${anchor.toLocaleString("en-US", { month: "long" })} ${anchor.getFullYear()}`;
+  return monthLabel;
+}
+
+function initGroupExperience() {
+  if (state.groupBound) {
+    return;
+  }
+  const addButton = document.getElementById("group-add-member");
+  const applyButton = document.getElementById("group-apply-context");
+  const members = document.getElementById("group-members-view");
+
+  if (addButton) {
+    addButton.addEventListener("click", () => {
+      addGroupMember();
+    });
+  }
+  if (applyButton) {
+    applyButton.addEventListener("click", () => {
+      applyGroupContextToPrompt();
+    });
+  }
+  if (members) {
+    members.addEventListener("click", event => {
+      const target = event.target.closest("[data-group-remove]");
+      if (!target) {
+        return;
+      }
+      state.groupMembers = state.groupMembers.filter(item => item.id !== target.dataset.groupRemove);
+      persistWorkbenchState();
+      renderGroupMembers();
+      renderSequence();
+    });
+  }
+  state.groupBound = true;
+}
+
+function addGroupMember() {
+  const nameInput = document.getElementById("group-member-name");
+  const styleInput = document.getElementById("group-member-style");
+  if (!nameInput || !styleInput) {
+    return;
+  }
+  const name = nameInput.value.trim();
+  if (!name) {
+    nameInput.focus();
+    return;
+  }
+  const member = {
+    id: `m-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    name,
+    style: styleInput.value || "culture"
+  };
+  state.groupMembers = [...state.groupMembers, member].slice(-MAX_GROUP_MEMBERS);
+  nameInput.value = "";
+  persistWorkbenchState();
+  renderGroupMembers();
+  renderSequence();
+}
+
+function renderGroupMembers() {
+  const container = document.getElementById("group-members-view");
+  const summary = document.getElementById("group-summary");
+  if (!container || !summary) {
+    return;
+  }
+
+  if (!state.groupMembers.length) {
+    container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.groupEmpty"))}</div>`;
+    summary.textContent = t("state.groupEmpty");
+    return;
+  }
+
+  container.innerHTML = state.groupMembers.map(member => `
+    <article class="group-member">
+      <strong>${escapeHtml(member.name)}</strong>
+      <span>${escapeHtml(t(`group.style.${member.style}`, humanizeValue(member.style)))}</span>
+      <button type="button" class="secondary" data-group-remove="${escapeHtml(member.id)}">×</button>
+    </article>
+  `).join("");
+
+  const styles = state.groupMembers.map(member => t(`group.style.${member.style}`, humanizeValue(member.style))).join(isChineseLocale() ? "、" : ", ");
+  summary.textContent = isChineseLocale()
+    ? `已添加 ${state.groupMembers.length} 位成员：${styles}`
+    : `${state.groupMembers.length} companion(s) added: ${styles}`;
+  flashElement("group-summary", "is-group-updated");
+}
+
+function groupContextText() {
+  if (!state.groupMembers.length) {
+    return "";
+  }
+  const members = state.groupMembers.map(member => `${member.name}(${t(`group.style.${member.style}`, humanizeValue(member.style))})`);
+  return isChineseLocale()
+    ? `多人出行成员：${members.join("、")}。请提供兼顾全员偏好的分时段方案，并在冲突场景给出 A/B 备选。`
+    : `Group members: ${members.join(", ")}. Provide a time-blocked plan balancing all preferences with A/B alternatives for conflicts.`;
+}
+
+function applyGroupContextToPrompt() {
+  const context = groupContextText();
+  if (!context) {
+    return;
+  }
+  const input = document.getElementById("plan-input");
+  if (!input) {
+    return;
+  }
+  if (!input.value.includes(context)) {
+    input.value = `${input.value.trim()}\n\n${context}`.trim();
+  }
+  document.getElementById("preview-summary").textContent = isChineseLocale()
+    ? "已将多人出行偏好注入到本次目标。"
+    : "Group travel preferences were added to the current goal.";
+  flashElement("preview-summary", "is-updated");
+  renderSequence();
 }
 
 // Default the first-load experience to a clean persona instead of the legacy generic user / 首次加载优先进入干净 persona，避免历史测试数据污染真实体验。
@@ -1358,57 +1956,58 @@ function renderAuditTrail(entries) {
   animateChildren("audit-view");
 }
 
-// Render a lightweight sequence diagram in the page / 在页面里渲染轻量时序图，帮助解释请求如何流动。
+// Render user-facing journey guidance instead of pure technical traces / 用用户视角动线替代纯技术时序。
 function renderSequence() {
   const container = document.getElementById("sequence-view");
   if (!container) {
     return;
   }
 
-  const prompt = document.getElementById("plan-input")?.value.trim() || t("sequence.emptyPrompt");
-  const searchMode = state.architecture?.travelSearch || "seeded-search-plus-optional-flyai";
-  const specialistMode = state.architecture?.travelSpecialist || "local-travel-agent-plus-optional-a2a";
+  const prompt = document.getElementById("plan-input")?.value.trim();
+  const festival = state.festivalFeed[state.festivalIndex];
+  const plannedDays = Object.keys(state.dayPlans).length;
+  const hasGroup = state.groupMembers.length > 0;
+  const searchMode = connectorSummary("flyai-search", state.architecture?.travelSearch || "seeded-search-plus-optional-flyai");
+  const approvalState = state.confirmationCount > 0 ? t("sequence.hitlWaiting") : t("sequence.hitlClear");
 
   const steps = [
     {
-      title: t("sequence.user.title"),
-      meta: t("sequence.user.meta"),
-      detail: prompt
+      title: isChineseLocale() ? "1. 明确目标" : "1. Draft your goal",
+      meta: t("sequence.nextAction"),
+      detail: prompt || t("sequence.actionDraft")
     },
     {
-      title: t("sequence.orchestrator.title"),
-      meta: t("sequence.orchestrator.meta"),
-      detail: formatRuntimeMode(state.runtime?.mode || "orchestrator-fallback"),
+      title: isChineseLocale() ? "2. 选节日灵感" : "2. Pick holiday inspiration",
+      meta: festival ? `${festival.name} · ${festival.city}` : "-",
+      detail: festival
+        ? (isChineseLocale()
+          ? `推荐 POI：${festival.pois.join("、")}`
+          : `Recommended POIs: ${festival.pois.join(", ")}`)
+        : t("state.festivalEmpty"),
+      live: Boolean(festival)
+    },
+    {
+      title: isChineseLocale() ? "3. 校准日历与同行人" : "3. Calibrate calendar and companions",
+      meta: hasGroup
+        ? (isChineseLocale() ? `${state.groupMembers.length} 位成员` : `${state.groupMembers.length} companions`)
+        : (isChineseLocale() ? "单人模式" : "Solo mode"),
+      detail: `${t("sequence.actionCalendar")} · ${t("calendar.groupSummary", { count: String(plannedDays) })}`
+    },
+    {
+      title: isChineseLocale() ? "4. 生成可执行方案" : "4. Generate executable plan",
+      meta: t("sequence.actionRun"),
+      detail: searchMode,
       live: true
     },
     {
-      title: t("sequence.rag.title"),
-      meta: t("sequence.rag.meta"),
-      detail: state.rag ? formatRagValue("rag.retrievalMode", state.rag.retrievalMode) : (isChineseLocale() ? "加载中" : "Loading"),
-      live: Boolean(state.rag),
-      optional: !state.rag?.vectorReady
-    },
-    {
-      title: t("sequence.search.title"),
-      meta: t("sequence.search.meta"),
-      detail: connectorSummary("flyai-search", searchMode),
-      optional: true
-    },
-    {
-      title: t("sequence.a2a.title"),
-      meta: t("sequence.a2a.meta"),
-      detail: formatArchitectureValue("architecture.travelSpecialist", specialistMode),
-      optional: true
-    },
-    {
-      title: t("sequence.hitl.title"),
-      meta: t("sequence.hitl.meta"),
-      detail: state.confirmationCount > 0 ? t("sequence.hitlWaiting") : t("sequence.hitlClear"),
+      title: isChineseLocale() ? "5. 完成确认并执行" : "5. Confirm and execute",
+      meta: t("sequence.actionConfirm"),
+      detail: approvalState,
       live: state.confirmationCount > 0
     },
     {
-      title: t("sequence.persist.title"),
-      meta: t("sequence.persist.meta"),
+      title: isChineseLocale() ? "6. 复盘与持续优化" : "6. Review and iterate",
+      meta: isChineseLocale() ? "持久化与追踪" : "Persistence and tracking",
       detail: state.latestPlanId
         ? `${t("sequence.persistSummary")} #${shortId(state.latestPlanId)}`
         : t("sequence.persistSummary"),
@@ -1502,10 +2101,15 @@ function resolveUxAction(id) {
 }
 
 function currentRequestPayload() {
+  const baseInput = document.getElementById("plan-input").value.trim();
+  const groupContext = groupContextText();
+  const composedInput = groupContext && !baseInput.includes(groupContext)
+    ? `${baseInput}\n\n${groupContext}`.trim()
+    : baseInput;
   return {
     userId: currentUserId(),
-    threadId: document.getElementById("thread-id").value.trim() || "thread-life-os",
-    input: document.getElementById("plan-input").value.trim(),
+    threadId: document.getElementById("thread-id").value.trim() || "thread-otterlife",
+    input: composedInput,
     locale: state.locale
   };
 }
@@ -1866,6 +2470,13 @@ function formatCompactNumber(value) {
     return `${(number / 1000).toFixed(number >= 100000 ? 0 : 1)}k`;
   }
   return String(number);
+}
+
+function toIsoDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function shortId(value) {

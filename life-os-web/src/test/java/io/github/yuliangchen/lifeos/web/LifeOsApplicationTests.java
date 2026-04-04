@@ -36,7 +36,7 @@ class LifeOsApplicationTests {
     void shouldServeStaticIndexFile() throws Exception {
         mockMvc.perform(get("/index.html"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Life OS")))
+                .andExpect(content().string(containsString("OtterLife")))
                 .andExpect(content().string(org.hamcrest.Matchers.not(containsString("Demo"))));
     }
 

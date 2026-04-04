@@ -352,6 +352,11 @@ button.is-loading::after {
     color: var(--ink);
 }
 
+.secondary.is-active {
+    background: color-mix(in srgb, var(--accent) 16%, white);
+    color: var(--accent-strong);
+}
+
 .metric {
     display: flex;
     flex-direction: column;
@@ -690,6 +695,224 @@ textarea {
     margin: 0;
     font-size: 12px;
     color: var(--muted);
+}
+
+.festival-card {
+    background:
+        linear-gradient(145deg, rgba(255, 248, 240, 0.9), rgba(255, 255, 255, 0.82)),
+        radial-gradient(circle at top right, rgba(255, 204, 102, 0.2), transparent 62%);
+}
+
+.festival-stage {
+    display: grid;
+    gap: 12px;
+}
+
+.festival-card-panel {
+    padding: 18px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.78);
+    animation: festivalSlideIn 540ms var(--transition-base);
+}
+
+.festival-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.festival-head h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.festival-head p {
+    margin: 6px 0 0;
+    color: var(--muted);
+}
+
+.festival-pois {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.festival-poi {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(255, 209, 102, 0.24);
+    color: #a65b00;
+}
+
+.festival-card-panel.is-festival-flash {
+    animation: festivalPulse 760ms ease;
+}
+
+.calendar-card {
+    background:
+        linear-gradient(160deg, rgba(236, 252, 255, 0.9), rgba(255, 255, 255, 0.84)),
+        radial-gradient(circle at top right, rgba(60, 199, 255, 0.2), transparent 60%);
+}
+
+.calendar-toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.calendar-view-switch,
+.calendar-nav {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.calendar-surface {
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.78);
+    padding: 14px;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.calendar-weekdays span {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.calendar-blank {
+    min-height: 76px;
+}
+
+.calendar-day,
+.calendar-month {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    text-align: left;
+}
+
+.calendar-day strong,
+.calendar-month strong {
+    display: block;
+    font-size: 14px;
+}
+
+.calendar-day small,
+.calendar-month small {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.calendar-day.is-selected {
+    border-color: color-mix(in srgb, var(--accent) 30%, white);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.calendar-day.is-planned {
+    background: color-mix(in srgb, var(--accent-2) 16%, white);
+}
+
+.calendar-year-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.calendar-day-focus {
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.92);
+    padding: 18px;
+    animation: calendarFlip 520ms var(--transition-base);
+}
+
+.calendar-day-focus strong {
+    font-size: 18px;
+}
+
+.calendar-day-focus p {
+    margin: 10px 0 14px;
+    color: var(--muted);
+}
+
+.calendar-detail {
+    margin-top: 12px;
+}
+
+.calendar-detail.is-calendar-updated {
+    animation: panelFlash 760ms ease;
+}
+
+.group-card {
+    background:
+        linear-gradient(150deg, rgba(248, 246, 255, 0.9), rgba(255, 255, 255, 0.84)),
+        radial-gradient(circle at top right, rgba(159, 122, 255, 0.18), transparent 60%);
+}
+
+.group-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.group-members {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px;
+}
+
+.group-member {
+    display: grid;
+    gap: 6px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.92);
+    padding: 12px;
+    animation: memberPop 380ms ease;
+}
+
+.group-member strong {
+    font-size: 14px;
+}
+
+.group-member span {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.group-member .secondary {
+    justify-self: end;
+    padding: 6px 10px;
+}
+
+#group-summary.is-group-updated {
+    animation: summaryFlash 560ms ease;
 }
 
 .persona-card:hover {
@@ -1031,6 +1254,51 @@ body.is-ready .card {
     }
 }
 
+@keyframes festivalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes festivalPulse {
+    0% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.01);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes calendarFlip {
+    from {
+        opacity: 0;
+        transform: perspective(700px) rotateX(-8deg);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(700px) rotateX(0deg);
+    }
+}
+
+@keyframes memberPop {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 @keyframes spin {
     from {
         transform: translateY(-50%) rotate(0deg);
@@ -1089,6 +1357,14 @@ body.is-ready .card {
         grid-template-columns: 1fr;
     }
 
+    .calendar-year-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .group-form {
+        grid-template-columns: 1fr;
+    }
+
     .sequence-node:nth-child(2n)::after,
     .sequence-node:nth-child(2n)::before {
         display: none;
@@ -1104,7 +1380,8 @@ body.is-ready .card {
     .topbar,
     .hero-actions,
     .hero-panel,
-    .form-row {
+    .form-row,
+    .calendar-toolbar {
         grid-template-columns: 1fr;
         flex-direction: column;
         align-items: stretch;
@@ -1155,5 +1432,17 @@ body.is-ready .card {
 
     .persona-toolbar {
         grid-template-columns: 1fr;
+    }
+
+    .calendar-year-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calendar-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calendar-weekdays {
+        display: none;
     }
 }

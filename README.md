@@ -123,6 +123,7 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - [AgentScope 能力印证](docs/agentscope-validation.md)
 - [RAG 选型](docs/rag-selection.md)
 - [FlyAI 与 A2A 旅行链路](docs/flyai-a2a-travel-search.md)
+- [FlyAI 与 Claw Skill 打通](docs/flyai-claw-integration.md)
 - [安全架构与多身份模拟](docs/security-architecture.md)
 - [MBTI 人格优化方案](docs/mbti-persona-optimization.md)
 - [真实用户动线验证](docs/user-journey-validation.md)
