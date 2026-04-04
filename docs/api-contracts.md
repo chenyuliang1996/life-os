@@ -27,6 +27,12 @@
 
 - `GET /api/v1/personas?locale=zh-CN`
   - 返回 persona 预设，用于多身份模拟
+  - 重点字段：
+    - `id`（例如 `mbti-intj`）
+    - `mbtiType`
+    - `temperament`
+    - `decisionLens`
+    - `preferences`（用于驱动 Agent 个性化执行）
 - `GET /api/v1/security/overview?userId=persona-travel&limit=8`
   - 返回当前身份的信任状态、工具权限和最近审计流水
 - `GET /api/v1/security/audit?userId=persona-travel&limit=12`

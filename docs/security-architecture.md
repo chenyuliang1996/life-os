@@ -15,10 +15,10 @@
   - 外呼白名单
   - 审计流水
 - 多身份模拟
-  - `urban-traveler`
-  - `habit-builder`
+  - `mbti-intj` ~ `mbti-esfp`（16 个 MBTI）
   - `guest-explorer`
   - `ops-reviewer`
+  - 兼容身份：`urban-traveler`、`habit-builder`
 
 ## 2. 为什么要这样做
 
@@ -96,8 +96,7 @@
 
 现在页面内置 persona，可以快速验证：
 
-- 旅行用户的低疲劳路径
-- 学习用户的习惯保护
+- `16` 个 MBTI 人格在同目标下的策略差异
 - 首次或低信任用户的受限模式
 - 运营观察者的安全和系统状态
 

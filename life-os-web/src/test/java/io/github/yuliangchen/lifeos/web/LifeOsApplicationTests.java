@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -103,9 +105,11 @@ class LifeOsApplicationTests {
     void shouldExposePersonaPresets() throws Exception {
         mockMvc.perform(get("/api/v1/personas?locale=en-US"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("urban-traveler"))
-                .andExpect(jsonPath("$[2].userId").value("guest-weekend"))
-                .andExpect(jsonPath("$[3].userId").value("persona-ops"));
+                .andExpect(jsonPath("$.length()").value(greaterThanOrEqualTo(18)))
+                .andExpect(jsonPath("$[?(@.id=='mbti-intj')].mbtiType").value(hasItem("INTJ")))
+                .andExpect(jsonPath("$[?(@.id=='mbti-intj')].temperament").value(hasItem("Analyst")))
+                .andExpect(jsonPath("$[?(@.id=='guest-explorer')].userId").value(hasItem("guest-weekend")))
+                .andExpect(jsonPath("$[?(@.id=='ops-reviewer')].userId").value(hasItem("persona-ops")));
     }
 
     @Test
@@ -123,6 +127,15 @@ class LifeOsApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.trust.trustTier").value("restricted"))
                 .andExpect(jsonPath("$.trust.outboundNetworkAllowed").value(false));
+    }
+
+    @Test
+    void shouldResolveMbtiPersonaInSecurityOverview() throws Exception {
+        mockMvc.perform(get("/api/v1/security/overview?userId=persona-mbti-intj"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trust.personaId").value("mbti-intj"))
+                .andExpect(jsonPath("$.trust.trustTier").value("trusted"))
+                .andExpect(jsonPath("$.trust.mcpTrusted").value(true));
     }
 
     @Test

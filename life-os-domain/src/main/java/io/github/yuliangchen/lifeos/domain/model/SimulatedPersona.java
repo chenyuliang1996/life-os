@@ -10,6 +10,9 @@ public record SimulatedPersona(
         String threadId,
         String prompt,
         String description,
+        String mbtiType,
+        String temperament,
+        String decisionLens,
         Map<String, String> preferences
 ) {
 }

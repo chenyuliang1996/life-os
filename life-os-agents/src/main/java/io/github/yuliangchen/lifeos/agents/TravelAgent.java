@@ -56,17 +56,20 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
         );
         String remoteAdvice = travelA2aAdvisor.advise(input, search, snippets);
 
-        String travelStyle = memoryModuleFacade.getOrCreate(input.userId())
-                .preferences()
-                .getOrDefault("travelStyle", LocaleSupport.pick(locale, "平衡", "balanced"));
+        Map<String, String> preferences = memoryModuleFacade.getOrCreate(input.userId()).preferences();
+        String travelStyle = preferences.getOrDefault("travelStyle", LocaleSupport.pick(locale, "平衡", "balanced"));
+        String decisionLens = preferences.getOrDefault("decisionLens", "balanced-judgment");
+        String planningDepth = preferences.getOrDefault("planningDepth", "balanced");
+        String feedbackStyle = preferences.getOrDefault("feedbackStyle", "direct");
+        String energyMode = preferences.getOrDefault("energyMode", "balanced");
 
         PlanTask task = new PlanTask(
                 "task-travel-route",
                 LocaleSupport.pick(locale, "生成东京轻松行程", "Build relaxed Tokyo itinerary"),
                 LocaleSupport.pick(
                         locale,
-                        "按" + travelStyle + "风格生成 7 天东京低疲劳路线，并结合天气、旅行搜索和远程专家建议做片区节奏安排。",
-                        "Create a " + travelStyle + " 7-day itinerary with weather-aware neighborhood pacing, travel search grounding, and remote specialist advice."
+                        "按" + travelStyle + "风格生成 7 天东京低疲劳路线；以" + localizeDecisionLens(locale, decisionLens) + "为主决策方式，规划深度=" + planningDepth + "，节奏偏好=" + energyMode + "。",
+                        "Create a " + travelStyle + " 7-day itinerary using a " + decisionLens + " decision lens, planning depth=" + planningDepth + ", and energy mode=" + energyMode + "."
                 ),
                 TaskStatus.PENDING,
                 moduleName(),
@@ -78,6 +81,10 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
         metadata.put("search", search.summary());
         metadata.put("knowledgeSnippets", snippets);
         metadata.put("travelResearchMode", travelA2aAdvisor.isEnabled() ? "a2a-remote-plus-local" : "local-grounded");
+        metadata.put("decisionLens", decisionLens);
+        metadata.put("planningDepth", planningDepth);
+        metadata.put("feedbackStyle", feedbackStyle);
+        metadata.put("energyMode", energyMode);
         if (!remoteAdvice.isBlank()) {
             metadata.put("a2aAdvice", remoteAdvice);
         }
@@ -87,11 +94,11 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
                 LocaleSupport.pick(
                         locale,
                         remoteAdvice.isBlank()
-                                ? "已结合天气、攻略和旅行搜索生成低疲劳旅行建议。"
-                                : "已结合天气、攻略、FlyAI 搜索和远程 A2A 专家建议生成低疲劳旅行建议。",
+                                ? "已结合天气、攻略和旅行搜索生成低疲劳旅行建议，并按人格偏好调整反馈语气（" + feedbackStyle + "）。"
+                                : "已结合天气、攻略、FlyAI 搜索和远程 A2A 专家建议生成低疲劳旅行建议，并按人格偏好调整反馈语气（" + feedbackStyle + "）。",
                         remoteAdvice.isBlank()
-                                ? "Built a low-fatigue travel proposal with weather, search, and guide references."
-                                : "Built a low-fatigue travel proposal with weather, FlyAI search, guide references, and remote A2A advice."
+                                ? "Built a low-fatigue travel proposal with weather, search, and guides, tuned to the user's feedback style (" + feedbackStyle + ")."
+                                : "Built a low-fatigue travel proposal with weather, FlyAI search, guides, and remote A2A advice, tuned to the user's feedback style (" + feedbackStyle + ")."
                 ),
                 List.of(task),
                 metadata
@@ -102,5 +109,21 @@ public class TravelAgent implements ModuleExecutable<AgentTask, AgentContributio
     public String executeProbe() {
         // Probe endpoints must stay read-only so operator views do not create user data / 探针接口必须保持只读，避免运营台刷新时写入用户数据。
         return "Travel specialist is ready for grounded itinerary planning, live search, and optional A2A advice.";
+    }
+
+    private String localizeDecisionLens(String locale, String lens) {
+        return switch (lens) {
+            case "systems-thinking" -> LocaleSupport.pick(locale, "系统思维", "systems thinking");
+            case "evidence-first" -> LocaleSupport.pick(locale, "证据优先", "evidence-first");
+            case "outcome-driven" -> LocaleSupport.pick(locale, "结果导向", "outcome-driven");
+            case "possibility-scouting" -> LocaleSupport.pick(locale, "机会探索", "possibility scouting");
+            case "meaning-alignment" -> LocaleSupport.pick(locale, "价值对齐", "meaning alignment");
+            case "harmony-first" -> LocaleSupport.pick(locale, "关系优先", "harmony-first");
+            case "people-alignment" -> LocaleSupport.pick(locale, "协同对齐", "people alignment");
+            case "process-discipline" -> LocaleSupport.pick(locale, "流程纪律", "process discipline");
+            case "direct-action" -> LocaleSupport.pick(locale, "快速行动", "direct action");
+            case "experience-first" -> LocaleSupport.pick(locale, "体验优先", "experience-first");
+            default -> LocaleSupport.pick(locale, "平衡判断", "balanced judgment");
+        };
     }
 }

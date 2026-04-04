@@ -215,16 +215,16 @@
 
 ### 11.1 Persona 预设
 
-当前内置 4 类身份：
+当前内置 `18` 类身份（`16` 个 MBTI + `2` 个治理身份）：
 
-- `urban-traveler`
-- `habit-builder`
+- `mbti-intj` ~ `mbti-esfp`
 - `guest-explorer`
 - `ops-reviewer`
+- 兼容身份：`urban-traveler`、`habit-builder`
 
 其中：
 
-- 前 3 类主要服务 `ToC`
+- MBTI + `guest-explorer` 主要服务 `ToC`
 - `ops-reviewer` 默认切到 `ToB`
 
 ### 11.2 为什么要加 `guest-explorer`

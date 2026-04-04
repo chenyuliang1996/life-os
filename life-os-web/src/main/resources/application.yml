@@ -102,7 +102,7 @@ lifeos:
     trusted-user-prefixes: ${LIFEOS_SECURITY_TRUSTED_PREFIXES:lifeos-,persona-}
     operator-user-prefixes: ${LIFEOS_SECURITY_OPERATOR_PREFIXES:persona-ops,ops-,admin-}
     restricted-user-prefixes: ${LIFEOS_SECURITY_RESTRICTED_PREFIXES:guest-,external-}
-    mcp-trusted-user-prefixes: ${LIFEOS_SECURITY_MCP_PREFIXES:lifeos-,persona-travel,persona-ops}
+    mcp-trusted-user-prefixes: ${LIFEOS_SECURITY_MCP_PREFIXES:lifeos-,persona-travel,persona-mbti-,persona-ops}
     outbound-allowlist: ${LIFEOS_SECURITY_ALLOWLIST:api.openai.com,localhost,127.0.0.1,flyai.example}
     outbound-network-enabled: ${LIFEOS_SECURITY_OUTBOUND_ENABLED:true}
     exec-enabled: ${LIFEOS_SECURITY_EXEC_ENABLED:false}

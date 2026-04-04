@@ -11,7 +11,8 @@
   - `ToC` 只保留用户操作动线，聚焦输入、计划、确认、画像和知识沉淀
   - `ToB` 聚焦系统运行态，查看组件、连接器、RAG、执行链路和部署状态
 - 多身份模拟与用户作用域：
-  - 内置旅行用户、习惯用户、谨慎体验者、运营观察者 4 类 persona
+  - 内置 `16` 类 MBTI 人格身份 + 谨慎体验者 + 运营观察者
+  - 每个 MBTI 身份包含 `MBTI / 气质分组 / 决策倾向` 元数据与可执行偏好
   - 计划、确认项、知识文档、审计流水按 `userId` 作用域隔离
 - 只读探针：
   - ToB 中的模块探针不再写入计划、确认项或画像
@@ -123,6 +124,7 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - [RAG 选型](docs/rag-selection.md)
 - [FlyAI 与 A2A 旅行链路](docs/flyai-a2a-travel-search.md)
 - [安全架构与多身份模拟](docs/security-architecture.md)
+- [MBTI 人格优化方案](docs/mbti-persona-optimization.md)
 - [真实用户动线验证](docs/user-journey-validation.md)
 - [分布式部署说明](docs/deployment-cluster.md)
 - [API 契约](docs/api-contracts.md)

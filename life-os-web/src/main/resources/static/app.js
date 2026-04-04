@@ -79,6 +79,9 @@ const TRANSLATIONS = {
     "fields.travelStyle": "旅行风格",
     "fields.budgetLevel": "预算等级",
     "fields.studyGoal": "学习目标",
+    "fields.personaSearch": "搜索人格",
+    "fields.personaTemperament": "气质分组",
+    "fields.personaCount": "展示 {visible}/{total} 个身份",
     "fields.knowledgeTitle": "标题",
     "fields.knowledgeTags": "标签",
     "fields.knowledgeSummary": "摘要",
@@ -94,6 +97,7 @@ const TRANSLATIONS = {
     "state.planIdle": "计划卡片会显示在这里。",
     "state.knowledgeEmpty": "暂无知识文档。",
     "state.personaEmpty": "暂无身份场景。",
+    "state.personaFilteredEmpty": "没有匹配当前筛选条件的身份。",
     "state.planEmpty": "还没有计划。",
     "state.planOverflow": "仅展示最近 {visible} 条，共 {total} 条。",
     "state.timelineEmpty": "执行时间线会显示在这里。",
@@ -196,6 +200,10 @@ const TRANSLATIONS = {
     "security.policies": "工具权限",
     "persona.prompt": "典型诉求",
     "persona.description": "身份说明",
+    "persona.mbti": "MBTI",
+    "persona.temperament": "气质",
+    "persona.decisionLens": "决策倾向",
+    "option.allTemperaments": "全部分组",
     "trust.restricted": "受限",
     "trust.guarded": "受保护",
     "trust.trusted": "可信",
@@ -307,6 +315,9 @@ const TRANSLATIONS = {
     "fields.travelStyle": "Travel style",
     "fields.budgetLevel": "Budget level",
     "fields.studyGoal": "Study goal",
+    "fields.personaSearch": "Search personas",
+    "fields.personaTemperament": "Temperament",
+    "fields.personaCount": "Showing {visible}/{total} personas",
     "fields.knowledgeTitle": "Title",
     "fields.knowledgeTags": "Tags",
     "fields.knowledgeSummary": "Summary",
@@ -322,6 +333,7 @@ const TRANSLATIONS = {
     "state.planIdle": "Plan cards will appear here.",
     "state.knowledgeEmpty": "No knowledge documents yet.",
     "state.personaEmpty": "No persona presets available.",
+    "state.personaFilteredEmpty": "No personas match the active filters.",
     "state.planEmpty": "No plans yet.",
     "state.planOverflow": "Showing the latest {visible} plans out of {total}.",
     "state.timelineEmpty": "Execution timeline will appear here.",
@@ -424,6 +436,10 @@ const TRANSLATIONS = {
     "security.policies": "Tool permissions",
     "persona.prompt": "Typical intent",
     "persona.description": "Description",
+    "persona.mbti": "MBTI",
+    "persona.temperament": "Temperament",
+    "persona.decisionLens": "Decision lens",
+    "option.allTemperaments": "All temperaments",
     "trust.restricted": "Restricted",
     "trust.guarded": "Guarded",
     "trust.trusted": "Trusted",
@@ -469,6 +485,8 @@ const state = {
   runtime: null,
   operations: null,
   personas: [],
+  personaSearch: "",
+  personaTemperament: "all",
   securityOverview: null,
   auditEntries: [],
   connectors: [],
@@ -840,7 +858,9 @@ function initializeDefaultPersona() {
     return;
   }
 
-  const defaultPersona = state.personas.find(persona => persona.id !== "ops-reviewer") || state.personas[0];
+  const defaultPersona = state.personas.find(persona => persona.id.startsWith("mbti-"))
+    || state.personas.find(persona => persona.id !== "ops-reviewer")
+    || state.personas[0];
   if (!defaultPersona) {
     return;
   }
@@ -914,10 +934,39 @@ function renderPersonas(personas) {
     return;
   }
 
-  container.innerHTML = personas.map(persona => `
+  const searchTerm = state.personaSearch.trim().toLowerCase();
+  const activeTemperament = state.personaTemperament;
+  const temperaments = [...new Set(personas
+    .map(persona => (persona.temperament || "").trim())
+    .filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, state.locale));
+
+  const filtered = personas.filter(persona => {
+    const byTemperament = activeTemperament === "all" || persona.temperament === activeTemperament;
+    const bySearch = !searchTerm || [
+      persona.displayName,
+      persona.description,
+      persona.prompt,
+      persona.mbtiType,
+      persona.id
+    ].some(value => String(value || "").toLowerCase().includes(searchTerm));
+    return byTemperament && bySearch;
+  });
+
+  const options = [
+    `<option value="all"${activeTemperament === "all" ? " selected" : ""}>${escapeHtml(t("option.allTemperaments"))}</option>`,
+    ...temperaments.map(temperament => `<option value="${escapeHtml(temperament)}"${temperament === activeTemperament ? " selected" : ""}>${escapeHtml(temperament)}</option>`)
+  ].join("");
+
+  const cards = filtered.map(persona => `
     <article class="persona-card ${persona.id === state.activePersonaId ? "is-selected" : ""}">
       <h3>${escapeHtml(persona.displayName)}</h3>
       <p>${escapeHtml(persona.description)}</p>
+      <div class="persona-meta">
+        <span class="meta-pill is-mbti">${escapeHtml(t("persona.mbti"))}: ${escapeHtml(persona.mbtiType || "N/A")}</span>
+        <span class="meta-pill">${escapeHtml(t("persona.temperament"))}: ${escapeHtml(persona.temperament || "-")}</span>
+        <span class="meta-pill">${escapeHtml(t("persona.decisionLens"))}: ${escapeHtml(persona.decisionLens || "-")}</span>
+      </div>
       <div class="persona-meta">
         <span class="meta-pill">${escapeHtml(t("label.userId"))}: ${escapeHtml(persona.userId)}</span>
         <span class="meta-pill">${escapeHtml(t("label.thread"))}: ${escapeHtml(shortId(persona.threadId))}</span>
@@ -931,6 +980,39 @@ function renderPersonas(personas) {
       </div>
     </article>
   `).join("");
+
+  const filteredHtml = cards || `<div class="empty-state">${escapeHtml(t("state.personaFilteredEmpty"))}</div>`;
+
+  container.innerHTML = `
+    <div class="persona-toolbar">
+      <div class="persona-filter">
+        <label for="persona-search">${escapeHtml(t("fields.personaSearch"))}</label>
+        <input id="persona-search" type="text" placeholder="${escapeHtml(t("fields.personaSearch"))}" value="${escapeHtml(state.personaSearch)}">
+      </div>
+      <div class="persona-filter">
+        <label for="persona-temperament">${escapeHtml(t("fields.personaTemperament"))}</label>
+        <select id="persona-temperament">${options}</select>
+      </div>
+      <p class="persona-count">${escapeHtml(t("fields.personaCount", { visible: String(filtered.length), total: String(personas.length) }))}</p>
+    </div>
+    <div class="persona-grid">${filteredHtml}</div>
+  `;
+
+  const searchInput = document.getElementById("persona-search");
+  if (searchInput) {
+    searchInput.addEventListener("input", event => {
+      state.personaSearch = event.target.value || "";
+      renderPersonas(state.personas);
+    });
+  }
+
+  const temperamentSelect = document.getElementById("persona-temperament");
+  if (temperamentSelect) {
+    temperamentSelect.addEventListener("change", event => {
+      state.personaTemperament = event.target.value || "all";
+      renderPersonas(state.personas);
+    });
+  }
 
   document.querySelectorAll("[data-persona-id]").forEach(button => {
     button.addEventListener("click", () => runSafely(() => applyPersona(button.dataset.personaId)));
@@ -1516,6 +1598,10 @@ function formatModelName(modelName) {
 }
 
 function formatPersonaId(personaId) {
+  if (personaId && personaId.startsWith("mbti-")) {
+    const mbti = personaId.replace("mbti-", "").toUpperCase();
+    return isChineseLocale() ? `${mbti} 人格` : `${mbti} Persona`;
+  }
   const mappings = {
     "urban-traveler": isChineseLocale() ? "都市旅行者" : "Urban Traveler",
     "habit-builder": isChineseLocale() ? "习惯坚持者" : "Habit Builder",
