@@ -22,6 +22,11 @@
 - `GET /api/v1/system/rag`
   - 返回当前 RAG 运行态
   - 包含是否启用向量、检索模式、provider、model、summary
+- `GET /api/v1/system/operations`
+  - 返回容量、SLO、延迟与链路聚合指标（含 `activeSessions` / `activeContexts` / `recentTraceEvents`）
+- `GET /api/v1/system/trace-links?limit=20`
+  - 返回最近请求链路事件
+  - 字段包含 `operation`、`userId`、`threadId`、`sessionId`、`contextId`、`traceId`、`surface`、`durationMs`
 
 ### 安全与 Persona
 
@@ -52,11 +57,17 @@
     - `threadId`
     - `input`
     - `locale`
+    - `sessionId`（可选）
+    - `contextId`（可选）
+    - `traceId`（可选）
 - `POST /api/v1/assistant/resume`
   - 请求体：
     - `userId`
     - `planId`
     - `locale`
+    - `sessionId`（可选）
+    - `contextId`（可选）
+    - `traceId`（可选）
   - 用于在确认流完成后恢复执行
 
 ### 用户画像
@@ -72,6 +83,9 @@
     - `threadId`
     - `input`
     - `locale`
+    - `sessionId`（可选）
+    - `contextId`（可选）
+    - `traceId`（可选）
 - `GET /api/v1/plans`
   - 必须带 `userId`
 - `GET /api/v1/plans/{planId}`
@@ -108,6 +122,21 @@
     - `seeded`（本地种子）
     - `skill`（FlyAI / MCP skill）
     - `crawler`（合规抓取端点，按配置可选）
+
+### UX 埋点
+
+- `POST /api/v1/telemetry/ux`
+  - 请求体：
+    - `action`
+    - `surface`
+    - `locale`
+    - `durationMs`
+    - `success`
+    - `userId`（可选）
+    - `threadId`（可选）
+    - `sessionId`（可选）
+    - `contextId`（可选）
+    - `traceId`（可选）
 
 ## 3. AG-UI
 

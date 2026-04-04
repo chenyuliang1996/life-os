@@ -130,7 +130,10 @@ public class LifeOsAgentRuntimeService {
                 request.userId(),
                 request.threadId(),
                 request.input(),
-                locale
+                locale,
+                request.sessionId(),
+                request.contextId(),
+                request.traceId()
         ));
 
         String taskLines = result.plan().tasks().stream()

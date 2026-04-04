@@ -4,6 +4,8 @@ const TRANSLATIONS = {
     "topbar.badge": "OtterLife Service Platform",
     "topbar.surfaceToc": "ToC 体验",
     "topbar.surfaceTob": "ToB 运营台",
+    "topbar.tocFocus": "聚焦模式",
+    "topbar.tocStudio": "全功能",
     "hero.title": "OtterLife",
     "hero.subtitle": "面向真实用户的出行与生活协同服务，统一承接节日灵感、行程规划、多人协作与执行闭环。",
     "hero.badgeRag": "Hybrid RAG",
@@ -25,6 +27,9 @@ const TRANSLATIONS = {
     "sections.operations.title": "服务指标",
     "sections.operations.subtitle": "基于真实请求、审批和前端体验埋点汇总容量、可靠性与体验指标。",
     "sections.operations.pill": "SLO",
+    "sections.trace.title": "链路观测",
+    "sections.trace.subtitle": "按 session / context / trace 关联用户请求和前端交互。",
+    "sections.trace.pill": "Trace Lens",
     "sections.sequence.title": "用户动线引导",
     "sections.sequence.subtitle": "告诉用户下一步该做什么，把规划、确认和执行变成可理解的操作路径。",
     "sections.sequence.pill": "Journey",
@@ -97,6 +102,7 @@ const TRANSLATIONS = {
     "fields.personaCompact": "当前人格",
     "fields.memberName": "成员名称",
     "fields.memberStyle": "偏好类型",
+    "fields.contextCurrent": "当前链路",
     "fields.knowledgeTitle": "标题",
     "fields.knowledgeTags": "标签",
     "fields.knowledgeSummary": "摘要",
@@ -138,6 +144,7 @@ const TRANSLATIONS = {
     "state.auditEmpty": "审计流水会显示在这里。",
     "state.profileLoading": "正在加载画像...",
     "state.requestFailed": "请求失败，请查看控制台日志。",
+    "state.traceEmpty": "尚无链路数据，先发起一次请求查看关联关系。",
     "state.groupEmpty": "暂无同行成员，默认按单人出行规划。",
     "state.festivalEmpty": "暂无可用节日灵感。",
     "state.calendarEmpty": "当天还没有规划内容，点击“编辑当天规划”开始记录。",
@@ -234,6 +241,9 @@ const TRANSLATIONS = {
     "ops.confirmationP95": "审批决策 P95",
     "ops.uxBootstrapP95": "首屏加载 P95",
     "ops.uxInteractionP95": "交互反馈 P95",
+    "ops.activeSessions": "活跃会话",
+    "ops.activeContexts": "活跃上下文",
+    "ops.recentTraces": "最近链路事件",
     "ops.capacityOk": "容量充足",
     "ops.capacityRisk": "接近容量阈值",
     "ops.sloOk": "SLO 正常",
@@ -248,6 +258,9 @@ const TRANSLATIONS = {
     "label.outcome": "结果",
     "label.userId": "用户",
     "label.thread": "线程",
+    "label.session": "会话",
+    "label.context": "上下文",
+    "label.trace": "链路",
     "common.enabled": "已启用",
     "common.disabled": "已关闭",
     "security.workspaceTrusted": "工作区信任",
@@ -299,6 +312,8 @@ const TRANSLATIONS = {
     "topbar.badge": "OtterLife Service Platform",
     "topbar.surfaceToc": "ToC Experience",
     "topbar.surfaceTob": "ToB Operations",
+    "topbar.tocFocus": "Focus",
+    "topbar.tocStudio": "Studio",
     "hero.title": "OtterLife",
     "hero.subtitle": "A user-facing travel service that connects holiday inspiration, itinerary planning, collaboration, and execution in one flow.",
     "hero.badgeRag": "Hybrid RAG",
@@ -320,6 +335,9 @@ const TRANSLATIONS = {
     "sections.operations.title": "Service Metrics",
     "sections.operations.subtitle": "Capacity, reliability, and UX signals derived from real requests, approvals, and client telemetry.",
     "sections.operations.pill": "SLO",
+    "sections.trace.title": "Trace Lens",
+    "sections.trace.subtitle": "Correlate user requests and UX actions via session / context / trace ids.",
+    "sections.trace.pill": "Trace Lens",
     "sections.sequence.title": "User Journey Guide",
     "sections.sequence.subtitle": "Shows what users should do next, not only technical execution order.",
     "sections.sequence.pill": "Journey",
@@ -392,6 +410,7 @@ const TRANSLATIONS = {
     "fields.personaCompact": "Active persona",
     "fields.memberName": "Member name",
     "fields.memberStyle": "Preference type",
+    "fields.contextCurrent": "Current Context",
     "fields.knowledgeTitle": "Title",
     "fields.knowledgeTags": "Tags",
     "fields.knowledgeSummary": "Summary",
@@ -433,6 +452,7 @@ const TRANSLATIONS = {
     "state.auditEmpty": "Audit events will appear here after loading.",
     "state.profileLoading": "Loading profile...",
     "state.requestFailed": "Request failed. Please inspect the console logs.",
+    "state.traceEmpty": "No trace data yet. Run an action to start correlation.",
     "state.groupEmpty": "No companions yet, planning as a solo trip.",
     "state.festivalEmpty": "No holiday ideas available right now.",
     "state.calendarEmpty": "No plan yet for this day. Click \"Edit day plan\" to add one.",
@@ -524,6 +544,9 @@ const TRANSLATIONS = {
     "ops.requestsPerMinute": "Requests per minute",
     "ops.totalRequests": "Total requests",
     "ops.pendingConfirmations": "Pending approvals",
+    "ops.activeSessions": "Active sessions",
+    "ops.activeContexts": "Active contexts",
+    "ops.recentTraces": "Recent trace events",
     "ops.previewP95": "Plan preview P95",
     "ops.resumeP95": "Resume P95",
     "ops.confirmationP95": "Approval decision P95",
@@ -543,6 +566,9 @@ const TRANSLATIONS = {
     "label.outcome": "Outcome",
     "label.userId": "User",
     "label.thread": "Thread",
+    "label.session": "Session",
+    "label.context": "Context",
+    "label.trace": "Trace",
     "common.enabled": "Enabled",
     "common.disabled": "Disabled",
     "security.workspaceTrusted": "Workspace trust",
@@ -594,6 +620,9 @@ const TRANSLATIONS = {
 const state = {
   locale: document.body.dataset.defaultLocale || "zh-CN",
   surface: document.body.dataset.surface || "toc",
+  surfacePinnedByHost: false,
+  tocDensity: "focus",
+  hostApp: "browser",
   latestRunId: null,
   latestPlanId: null,
   latestAssistantReply: null,
@@ -623,7 +652,13 @@ const state = {
   securityOverview: null,
   auditEntries: [],
   connectors: [],
+  traceEvents: [],
   confirmationCount: 0,
+  requestContext: {
+    sessionId: "",
+    contextId: "",
+    traceId: ""
+  },
   identityRefreshTimer: null
 };
 
@@ -631,6 +666,7 @@ const PLAN_HISTORY_LIMIT = 8;
 const CONFIRMATION_LIST_LIMIT = 6;
 const FESTIVAL_ROTATE_MS = 12000;
 const MAX_GROUP_MEMBERS = 8;
+const TRACE_LIST_LIMIT = 24;
 
 const FESTIVAL_LIBRARY = {
   "zh-CN": [
@@ -654,20 +690,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const today = toIsoDate(new Date());
   state.calendarAnchor = today;
   state.selectedDate = today;
+  initHostEmbedding();
   applyTranslations();
   prepareMotion();
   restoreSurfaceMode();
+  restoreTocDensity();
   bindSurfaceSwitch();
+  bindTocDensitySwitch();
   bindIdentityInputs();
   bindActionButton("run-preview", runPreview);
   bindActionButton("run-agent", runAssistant);
+  bindActionButton("h5-run-preview", runPreview);
+  bindActionButton("h5-run-agent", runAssistant);
   bindActionButton("reload-data", bootstrap);
   bindActionButton("save-profile", saveProfile);
   bindActionButton("add-knowledge", addKnowledge);
+  refreshContextStrip();
   document.getElementById("profile-view").textContent = t("state.profileLoading");
   bootstrap()
     .then(async () => {
       markReady();
+      postHostEvent("lifeos_ready", {
+        userId: currentUserId(),
+        surface: state.surface,
+        locale: state.locale
+      });
       await sendUxMetric("page_bootstrap", bootStartedAt, true);
     })
     .catch(async error => {
@@ -682,6 +729,7 @@ async function bootstrap() {
     loadRagStatus(),
     loadRuntime(),
     loadOperations(),
+    loadTraceLinks(),
     loadPersonas(),
     loadConnectors(),
     loadFestivalFeed()
@@ -716,9 +764,175 @@ function prepareMotion() {
   });
 }
 
+function initHostEmbedding() {
+  const hostConfig = window.__LIFEOS_H5_CONFIG__ && typeof window.__LIFEOS_H5_CONFIG__ === "object"
+    ? window.__LIFEOS_H5_CONFIG__
+    : {};
+  const params = new URLSearchParams(window.location.search);
+
+  const locale = params.get("locale") || hostConfig.locale;
+  if (locale && TRANSLATIONS[locale]) {
+    state.locale = locale;
+    document.body.dataset.defaultLocale = locale;
+  }
+
+  const surface = params.get("surface") || hostConfig.surface;
+  if (surface === "toc" || surface === "tob") {
+    state.surface = surface;
+    state.surfacePinnedByHost = true;
+  }
+
+  const userId = params.get("userId") || hostConfig.userId;
+  const threadId = params.get("threadId") || hostConfig.threadId;
+  if (userId) {
+    const userInput = document.getElementById("user-id");
+    if (userInput) {
+      userInput.value = userId;
+    }
+  }
+  if (threadId) {
+    const threadInput = document.getElementById("thread-id");
+    if (threadInput) {
+      threadInput.value = threadId;
+    }
+  }
+
+  state.hostApp = detectHostApp();
+  document.body.dataset.hostApp = state.hostApp;
+  initializeRequestContext(params, hostConfig);
+
+  window.LifeOsH5 = {
+    setIdentity(payload = {}) {
+      if (typeof payload.userId === "string" && payload.userId.trim()) {
+        document.getElementById("user-id").value = payload.userId.trim();
+      }
+      if (typeof payload.threadId === "string" && payload.threadId.trim()) {
+        document.getElementById("thread-id").value = payload.threadId.trim();
+      }
+      if (typeof payload.locale === "string" && TRANSLATIONS[payload.locale]) {
+        state.locale = payload.locale;
+        applyTranslations();
+      }
+      if (payload.refresh === true) {
+        runSafely(() => handleIdentityChange());
+      } else {
+        refreshContextStrip();
+      }
+    },
+    setContext(payload = {}) {
+      state.requestContext.sessionId = payload.sessionId || state.requestContext.sessionId;
+      state.requestContext.contextId = payload.contextId || state.requestContext.contextId;
+      state.requestContext.traceId = payload.traceId || state.requestContext.traceId;
+      refreshContextStrip();
+    },
+    switchSurface(surfaceTarget) {
+      applySurfaceMode(surfaceTarget);
+    },
+    refresh() {
+      return runSafely(() => bootstrap());
+    }
+  };
+}
+
+function detectHostApp() {
+  if (window.ReactNativeWebView) {
+    return "react-native";
+  }
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.lifeos) {
+    return "ios-webkit";
+  }
+  if (window.AppBridge && typeof window.AppBridge.postMessage === "function") {
+    return "android-bridge";
+  }
+  return "browser";
+}
+
+function initializeRequestContext(params, hostConfig) {
+  const explicitSession = params.get("sessionId") || hostConfig.sessionId;
+  const explicitContext = params.get("contextId") || hostConfig.contextId;
+  const explicitTrace = params.get("traceId") || hostConfig.traceId;
+  const userId = currentUserId();
+  const storageKey = `otterlife-h5-session:${userId}`;
+  const persistedSession = window.localStorage.getItem(storageKey);
+  const sessionId = explicitSession || persistedSession || `sess-${shortId(cryptoRandomId())}`;
+  state.requestContext.sessionId = sessionId;
+  state.requestContext.contextId = explicitContext || `ctx-${shortId(cryptoRandomId())}`;
+  state.requestContext.traceId = explicitTrace || `trc-${shortId(cryptoRandomId())}`;
+  window.localStorage.setItem(storageKey, sessionId);
+}
+
+function restoreTocDensity() {
+  const saved = window.localStorage.getItem("life-os-toc-density");
+  if (saved === "focus" || saved === "studio") {
+    state.tocDensity = saved;
+  }
+  applyTocDensity(state.tocDensity);
+}
+
+function bindTocDensitySwitch() {
+  document.querySelectorAll("[data-density-target]").forEach(button => {
+    button.addEventListener("click", () => {
+      applyTocDensity(button.dataset.densityTarget);
+    });
+  });
+}
+
+function applyTocDensity(mode) {
+  state.tocDensity = mode === "studio" ? "studio" : "focus";
+  document.body.dataset.tocDensity = state.tocDensity;
+  window.localStorage.setItem("life-os-toc-density", state.tocDensity);
+  document.querySelectorAll("[data-density-target]").forEach(button => {
+    button.classList.toggle("is-active", button.dataset.densityTarget === state.tocDensity);
+  });
+}
+
+function rotateRequestTrace(action) {
+  state.requestContext.traceId = `trc-${shortId(cryptoRandomId())}`;
+  if (action === "run-preview" || action === "run-agent") {
+    state.requestContext.contextId = `ctx-${shortId(cryptoRandomId())}`;
+  }
+  refreshContextStrip();
+}
+
+function refreshContextStrip() {
+  const container = document.getElementById("context-strip");
+  if (!container) {
+    return;
+  }
+  container.innerHTML = `
+    <span>${escapeHtml(t("fields.contextCurrent"))}</span>
+    <code>${escapeHtml(state.requestContext.sessionId || "-")}</code>
+    <code>${escapeHtml(state.requestContext.contextId || "-")}</code>
+    <code>${escapeHtml(state.requestContext.traceId || "-")}</code>
+  `;
+}
+
+function postHostEvent(type, payload = {}) {
+  const message = JSON.stringify({
+    type,
+    timestamp: new Date().toISOString(),
+    payload
+  });
+  try {
+    if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === "function") {
+      window.ReactNativeWebView.postMessage(message);
+      return;
+    }
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.lifeos) {
+      window.webkit.messageHandlers.lifeos.postMessage({ type, payload });
+      return;
+    }
+    if (window.AppBridge && typeof window.AppBridge.postMessage === "function") {
+      window.AppBridge.postMessage(message);
+    }
+  } catch (error) {
+    console.debug("host bridge post failed", error);
+  }
+}
+
 function restoreSurfaceMode() {
   const saved = window.localStorage.getItem("life-os-surface");
-  if (saved === "toc" || saved === "tob") {
+  if (!state.surfacePinnedByHost && (saved === "toc" || saved === "tob")) {
     state.surface = saved;
   }
   applySurfaceMode(state.surface);
@@ -736,6 +950,7 @@ function bindSurfaceSwitch() {
 // Re-sync user-scoped views when the active identity changes / 当前身份变化后，重新拉取用户维度的数据，避免跨用户状态残留。
 function bindIdentityInputs() {
   const userInput = document.getElementById("user-id");
+  const threadInput = document.getElementById("thread-id");
   if (!userInput) {
     return;
   }
@@ -750,6 +965,11 @@ function bindIdentityInputs() {
 
   userInput.addEventListener("change", scheduleRefresh);
   userInput.addEventListener("blur", scheduleRefresh);
+  if (threadInput) {
+    threadInput.addEventListener("input", () => {
+      refreshContextStrip();
+    });
+  }
 }
 
 // Toggle consumer/operator views without reloading the page / 不刷新页面切换 ToC 与 ToB 视角。
@@ -759,6 +979,9 @@ function applySurfaceMode(surface) {
   window.localStorage.setItem("life-os-surface", state.surface);
   document.querySelectorAll("[data-surface-target]").forEach(button => {
     button.classList.toggle("is-active", button.dataset.surfaceTarget === state.surface);
+  });
+  postHostEvent("surface_changed", {
+    surface: state.surface
   });
 }
 
@@ -778,13 +1001,27 @@ function bindActionButton(id, action) {
 
 async function withButtonState(button, action) {
   const startedAt = performance.now();
+  rotateRequestTrace(button.id);
   button.disabled = true;
   button.classList.add("is-loading");
   try {
     await action();
     await sendUxMetric(resolveUxAction(button.id), startedAt, true);
+    postHostEvent("action_success", {
+      action: resolveUxAction(button.id),
+      userId: currentUserId(),
+      threadId: currentThreadId(),
+      traceId: state.requestContext.traceId
+    });
   } catch (error) {
     await sendUxMetric(resolveUxAction(button.id), startedAt, false);
+    postHostEvent("action_failure", {
+      action: resolveUxAction(button.id),
+      userId: currentUserId(),
+      threadId: currentThreadId(),
+      traceId: state.requestContext.traceId,
+      message: error?.message || "unknown"
+    });
     throw error;
   } finally {
     button.disabled = false;
@@ -802,6 +1039,8 @@ async function runPreview() {
 
   state.latestRunId = result.executionRun.id;
   state.latestPlanId = result.plan.id;
+  state.requestContext.contextId = `ctx-${shortId(result.executionRun.id)}`;
+  refreshContextStrip();
   document.getElementById("preview-summary").textContent = t("state.planGenerated", {
     title: result.plan.title,
     tasks: result.plan.tasks.length,
@@ -814,6 +1053,7 @@ async function runPreview() {
   renderConfirmations(result.confirmations);
   renderSequence();
   await loadOperations();
+  await loadTraceLinks();
   await loadPlans();
   await loadSecurityOverview();
   await loadAuditTrail();
@@ -832,6 +1072,8 @@ async function runAssistant() {
 
   if (result.runId) {
     state.latestRunId = result.runId;
+    state.requestContext.contextId = `ctx-${shortId(result.runId)}`;
+    refreshContextStrip();
     await loadTimeline(result.runId);
   }
   if (result.planId) {
@@ -839,6 +1081,7 @@ async function runAssistant() {
     await loadPlans();
   }
   await loadOperations();
+  await loadTraceLinks();
   await loadSecurityOverview();
   await loadAuditTrail();
   renderSequence();
@@ -853,6 +1096,15 @@ async function loadArchitecture() {
 async function loadOperations() {
   state.operations = await api("/api/v1/system/operations");
   renderOperations(state.operations);
+}
+
+async function loadTraceLinks() {
+  try {
+    state.traceEvents = await api(`/api/v1/system/trace-links?limit=${TRACE_LIST_LIMIT}`);
+  } catch (error) {
+    state.traceEvents = [];
+  }
+  renderTraceLinks(state.traceEvents);
 }
 
 async function loadPersonas() {
@@ -995,6 +1247,8 @@ async function loadTimeline(runId) {
 
 async function handleIdentityChange() {
   syncActivePersona();
+  initializeRequestContext(new URLSearchParams(), {});
+  refreshContextStrip();
   resetUserScopedViews();
   loadWorkbenchState();
   renderCalendarView();
@@ -1010,6 +1264,7 @@ async function handleIdentityChange() {
   renderSequence();
   renderFestivalView();
   renderJourneyHub();
+  await loadTraceLinks();
 }
 
 function resetUserScopedViews() {
@@ -2039,7 +2294,7 @@ function renderOperations(operations) {
       <strong>${escapeHtml(t("ops.card.traffic"))}</strong>
       <div class="ops-value">${escapeHtml(String(operations.currentQps))}</div>
       <small class="ops-meta">${escapeHtml(t("metrics.currentQps"))} · ${escapeHtml(t("ops.requestsPerMinute"))}: ${escapeHtml(String(operations.requestsPerMinute))}</small>
-      <small class="ops-meta">${escapeHtml(t("ops.totalRequests"))}: ${escapeHtml(formatCompactNumber(operations.totalRequests))}</small>
+      <small class="ops-meta">${escapeHtml(t("ops.totalRequests"))}: ${escapeHtml(formatCompactNumber(operations.totalRequests))} · ${escapeHtml(t("ops.recentTraces"))}: ${escapeHtml(String(operations.recentTraceEvents || 0))}</small>
       <span class="ops-status ${operations.withinCapacity ? "is-good" : "is-warn"}">${escapeHtml(operations.withinCapacity ? t("ops.capacityOk") : t("ops.capacityRisk"))}</span>
     </article>
     <article class="chip-card ops-card">
@@ -2054,6 +2309,7 @@ function renderOperations(operations) {
       <div class="ops-value">${escapeHtml(formatMillis(operations.assistantP95Ms))}</div>
       <small class="ops-meta">${escapeHtml(t("metrics.assistantP95"))} · ${escapeHtml(t("ops.uxBootstrapP95"))}: ${escapeHtml(formatMillis(operations.uxBootstrapP95Ms))}</small>
       <small class="ops-meta">${escapeHtml(t("ops.uxInteractionP95"))}: ${escapeHtml(formatMillis(operations.uxInteractionP95Ms))} · ${escapeHtml(t("ops.pendingConfirmations"))}: ${escapeHtml(String(operations.pendingConfirmations))}</small>
+      <small class="ops-meta">${escapeHtml(t("ops.activeSessions"))}: ${escapeHtml(String(operations.activeSessions || 0))} · ${escapeHtml(t("ops.activeContexts"))}: ${escapeHtml(String(operations.activeContexts || 0))}</small>
       <small class="ops-meta">${escapeHtml(formatOperationsSummary(operations.summary, operations))}</small>
     </article>
   `;
@@ -2062,6 +2318,29 @@ function renderOperations(operations) {
   setMetricText("current-qps", String(operations.currentQps));
   setMetricText("success-rate", formatPercentage(operations.successRate));
   setMetricText("assistant-p95", formatMillis(operations.assistantP95Ms));
+}
+
+function renderTraceLinks(events) {
+  const container = document.getElementById("trace-view");
+  if (!container) {
+    return;
+  }
+  if (!Array.isArray(events) || events.length === 0) {
+    container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.traceEmpty"))}</div>`;
+    return;
+  }
+
+  const html = events.map(event => `
+    <div class="list-item">
+      <strong>${escapeHtml(event.operation)}</strong>
+      <small>${escapeHtml(t("label.userId"))}: ${escapeHtml(event.userId || "unknown")} · ${escapeHtml(t("label.thread"))}: ${escapeHtml(event.threadId || "unknown")}</small>
+      <small>${escapeHtml(t("label.session"))}: ${escapeHtml(event.sessionId || "unknown")}</small>
+      <small>${escapeHtml(t("label.context"))}: ${escapeHtml(event.contextId || "unknown")} · ${escapeHtml(t("label.trace"))}: ${escapeHtml(event.traceId || "unknown")}</small>
+      <small>${escapeHtml(t("label.status"))}: ${escapeHtml(event.success ? t("outcome.SUCCESS") : t("outcome.FAILURE"))} · ${escapeHtml(formatMillis(event.durationMs || 0))}</small>
+    </div>
+  `).join("");
+  container.innerHTML = html;
+  animateChildren("trace-view");
 }
 
 function renderAssistantReply(reply) {
@@ -2130,6 +2409,7 @@ function renderConfirmations(confirmations) {
 }
 
 async function decideConfirmation(id, decision) {
+  rotateRequestTrace("confirmation-decision");
   const updated = await api(`/api/v1/confirmations/${id}/decision?userId=${encodeURIComponent(currentUserId())}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -2142,7 +2422,10 @@ async function decideConfirmation(id, decision) {
       body: JSON.stringify({
         userId: currentUserId(),
         planId: updated.planId,
-        locale: state.locale
+        locale: state.locale,
+        sessionId: state.requestContext.sessionId,
+        contextId: state.requestContext.contextId,
+        traceId: state.requestContext.traceId
       })
     });
 
@@ -2165,6 +2448,7 @@ async function decideConfirmation(id, decision) {
   }
   flashElement("preview-summary", "is-updated");
   await loadOperations();
+  await loadTraceLinks();
   await loadConfirmations();
   await loadPlans();
   await loadSecurityOverview();
@@ -2345,6 +2629,11 @@ async function sendUxMetric(action, startedAt, success) {
         action,
         surface: state.surface,
         locale: state.locale,
+        userId: currentUserId(),
+        threadId: currentThreadId(),
+        sessionId: state.requestContext.sessionId,
+        contextId: state.requestContext.contextId,
+        traceId: state.requestContext.traceId,
         durationMs: Math.max(0, Math.round(performance.now() - startedAt)),
         success
       })
@@ -2358,6 +2647,8 @@ function resolveUxAction(id) {
   return {
     "run-preview": "create_action_plan",
     "run-agent": "assistant_message",
+    "h5-run-preview": "create_action_plan",
+    "h5-run-agent": "assistant_message",
     "reload-data": "refresh_dashboard",
     "save-profile": "save_profile",
     "add-knowledge": "add_knowledge"
@@ -2372,14 +2663,21 @@ function currentRequestPayload() {
     : baseInput;
   return {
     userId: currentUserId(),
-    threadId: document.getElementById("thread-id").value.trim() || "thread-otterlife",
+    threadId: currentThreadId(),
     input: composedInput,
-    locale: state.locale
+    locale: state.locale,
+    sessionId: state.requestContext.sessionId,
+    contextId: state.requestContext.contextId,
+    traceId: state.requestContext.traceId
   };
 }
 
 function currentUserId() {
   return document.getElementById("user-id").value.trim() || "lifeos-user";
+}
+
+function currentThreadId() {
+  return document.getElementById("thread-id").value.trim() || "thread-otterlife";
 }
 
 function isChineseLocale() {
@@ -2395,6 +2693,7 @@ function applyTranslations() {
   document.querySelectorAll("[data-i18n]").forEach(node => {
     node.textContent = t(node.dataset.i18n);
   });
+  refreshContextStrip();
 }
 
 function runSafely(action) {
@@ -2741,6 +3040,13 @@ function toIsoDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function cryptoRandomId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
+  }
+  return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
 }
 
 function shortId(value) {

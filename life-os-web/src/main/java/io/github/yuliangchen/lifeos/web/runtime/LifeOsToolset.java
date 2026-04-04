@@ -31,7 +31,15 @@ public class LifeOsToolset {
             @ToolParam(name = "input", required = true, description = "User request to plan") String input,
             @ToolParam(name = "locale", required = false, description = "Preferred locale, e.g. zh-CN or en-US") String locale) {
         String scopedUserId = userId == null || userId.isBlank() ? "lifeos-user" : userId;
-        var result = lifeOrchestrator.execute(new PlanPreviewRequest(scopedUserId, threadId, input, locale));
+        var result = lifeOrchestrator.execute(new PlanPreviewRequest(
+                scopedUserId,
+                threadId,
+                input,
+                locale,
+                null,
+                null,
+                null
+        ));
         return """
                 Plan title: %s
                 Summary: %s

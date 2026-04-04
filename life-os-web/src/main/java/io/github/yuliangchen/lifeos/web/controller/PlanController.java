@@ -44,7 +44,17 @@ public class PlanController {
         long startedAt = System.nanoTime();
         try {
             OrchestrationResult result = lifeOrchestrator.execute(request);
-            lifeOsObservabilityService.recordPlanPreview(elapsedMillis(startedAt), true);
+            lifeOsObservabilityService.recordPlanPreview(
+                    elapsedMillis(startedAt),
+                    true,
+                    request.userId(),
+                    request.threadId(),
+                    request.sessionId(),
+                    request.contextId(),
+                    request.traceId(),
+                    "toc",
+                    request.locale()
+            );
             lifeOsSecurityService.recordAudit(
                     request.userId(),
                     request.threadId(),
@@ -56,7 +66,17 @@ public class PlanController {
             );
             return result;
         } catch (RuntimeException exception) {
-            lifeOsObservabilityService.recordPlanPreview(elapsedMillis(startedAt), false);
+            lifeOsObservabilityService.recordPlanPreview(
+                    elapsedMillis(startedAt),
+                    false,
+                    request.userId(),
+                    request.threadId(),
+                    request.sessionId(),
+                    request.contextId(),
+                    request.traceId(),
+                    "toc",
+                    request.locale()
+            );
             lifeOsSecurityService.recordAudit(
                     request.userId(),
                     request.threadId(),

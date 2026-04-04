@@ -40,7 +40,17 @@ public class AssistantController {
         long startedAt = System.nanoTime();
         try {
             AssistantReply reply = lifeOsAgentRuntimeService.reply(request);
-            lifeOsObservabilityService.recordAssistantMessage(elapsedMillis(startedAt), true);
+            lifeOsObservabilityService.recordAssistantMessage(
+                    elapsedMillis(startedAt),
+                    true,
+                    request.userId(),
+                    request.threadId(),
+                    request.sessionId(),
+                    request.contextId(),
+                    request.traceId(),
+                    "toc",
+                    request.locale()
+            );
             lifeOsSecurityService.recordAudit(
                     request.userId(),
                     request.threadId(),
@@ -52,7 +62,17 @@ public class AssistantController {
             );
             return reply;
         } catch (RuntimeException exception) {
-            lifeOsObservabilityService.recordAssistantMessage(elapsedMillis(startedAt), false);
+            lifeOsObservabilityService.recordAssistantMessage(
+                    elapsedMillis(startedAt),
+                    false,
+                    request.userId(),
+                    request.threadId(),
+                    request.sessionId(),
+                    request.contextId(),
+                    request.traceId(),
+                    "toc",
+                    request.locale()
+            );
             lifeOsSecurityService.recordAudit(
                     request.userId(),
                     request.threadId(),
@@ -71,7 +91,17 @@ public class AssistantController {
         long startedAt = System.nanoTime();
         try {
             ExecutionContinuationResult result = lifeOsAgentRuntimeService.resume(request);
-            lifeOsObservabilityService.recordAssistantResume(elapsedMillis(startedAt), true);
+            lifeOsObservabilityService.recordAssistantResume(
+                    elapsedMillis(startedAt),
+                    true,
+                    request.userId(),
+                    "n/a",
+                    request.sessionId(),
+                    request.contextId(),
+                    request.traceId(),
+                    "toc",
+                    request.locale()
+            );
             lifeOsSecurityService.recordAudit(
                     request.userId(),
                     "n/a",
@@ -83,7 +113,17 @@ public class AssistantController {
             );
             return result;
         } catch (RuntimeException exception) {
-            lifeOsObservabilityService.recordAssistantResume(elapsedMillis(startedAt), false);
+            lifeOsObservabilityService.recordAssistantResume(
+                    elapsedMillis(startedAt),
+                    false,
+                    request.userId(),
+                    "n/a",
+                    request.sessionId(),
+                    request.contextId(),
+                    request.traceId(),
+                    "toc",
+                    request.locale()
+            );
             lifeOsSecurityService.recordAudit(
                     request.userId(),
                     "n/a",

@@ -32,7 +32,15 @@ public class LifeOsAguiAgent extends AgentBase {
         String userInput = messages.isEmpty() ? "Help me organize life planning" : messages.get(messages.size() - 1).getTextContent();
         String userId = resolveUserId(messages);
         String threadId = resolveThreadId(messages);
-        AssistantReply reply = lifeOsAgentRuntimeService.reply(new AssistantRequest(userId, threadId, userInput, null));
+        AssistantReply reply = lifeOsAgentRuntimeService.reply(new AssistantRequest(
+                userId,
+                threadId,
+                userInput,
+                null,
+                null,
+                null,
+                null
+        ));
 
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("threadId", threadId);

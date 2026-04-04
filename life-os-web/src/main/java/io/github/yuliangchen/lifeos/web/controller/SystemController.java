@@ -2,10 +2,12 @@ package io.github.yuliangchen.lifeos.web.controller;
 
 import io.github.yuliangchen.lifeos.domain.model.ConnectorStatus;
 import io.github.yuliangchen.lifeos.domain.model.OperationsSnapshot;
+import io.github.yuliangchen.lifeos.domain.model.RequestTraceEvent;
 import io.github.yuliangchen.lifeos.domain.model.SystemArchitectureStatus;
 import io.github.yuliangchen.lifeos.tools.ToolModuleFacade;
 import io.github.yuliangchen.lifeos.web.observability.LifeOsObservabilityService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,5 +48,10 @@ public class SystemController {
     @GetMapping("/operations")
     public OperationsSnapshot operations() {
         return lifeOsObservabilityService.snapshot();
+    }
+
+    @GetMapping("/trace-links")
+    public List<RequestTraceEvent> traceLinks(@RequestParam(defaultValue = "20") int limit) {
+        return lifeOsObservabilityService.recentTraceEvents(Math.max(1, Math.min(limit, 60)));
     }
 }

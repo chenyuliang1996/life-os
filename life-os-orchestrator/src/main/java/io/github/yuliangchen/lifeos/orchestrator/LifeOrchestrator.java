@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -100,6 +101,23 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
                 .toList();
 
         String runId = UUID.randomUUID().toString();
+        Map<String, Object> metadata = new LinkedHashMap<>();
+        metadata.put("threadId", input.threadId());
+        metadata.put("input", input.input());
+        metadata.put("locale", locale);
+        if (input.sessionId() != null && !input.sessionId().isBlank()) {
+            metadata.put("sessionId", input.sessionId());
+        }
+        if (input.contextId() != null && !input.contextId().isBlank()) {
+            metadata.put("contextId", input.contextId());
+        }
+        if (input.traceId() != null && !input.traceId().isBlank()) {
+            metadata.put("traceId", input.traceId());
+        }
+        metadata.put("runId", runId);
+        metadata.put("awaitingConfirmation", tasks.stream().anyMatch(task -> task.status() == TaskStatus.READY_FOR_CONFIRMATION));
+        metadata.put("continued", false);
+
         LifePlan plan = lifePlanRepository.save(new LifePlan(
                 UUID.randomUUID().toString(),
                 input.userId(),
@@ -111,14 +129,7 @@ public class LifeOrchestrator implements ModuleExecutable<PlanPreviewRequest, Or
                 ),
                 PlanStatus.ACTIVE,
                 tasks,
-                Map.of(
-                        "threadId", input.threadId(),
-                        "input", input.input(),
-                        "locale", locale,
-                        "runId", runId,
-                        "awaitingConfirmation", tasks.stream().anyMatch(task -> task.status() == TaskStatus.READY_FOR_CONFIRMATION),
-                        "continued", false
-                )
+                Map.copyOf(metadata)
         ));
 
         List<ConfirmationRequest> confirmations = buildConfirmations(plan, tasks);

@@ -2,10 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>OtterLife</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="/styles.css?v=20260404e">
+    <link rel="stylesheet" href="/styles.css?v=20260404f">
 </head>
 <body data-default-locale="zh-CN" data-surface="toc">
 <div class="page-shell">
@@ -17,6 +17,10 @@
             <div class="surface-switch" aria-label="Surface switch">
                 <button type="button" class="surface-pill is-active" data-surface-target="toc" data-i18n="topbar.surfaceToc">ToC 体验</button>
                 <button type="button" class="surface-pill" data-surface-target="tob" data-i18n="topbar.surfaceTob">ToB 观测</button>
+            </div>
+            <div class="toc-density-switch" data-surface="toc" aria-label="ToC density switch">
+                <button type="button" class="density-pill is-active" data-density-target="focus" data-i18n="topbar.tocFocus">聚焦模式</button>
+                <button type="button" class="density-pill" data-density-target="studio" data-i18n="topbar.tocStudio">全功能</button>
             </div>
             <nav class="locale-switch" aria-label="Language switch">
                 <a href="/" class="locale-pill is-active">中文</a>
@@ -180,6 +184,7 @@
                     <input id="thread-id" type="text" value="thread-travel-primary" placeholder="thread-travel-primary">
                 </div>
             </div>
+            <div id="context-strip" class="context-strip"></div>
             <div class="hero-actions compact">
                 <button id="run-agent" class="secondary" data-i18n="hero.runAssistant">运行助手</button>
             </div>
@@ -206,6 +211,17 @@
                 <span class="pill" data-i18n="sections.operations.pill">SLO</span>
             </div>
             <div id="operations-view" class="ops-grid"></div>
+        </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.trace.title">链路观测</h2>
+                    <p class="section-subtitle" data-i18n="sections.trace.subtitle">按 session / context / trace 关联用户请求和前端交互。</p>
+                </div>
+                <span class="pill" data-i18n="sections.trace.pill">Trace Lens</span>
+            </div>
+            <div id="trace-view" class="list-stack"></div>
         </section>
 
         <section class="card wide" data-surface="tob">
@@ -241,7 +257,7 @@
             <div id="rag-view" class="list-stack"></div>
         </section>
 
-        <section class="card" data-surface="toc">
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.assistant.title">助手回复</h2>
@@ -252,7 +268,7 @@
             <div id="assistant-view" class="empty-state" data-i18n="state.assistantIdle">运行助手后，这里会显示最新回复。</div>
         </section>
 
-        <section class="card" data-surface="toc">
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.guardrails.title">用户护栏</h2>
@@ -276,7 +292,7 @@
             </div>
         </section>
 
-        <section class="card" data-surface="toc">
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.history.title">计划历史</h2>
@@ -298,7 +314,7 @@
             <div id="timeline-view" class="list-stack"></div>
         </section>
 
-        <section class="card" data-surface="toc">
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.confirmations.title">待确认动作</h2>
@@ -309,7 +325,7 @@
             <div id="confirmations-view" class="list-stack capped"></div>
         </section>
 
-        <section class="card" data-surface="toc">
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.profile.title">用户画像</h2>
@@ -329,7 +345,7 @@
             <pre id="profile-view" class="code-box"></pre>
         </section>
 
-        <section class="card" data-surface="toc">
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.knowledge.title">知识库</h2>
@@ -399,6 +415,10 @@
         </div>
     </div>
 </div>
-<script src="/app.js?v=20260404e"></script>
+<div class="h5-actionbar" data-surface="toc">
+    <button id="h5-run-preview" class="primary" data-i18n="hero.runPreview">生成可执行方案</button>
+    <button id="h5-run-agent" class="secondary" data-i18n="hero.runAssistant">运行助手</button>
+</div>
+<script src="/app.js?v=20260404f"></script>
 </body>
 </html>

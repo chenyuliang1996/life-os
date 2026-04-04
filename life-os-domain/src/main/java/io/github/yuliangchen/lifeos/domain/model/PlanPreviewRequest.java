@@ -4,6 +4,9 @@ public record PlanPreviewRequest(
         String userId,
         String threadId,
         String input,
-        String locale
+        String locale,
+        String sessionId,
+        String contextId,
+        String traceId
 ) {
 }

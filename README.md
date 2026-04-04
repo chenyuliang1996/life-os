@@ -7,6 +7,10 @@
 - 中英文双入口页面：
   - 中文：`/`
   - 英文：`/en/index.html`
+- App 可嵌入 H5 形态：
+  - 适配移动端安全区与底部操作栏
+  - 支持 `WebView/JSBridge` 回调（`window.LifeOsH5`、`ReactNativeWebView`、`webkit messageHandlers`）
+  - 支持通过 URL 或 Native 注入 `userId/threadId/sessionId/contextId/traceId`
 - 双展示面：
   - `ToC` 只保留用户操作动线，聚焦输入、计划、确认、画像和知识沉淀
   - `ToB` 聚焦系统运行态，查看组件、连接器、RAG、执行链路和部署状态

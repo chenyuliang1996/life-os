@@ -2,6 +2,7 @@ package io.github.yuliangchen.lifeos.web.observability;
 
 import io.github.yuliangchen.lifeos.domain.model.ConfirmationStatus;
 import io.github.yuliangchen.lifeos.domain.model.OperationsSnapshot;
+import io.github.yuliangchen.lifeos.domain.model.RequestTraceEvent;
 import io.github.yuliangchen.lifeos.domain.model.ServiceLevelTarget;
 import io.github.yuliangchen.lifeos.domain.model.UxTelemetryEvent;
 import io.github.yuliangchen.lifeos.domain.repository.ConfirmationRequestRepository;
@@ -13,8 +14,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -29,6 +32,8 @@ public class LifeOsObservabilityService {
     private final AtomicLong totalFailures;
     private final Deque<Long> requestWindow;
     private final Object requestWindowMonitor;
+    private final Deque<RequestTraceEvent> traceWindow;
+    private final Object traceWindowMonitor;
     private final Timer planPreviewTimer;
     private final Timer assistantMessageTimer;
     private final Timer assistantResumeTimer;
@@ -48,6 +53,8 @@ public class LifeOsObservabilityService {
         this.totalFailures = new AtomicLong();
         this.requestWindow = new ArrayDeque<>();
         this.requestWindowMonitor = new Object();
+        this.traceWindow = new ArrayDeque<>();
+        this.traceWindowMonitor = new Object();
         this.planPreviewTimer = registerTimer("lifeos.plan.preview.latency", "Latency for action-plan creation requests.");
         this.assistantMessageTimer = registerTimer("lifeos.assistant.message.latency", "Latency for assistant replies.");
         this.assistantResumeTimer = registerTimer("lifeos.assistant.resume.latency", "Latency for continuation after approvals.");
@@ -68,12 +75,51 @@ public class LifeOsObservabilityService {
         recordBackendRequest("plan.preview", durationMs, success, planPreviewTimer);
     }
 
+    public void recordPlanPreview(long durationMs,
+                                  boolean success,
+                                  String userId,
+                                  String threadId,
+                                  String sessionId,
+                                  String contextId,
+                                  String traceId,
+                                  String surface,
+                                  String locale) {
+        recordBackendRequest("plan.preview", durationMs, success, planPreviewTimer);
+        recordTraceEvent("plan.preview", userId, threadId, sessionId, contextId, traceId, surface, locale, success, durationMs);
+    }
+
     public void recordAssistantMessage(long durationMs, boolean success) {
         recordBackendRequest("assistant.message", durationMs, success, assistantMessageTimer);
     }
 
+    public void recordAssistantMessage(long durationMs,
+                                       boolean success,
+                                       String userId,
+                                       String threadId,
+                                       String sessionId,
+                                       String contextId,
+                                       String traceId,
+                                       String surface,
+                                       String locale) {
+        recordBackendRequest("assistant.message", durationMs, success, assistantMessageTimer);
+        recordTraceEvent("assistant.message", userId, threadId, sessionId, contextId, traceId, surface, locale, success, durationMs);
+    }
+
     public void recordAssistantResume(long durationMs, boolean success) {
         recordBackendRequest("assistant.resume", durationMs, success, assistantResumeTimer);
+    }
+
+    public void recordAssistantResume(long durationMs,
+                                      boolean success,
+                                      String userId,
+                                      String threadId,
+                                      String sessionId,
+                                      String contextId,
+                                      String traceId,
+                                      String surface,
+                                      String locale) {
+        recordBackendRequest("assistant.resume", durationMs, success, assistantResumeTimer);
+        recordTraceEvent("assistant.resume", userId, threadId, sessionId, contextId, traceId, surface, locale, success, durationMs);
     }
 
     public void recordConfirmationDecision(long durationMs, boolean success) {
@@ -98,6 +144,28 @@ public class LifeOsObservabilityService {
                 "locale", normalize(event.locale()),
                 "success", Boolean.toString(event.success())
         ).increment();
+        recordTraceEvent(
+                "ux." + normalize(event.action()),
+                event.userId(),
+                event.threadId(),
+                event.sessionId(),
+                event.contextId(),
+                event.traceId(),
+                event.surface(),
+                event.locale(),
+                event.success(),
+                event.durationMs()
+        );
+    }
+
+    public List<RequestTraceEvent> recentTraceEvents(int limit) {
+        synchronized (traceWindowMonitor) {
+            pruneTrace(System.currentTimeMillis());
+            return traceWindow.stream()
+                    .sorted((left, right) -> right.timestamp().compareTo(left.timestamp()))
+                    .limit(Math.max(limit, 1))
+                    .toList();
+        }
     }
 
     public OperationsSnapshot snapshot() {
@@ -118,6 +186,17 @@ public class LifeOsObservabilityService {
         double confirmationP95 = percentileMillis(confirmationDecisionTimer, 0.95);
         double uxBootstrapP95 = percentileMillis(uxBootstrapTimer, 0.95);
         double uxInteractionP95 = percentileMillis(uxInteractionTimer, 0.95);
+        List<RequestTraceEvent> activeTraceEvents = recentTraceEvents(240);
+        long activeSessions = activeTraceEvents.stream()
+                .map(RequestTraceEvent::sessionId)
+                .filter(this::isTraceIdentifier)
+                .distinct()
+                .count();
+        long activeContexts = activeTraceEvents.stream()
+                .map(RequestTraceEvent::contextId)
+                .filter(this::isTraceIdentifier)
+                .distinct()
+                .count();
         boolean withinCapacity = currentQps <= properties.targetPeakQps();
         boolean withinSlo = successRate >= properties.availabilitySlo()
                 && withinBudget(assistantP95, properties.assistantP95Ms())
@@ -130,6 +209,9 @@ public class LifeOsObservabilityService {
                 round(requestsPerMinute()),
                 totalRequests.get(),
                 successRate,
+                activeSessions,
+                activeContexts,
+                activeTraceEvents.size(),
                 pendingConfirmations(),
                 round(assistantP95),
                 round(previewP95),
@@ -159,6 +241,46 @@ public class LifeOsObservabilityService {
             requestWindow.addLast(now);
             prune(now);
         }
+    }
+
+    private void recordTraceEvent(String operation,
+                                  String userId,
+                                  String threadId,
+                                  String sessionId,
+                                  String contextId,
+                                  String traceId,
+                                  String surface,
+                                  String locale,
+                                  boolean success,
+                                  long durationMs) {
+        RequestTraceEvent event = new RequestTraceEvent(
+                Instant.now(),
+                normalize(operation),
+                normalize(userId),
+                normalize(threadId),
+                normalize(sessionId),
+                normalize(contextId),
+                normalize(traceId),
+                normalize(surface),
+                normalize(locale),
+                success,
+                Math.max(durationMs, 0L)
+        );
+
+        synchronized (traceWindowMonitor) {
+            traceWindow.addLast(event);
+            pruneTrace(System.currentTimeMillis());
+            while (traceWindow.size() > 240) {
+                traceWindow.removeFirst();
+            }
+        }
+
+        meterRegistry.counter(
+                "lifeos.trace.event.total",
+                "operation", event.operation(),
+                "surface", event.surface(),
+                "success", Boolean.toString(event.success())
+        ).increment();
     }
 
     private Timer registerTimer(String name, String description) {
@@ -203,6 +325,20 @@ public class LifeOsObservabilityService {
         }
     }
 
+    private void pruneTrace(long now) {
+        while (!traceWindow.isEmpty()) {
+            RequestTraceEvent earliest = traceWindow.peekFirst();
+            if (earliest == null) {
+                return;
+            }
+            long ageMs = now - earliest.timestamp().toEpochMilli();
+            if (ageMs <= 30 * 60_000L) {
+                return;
+            }
+            traceWindow.removeFirst();
+        }
+    }
+
     private double percentileMillis(Timer timer, double percentile) {
         ValueAtPercentile[] percentiles = timer.takeSnapshot().percentileValues();
         for (ValueAtPercentile candidate : percentiles) {
@@ -236,6 +372,10 @@ public class LifeOsObservabilityService {
 
     private String normalize(String value) {
         return value == null || value.isBlank() ? "unknown" : value;
+    }
+
+    private boolean isTraceIdentifier(String value) {
+        return value != null && !value.isBlank() && !"unknown".equals(value);
     }
 
     @ConfigurationProperties(prefix = "lifeos.service")

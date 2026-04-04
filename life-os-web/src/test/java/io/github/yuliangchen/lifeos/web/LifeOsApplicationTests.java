@@ -147,11 +147,43 @@ class LifeOsApplicationTests {
                                   "action": "page_bootstrap",
                                   "surface": "toc",
                                   "locale": "zh-CN",
+                                  "userId": "persona-travel",
+                                  "threadId": "thread-h5",
+                                  "sessionId": "sess-test",
+                                  "contextId": "ctx-test",
+                                  "traceId": "trc-test",
                                   "durationMs": 420,
                                   "success": true
                                 }
                                 """))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldExposeRecentTraceLinks() throws Exception {
+        mockMvc.perform(post("/api/v1/telemetry/ux")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "action": "h5_interaction",
+                                  "surface": "toc",
+                                  "locale": "en-US",
+                                  "userId": "persona-travel",
+                                  "threadId": "thread-h5",
+                                  "sessionId": "sess-test",
+                                  "contextId": "ctx-test",
+                                  "traceId": "trc-test",
+                                  "durationMs": 120,
+                                  "success": true
+                                }
+                                """))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/system/trace-links?limit=5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(greaterThanOrEqualTo(1)))
+                .andExpect(jsonPath("$[0].operation").exists())
+                .andExpect(jsonPath("$[0].traceId").exists());
     }
 
     @Test
