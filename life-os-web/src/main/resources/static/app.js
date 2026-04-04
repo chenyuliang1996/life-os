@@ -37,6 +37,9 @@ const TRANSLATIONS = {
     "sections.group.title": "多人出行协同",
     "sections.group.subtitle": "添加同行成员和偏好，自动生成兼顾多人诉求的规划上下文。",
     "sections.group.pill": "Group Trip",
+    "sections.hub.title": "行程主线",
+    "sections.hub.subtitle": "把灵感、日历、多人偏好和执行合成一条连续操作主线。",
+    "sections.hub.pill": "Journey Hub",
     "sections.arch.title": "部署架构",
     "sections.arch.subtitle": "展示当前部署模式、数据库、RAG 存储与会话策略。",
     "sections.arch.pill": "Cluster",
@@ -91,6 +94,7 @@ const TRANSLATIONS = {
     "fields.personaSearch": "搜索人格",
     "fields.personaTemperament": "气质分组",
     "fields.personaCount": "展示 {visible}/{total} 个身份",
+    "fields.personaCompact": "当前人格",
     "fields.memberName": "成员名称",
     "fields.memberStyle": "偏好类型",
     "fields.knowledgeTitle": "标题",
@@ -109,7 +113,13 @@ const TRANSLATIONS = {
     "actions.applyGroupContext": "应用多人偏好",
     "actions.editDayPlan": "编辑当天规划",
     "actions.clearDayPlan": "清空当天规划",
+    "actions.saveDayPlan": "保存当天规划",
     "actions.applyFestivalPoi": "用于本次规划",
+    "actions.close": "关闭",
+    "actions.showMore": "展开更多",
+    "actions.showLess": "收起",
+    "actions.showImage": "看图片",
+    "actions.showVideo": "看视频",
     "state.previewIdle": "点击“生成可执行方案”开始规划。",
     "state.assistantIdle": "运行助手后，这里会显示最新回复。",
     "state.planIdle": "计划卡片会显示在这里。",
@@ -131,6 +141,7 @@ const TRANSLATIONS = {
     "state.groupEmpty": "暂无同行成员，默认按单人出行规划。",
     "state.festivalEmpty": "暂无可用节日灵感。",
     "state.calendarEmpty": "当天还没有规划内容，点击“编辑当天规划”开始记录。",
+    "state.personaCompactHint": "MBTI 已改为紧凑模式，可搜索后快速切换。",
     "state.profileSaved": "用户画像已保存。",
     "state.knowledgeSaved": "知识文档已入库。",
     "state.planGenerated": "已生成“{title}”，包含 {tasks} 个任务和 {confirmations} 个确认节点。",
@@ -193,11 +204,22 @@ const TRANSLATIONS = {
     "calendar.view.day": "日",
     "calendar.editPrompt": "请输入 {date} 的主要规划内容",
     "calendar.groupSummary": "共 {count} 天有计划",
+    "calendar.sheet.title": "编辑当天规划",
     "group.style.culture": "文化体验",
     "group.style.food": "美食探索",
     "group.style.family": "亲子友好",
     "group.style.photo": "拍照打卡",
     "group.style.night": "夜间活动",
+    "hub.step.poi": "节日灵感",
+    "hub.step.calendar": "日历规划",
+    "hub.step.group": "同行协同",
+    "hub.step.run": "执行生成",
+    "hub.ready": "准备度",
+    "hub.next": "下一步",
+    "hub.next.poi": "选择一个 POI 灵感并应用到目标。",
+    "hub.next.calendar": "先补齐至少一天的日历规划。",
+    "hub.next.group": "如有同行成员，建议先录入偏好。",
+    "hub.next.run": "已就绪，直接生成可执行方案。",
     "ops.card.target": "服务目标",
     "ops.card.traffic": "流量与容量",
     "ops.card.reliability": "可靠性",
@@ -310,6 +332,9 @@ const TRANSLATIONS = {
     "sections.group.title": "Group Travel Collaboration",
     "sections.group.subtitle": "Add companions and preferences to generate balanced multi-person planning context.",
     "sections.group.pill": "Group Trip",
+    "sections.hub.title": "Trip Journey Hub",
+    "sections.hub.subtitle": "Connect inspiration, calendar, companions, and execution into one continuous flow.",
+    "sections.hub.pill": "Journey Hub",
     "sections.arch.title": "Deployment Architecture",
     "sections.arch.subtitle": "Shows deployment mode, database, RAG storage, and session strategy.",
     "sections.arch.pill": "Cluster",
@@ -364,6 +389,7 @@ const TRANSLATIONS = {
     "fields.personaSearch": "Search personas",
     "fields.personaTemperament": "Temperament",
     "fields.personaCount": "Showing {visible}/{total} personas",
+    "fields.personaCompact": "Active persona",
     "fields.memberName": "Member name",
     "fields.memberStyle": "Preference type",
     "fields.knowledgeTitle": "Title",
@@ -382,7 +408,13 @@ const TRANSLATIONS = {
     "actions.applyGroupContext": "Apply Group Context",
     "actions.editDayPlan": "Edit day plan",
     "actions.clearDayPlan": "Clear day plan",
+    "actions.saveDayPlan": "Save day plan",
     "actions.applyFestivalPoi": "Use for planning",
+    "actions.close": "Close",
+    "actions.showMore": "Show more",
+    "actions.showLess": "Show less",
+    "actions.showImage": "Image",
+    "actions.showVideo": "Video",
     "state.previewIdle": "Press \"Create Action Plan\" to start planning.",
     "state.assistantIdle": "Run the assistant to see the latest reply.",
     "state.planIdle": "Plan cards will appear here.",
@@ -404,6 +436,7 @@ const TRANSLATIONS = {
     "state.groupEmpty": "No companions yet, planning as a solo trip.",
     "state.festivalEmpty": "No holiday ideas available right now.",
     "state.calendarEmpty": "No plan yet for this day. Click \"Edit day plan\" to add one.",
+    "state.personaCompactHint": "MBTI is now compact. Search and switch quickly.",
     "state.profileSaved": "Profile saved.",
     "state.knowledgeSaved": "Knowledge document persisted.",
     "state.planGenerated": "Generated \"{title}\" with {tasks} tasks and {confirmations} confirmation gates.",
@@ -466,11 +499,22 @@ const TRANSLATIONS = {
     "calendar.view.day": "Day",
     "calendar.editPrompt": "Enter the main plan for {date}",
     "calendar.groupSummary": "{count} planned day(s)",
+    "calendar.sheet.title": "Edit Day Plan",
     "group.style.culture": "Culture",
     "group.style.food": "Food",
     "group.style.family": "Family-friendly",
     "group.style.photo": "Photo spots",
     "group.style.night": "Night life",
+    "hub.step.poi": "Holiday inspiration",
+    "hub.step.calendar": "Calendar planning",
+    "hub.step.group": "Companion sync",
+    "hub.step.run": "Execution",
+    "hub.ready": "Readiness",
+    "hub.next": "Next",
+    "hub.next.poi": "Pick one POI inspiration and apply it to the goal.",
+    "hub.next.calendar": "Add at least one day plan in the calendar.",
+    "hub.next.group": "If not solo, add companion preferences first.",
+    "hub.next.run": "Ready to go. Generate the executable plan.",
     "ops.card.target": "Service Targets",
     "ops.card.traffic": "Traffic and Capacity",
     "ops.card.reliability": "Reliability",
@@ -561,8 +605,10 @@ const state = {
   personas: [],
   personaSearch: "",
   personaTemperament: "all",
+  personaExpanded: false,
   festivalFeed: [],
   festivalIndex: 0,
+  festivalMediaMode: "image",
   festivalTimer: null,
   calendarView: "month",
   calendarAnchor: null,
@@ -572,6 +618,8 @@ const state = {
   festivalBound: false,
   calendarBound: false,
   groupBound: false,
+  hubBound: false,
+  editingDate: null,
   securityOverview: null,
   auditEntries: [],
   connectors: [],
@@ -586,18 +634,18 @@ const MAX_GROUP_MEMBERS = 8;
 
 const FESTIVAL_LIBRARY = {
   "zh-CN": [
-    { id: "labor-day", date: "2026-05-01", name: "五一假期", city: "上海", pois: ["武康路", "愚园路", "苏州河步道"], vibe: "城市漫游 + 轻体力夜游" },
-    { id: "dragon-boat", date: "2026-06-19", name: "端午假期", city: "杭州", pois: ["西湖环线", "河坊街", "良渚博物院"], vibe: "湖景慢节奏 + 文化体验" },
-    { id: "summer-weekend", date: "2026-07-11", name: "盛夏周末", city: "青岛", pois: ["八大关", "小麦岛", "奥帆中心"], vibe: "海风散步 + 傍晚观景" },
-    { id: "mid-autumn", date: "2026-09-25", name: "中秋假期", city: "苏州", pois: ["平江路", "拙政园", "金鸡湖"], vibe: "园林夜景 + 月下散步" },
-    { id: "national-day", date: "2026-10-01", name: "国庆假期", city: "成都", pois: ["宽窄巷子", "东郊记忆", "望江楼公园"], vibe: "美食密度 + 慢生活节奏" }
+    { id: "labor-day", date: "2026-05-01", name: "五一假期", city: "上海", pois: ["武康路", "愚园路", "苏州河步道"], vibe: "城市漫游 + 轻体力夜游", imageUrl: "https://images.unsplash.com/photo-1549692520-acc6669e2f0c?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" },
+    { id: "dragon-boat", date: "2026-06-19", name: "端午假期", city: "杭州", pois: ["西湖环线", "河坊街", "良渚博物院"], vibe: "湖景慢节奏 + 文化体验", imageUrl: "https://images.unsplash.com/photo-1517309230475-6736d926b979?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
+    { id: "summer-weekend", date: "2026-07-11", name: "盛夏周末", city: "青岛", pois: ["八大关", "小麦岛", "奥帆中心"], vibe: "海风散步 + 傍晚观景", imageUrl: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" },
+    { id: "mid-autumn", date: "2026-09-25", name: "中秋假期", city: "苏州", pois: ["平江路", "拙政园", "金鸡湖"], vibe: "园林夜景 + 月下散步", imageUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
+    { id: "national-day", date: "2026-10-01", name: "国庆假期", city: "成都", pois: ["宽窄巷子", "东郊记忆", "望江楼公园"], vibe: "美食密度 + 慢生活节奏", imageUrl: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" }
   ],
   "en-US": [
-    { id: "labor-day", date: "2026-05-01", name: "Labor Day Break", city: "Shanghai", pois: ["Wukang Rd", "Yuyuan Rd", "Suzhou Creek Walk"], vibe: "Urban stroll + low-fatigue evenings" },
-    { id: "dragon-boat", date: "2026-06-19", name: "Dragon Boat Holiday", city: "Hangzhou", pois: ["West Lake Loop", "Hefang Street", "Liangzhu Museum"], vibe: "Lake-side pace + culture" },
-    { id: "summer-weekend", date: "2026-07-11", name: "Summer Weekend", city: "Qingdao", pois: ["Badaguan", "Xiaomai Island", "Olympic Sailing Center"], vibe: "Sea breeze + sunset route" },
-    { id: "mid-autumn", date: "2026-09-25", name: "Mid-Autumn Holiday", city: "Suzhou", pois: ["Pingjiang Road", "Humble Administrator's Garden", "Jinji Lake"], vibe: "Gardens + moonlight walk" },
-    { id: "national-day", date: "2026-10-01", name: "National Day Golden Week", city: "Chengdu", pois: ["Kuanzhai Alley", "Eastern Suburb Memory", "Wangjianglou Park"], vibe: "Food-focused + relaxed rhythm" }
+    { id: "labor-day", date: "2026-05-01", name: "Labor Day Break", city: "Shanghai", pois: ["Wukang Rd", "Yuyuan Rd", "Suzhou Creek Walk"], vibe: "Urban stroll + low-fatigue evenings", imageUrl: "https://images.unsplash.com/photo-1549692520-acc6669e2f0c?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" },
+    { id: "dragon-boat", date: "2026-06-19", name: "Dragon Boat Holiday", city: "Hangzhou", pois: ["West Lake Loop", "Hefang Street", "Liangzhu Museum"], vibe: "Lake-side pace + culture", imageUrl: "https://images.unsplash.com/photo-1517309230475-6736d926b979?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
+    { id: "summer-weekend", date: "2026-07-11", name: "Summer Weekend", city: "Qingdao", pois: ["Badaguan", "Xiaomai Island", "Olympic Sailing Center"], vibe: "Sea breeze + sunset route", imageUrl: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" },
+    { id: "mid-autumn", date: "2026-09-25", name: "Mid-Autumn Holiday", city: "Suzhou", pois: ["Pingjiang Road", "Humble Administrator's Garden", "Jinji Lake"], vibe: "Gardens + moonlight walk", imageUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
+    { id: "national-day", date: "2026-10-01", name: "National Day Golden Week", city: "Chengdu", pois: ["Kuanzhai Alley", "Eastern Suburb Memory", "Wangjianglou Park"], vibe: "Food-focused + relaxed rhythm", imageUrl: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" }
   ]
 };
 
@@ -635,16 +683,20 @@ async function bootstrap() {
     loadRuntime(),
     loadOperations(),
     loadPersonas(),
-    loadConnectors()
+    loadConnectors(),
+    loadFestivalFeed()
   ]);
   initializeDefaultPersona();
   loadWorkbenchState();
   initFestivalExperience();
   initCalendarExperience();
   initGroupExperience();
+  initJourneyHub();
+  initDayPlanSheet();
   renderFestivalView();
   renderCalendarView();
   renderGroupMembers();
+  renderJourneyHub();
   await Promise.all([
     loadSecurityOverview(),
     loadAuditTrail(),
@@ -809,6 +861,16 @@ async function loadPersonas() {
   renderPersonas(state.personas);
 }
 
+async function loadFestivalFeed() {
+  try {
+    const query = document.getElementById("plan-input")?.value.trim() || "";
+    const cards = await api(`/api/v1/poi/festivals?locale=${encodeURIComponent(state.locale)}&query=${encodeURIComponent(query)}`);
+    state.festivalFeed = Array.isArray(cards) ? cards : [];
+  } catch (error) {
+    state.festivalFeed = [];
+  }
+}
+
 async function loadSecurityOverview() {
   state.securityOverview = await api(`/api/v1/security/overview?userId=${encodeURIComponent(currentUserId())}&limit=8`);
   renderSecurityOverview(state.securityOverview);
@@ -947,6 +1009,7 @@ async function handleIdentityChange() {
   ]);
   renderSequence();
   renderFestivalView();
+  renderJourneyHub();
 }
 
 function resetUserScopedViews() {
@@ -1022,6 +1085,9 @@ function initFestivalExperience() {
         shiftFestival(1);
       } else if (action === "apply") {
         applyFestivalToPrompt();
+      } else if (action === "image" || action === "video") {
+        state.festivalMediaMode = action;
+        renderFestivalView();
       }
     });
     state.festivalBound = true;
@@ -1041,14 +1107,27 @@ function renderFestivalView() {
   if (!container) {
     return;
   }
-  state.festivalFeed = resolveFestivalFeed();
-  if (state.festivalFeed.length === 0) {
+  const feed = state.festivalFeed.length > 0 ? state.festivalFeed : resolveFestivalFeed();
+  if (feed.length === 0) {
     container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.festivalEmpty"))}</div>`;
     return;
   }
-  state.festivalIndex = ((state.festivalIndex % state.festivalFeed.length) + state.festivalFeed.length) % state.festivalFeed.length;
-  const current = state.festivalFeed[state.festivalIndex];
+  state.festivalFeed = feed;
+  state.festivalIndex = ((state.festivalIndex % feed.length) + feed.length) % feed.length;
+  const current = feed[state.festivalIndex];
   const poiHtml = current.pois.map(poi => `<span class="festival-poi">${escapeHtml(poi)}</span>`).join("");
+  const mediaToggle = `
+    <div class="festival-media-toggle">
+      <button type="button" class="secondary ${state.festivalMediaMode === "image" ? "is-active" : ""}" data-festival-action="image">${escapeHtml(t("actions.showImage"))}</button>
+      <button type="button" class="secondary ${state.festivalMediaMode === "video" ? "is-active" : ""}" data-festival-action="video">${escapeHtml(t("actions.showVideo"))}</button>
+    </div>
+  `;
+  const mediaView = state.festivalMediaMode === "video" && current.videoUrl
+    ? `<video class="festival-media" src="${escapeHtml(current.videoUrl)}" controls muted playsinline></video>`
+    : current.imageUrl
+      ? `<img class="festival-media" src="${escapeHtml(current.imageUrl)}" alt="${escapeHtml(current.name)}">`
+      : "";
+  const sourceText = current.source || "seeded";
   container.innerHTML = `
     <article class="festival-card-panel">
       <div class="festival-head">
@@ -1056,8 +1135,10 @@ function renderFestivalView() {
           <h3>${escapeHtml(current.name)} · ${escapeHtml(current.city)}</h3>
           <p>${escapeHtml(current.vibe)}</p>
         </div>
-        <span class="meta-pill">${escapeHtml(current.date)}</span>
+        <span class="meta-pill">${escapeHtml(current.date)} · ${escapeHtml(sourceText)}</span>
       </div>
+      ${mediaToggle}
+      ${mediaView}
       <div class="festival-pois">${poiHtml}</div>
       <div class="actions">
         <button class="secondary" type="button" data-festival-action="prev">${escapeHtml(t("actions.prev"))}</button>
@@ -1135,6 +1216,11 @@ function initCalendarExperience() {
     const calendarView = document.getElementById("calendar-view");
     if (calendarView) {
       calendarView.addEventListener("click", event => {
+        const inlineAction = event.target.closest("[data-calendar-action]")?.dataset.calendarAction;
+        if (inlineAction === "edit") {
+          editDayPlan();
+          return;
+        }
         const dayButton = event.target.closest("[data-date]");
         if (dayButton) {
           state.selectedDate = dayButton.dataset.date;
@@ -1300,20 +1386,7 @@ function shiftCalendar(delta) {
 }
 
 function editDayPlan() {
-  const current = state.dayPlans[state.selectedDate] || "";
-  const next = window.prompt(t("calendar.editPrompt", { date: state.selectedDate }), current);
-  if (next === null) {
-    return;
-  }
-  const trimmed = next.trim();
-  if (!trimmed) {
-    delete state.dayPlans[state.selectedDate];
-  } else {
-    state.dayPlans[state.selectedDate] = trimmed;
-  }
-  persistWorkbenchState();
-  renderCalendarView();
-  renderSequence();
+  openDayPlanSheet(state.selectedDate);
 }
 
 function calendarRangeLabel() {
@@ -1443,6 +1516,167 @@ function applyGroupContextToPrompt() {
   renderSequence();
 }
 
+function initJourneyHub() {
+  if (state.hubBound) {
+    return;
+  }
+  const hub = document.getElementById("journey-hub");
+  if (!hub) {
+    return;
+  }
+  hub.addEventListener("click", event => {
+    const jumpTarget = event.target.closest("[data-jump-section]")?.dataset.jumpSection;
+    if (jumpTarget) {
+      const section = document.getElementById(jumpTarget);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
+
+    if (event.target.closest("[data-jump-run]")) {
+      document.getElementById("run-preview")?.click();
+    }
+  });
+  state.hubBound = true;
+}
+
+function renderJourneyHub() {
+  const hub = document.getElementById("journey-hub");
+  if (!hub) {
+    return;
+  }
+  const festival = state.festivalFeed[state.festivalIndex];
+  const hasFestival = Boolean(festival);
+  const plannedDays = Object.keys(state.dayPlans).length;
+  const hasCalendar = plannedDays > 0;
+  const hasGroup = state.groupMembers.length > 0;
+  const hasPrompt = Boolean(document.getElementById("plan-input")?.value.trim());
+  const activePersona = state.personas.find(persona => persona.id === state.activePersonaId);
+  const readiness = Math.round(((Number(hasFestival) + Number(hasCalendar) + Number(hasPrompt) + 1) / 4) * 100);
+
+  const nextHint = !hasFestival
+    ? t("hub.next.poi")
+    : !hasCalendar
+      ? t("hub.next.calendar")
+      : !hasPrompt
+        ? t("hub.next.run")
+        : (hasGroup ? t("hub.next.run") : t("hub.next.group"));
+
+  const steps = [
+    { key: "hub.step.poi", ready: hasFestival, target: "section-festival", detail: hasFestival ? `${festival.name} · ${festival.city}` : "-" },
+    { key: "hub.step.calendar", ready: hasCalendar, target: "section-calendar", detail: t("calendar.groupSummary", { count: String(plannedDays) }) },
+    { key: "hub.step.group", ready: hasGroup, target: "section-group", detail: hasGroup ? String(state.groupMembers.length) : "0" },
+    { key: "hub.step.run", ready: hasPrompt, target: "section-control", detail: hasPrompt ? "ready" : "todo" }
+  ];
+
+  hub.innerHTML = `
+    <div class="hub-head">
+      <div class="hub-meta">
+        <strong>${escapeHtml(t("fields.personaCompact"))}: ${escapeHtml(activePersona?.displayName || "-")}</strong>
+        <small>${escapeHtml(t("hub.next"))}: ${escapeHtml(nextHint)}</small>
+      </div>
+      <div class="hub-ready">
+        <span>${escapeHtml(t("hub.ready"))}</span>
+        <strong>${readiness}%</strong>
+      </div>
+    </div>
+    <div class="hub-track">
+      ${steps.map(step => `
+        <button type="button" class="hub-step ${step.ready ? "is-ready" : ""}" data-jump-section="${escapeHtml(step.target)}">
+          <span>${escapeHtml(t(step.key))}</span>
+          <strong>${escapeHtml(step.detail)}</strong>
+        </button>
+      `).join("")}
+    </div>
+    <div class="actions">
+      <button type="button" class="secondary" data-jump-section="section-festival">${escapeHtml(t("sections.festivals.title"))}</button>
+      <button type="button" class="secondary" data-jump-section="section-calendar">${escapeHtml(t("sections.calendar.title"))}</button>
+      <button type="button" class="primary" data-jump-run>${escapeHtml(t("hero.runPreview"))}</button>
+    </div>
+  `;
+}
+
+function initDayPlanSheet() {
+  const overlay = document.getElementById("day-plan-sheet");
+  if (!overlay || overlay.dataset.bound === "true") {
+    return;
+  }
+  const closeButton = document.getElementById("day-plan-close");
+  const saveButton = document.getElementById("day-plan-save");
+  const clearButton = document.getElementById("day-plan-clear");
+
+  closeButton?.addEventListener("click", closeDayPlanSheet);
+  saveButton?.addEventListener("click", saveDayPlanSheet);
+  clearButton?.addEventListener("click", () => {
+    if (!state.editingDate) {
+      return;
+    }
+    delete state.dayPlans[state.editingDate];
+    persistWorkbenchState();
+    closeDayPlanSheet();
+    renderCalendarView();
+    renderSequence();
+  });
+
+  overlay.addEventListener("click", event => {
+    if (event.target === overlay) {
+      closeDayPlanSheet();
+    }
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !overlay.hidden) {
+      closeDayPlanSheet();
+    }
+  });
+  overlay.dataset.bound = "true";
+}
+
+function openDayPlanSheet(date) {
+  const overlay = document.getElementById("day-plan-sheet");
+  const dateLabel = document.getElementById("day-plan-date");
+  const input = document.getElementById("day-plan-input");
+  if (!overlay || !dateLabel || !input) {
+    return;
+  }
+  state.editingDate = date;
+  dateLabel.textContent = date;
+  input.value = state.dayPlans[date] || "";
+  overlay.hidden = false;
+  document.body.classList.add("sheet-open");
+  window.setTimeout(() => {
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  }, 20);
+}
+
+function closeDayPlanSheet() {
+  const overlay = document.getElementById("day-plan-sheet");
+  if (!overlay) {
+    return;
+  }
+  overlay.hidden = true;
+  document.body.classList.remove("sheet-open");
+}
+
+function saveDayPlanSheet() {
+  const input = document.getElementById("day-plan-input");
+  if (!input || !state.editingDate) {
+    return;
+  }
+  const value = input.value.trim();
+  if (!value) {
+    delete state.dayPlans[state.editingDate];
+  } else {
+    state.dayPlans[state.editingDate] = value;
+  }
+  persistWorkbenchState();
+  closeDayPlanSheet();
+  renderCalendarView();
+  renderSequence();
+}
+
 // Default the first-load experience to a clean persona instead of the legacy generic user / 首次加载优先进入干净 persona，避免历史测试数据污染真实体验。
 function initializeDefaultPersona() {
   const userInput = document.getElementById("user-id");
@@ -1556,30 +1790,50 @@ function renderPersonas(personas, options = {}) {
     ...temperaments.map(temperament => `<option value="${escapeHtml(temperament)}"${temperament === activeTemperament ? " selected" : ""}>${escapeHtml(temperament)}</option>`)
   ].join("");
 
-  const cards = filtered.map(persona => `
-    <article class="persona-card ${persona.id === state.activePersonaId ? "is-selected" : ""}">
-      <h3>${escapeHtml(persona.displayName)}</h3>
-      <p>${escapeHtml(persona.description)}</p>
-      <div class="persona-meta">
-        <span class="meta-pill is-mbti">${escapeHtml(t("persona.mbti"))}: ${escapeHtml(persona.mbtiType || "N/A")}</span>
-        <span class="meta-pill">${escapeHtml(t("persona.temperament"))}: ${escapeHtml(persona.temperament || "-")}</span>
-        <span class="meta-pill">${escapeHtml(t("persona.decisionLens"))}: ${escapeHtml(persona.decisionLens || "-")}</span>
-      </div>
-      <div class="persona-meta">
-        <span class="meta-pill">${escapeHtml(t("label.userId"))}: ${escapeHtml(persona.userId)}</span>
-        <span class="meta-pill">${escapeHtml(t("label.thread"))}: ${escapeHtml(shortId(persona.threadId))}</span>
-      </div>
-      <div class="persona-meta">
-        <span class="meta-pill">${escapeHtml(t("persona.prompt"))}</span>
-      </div>
-      <p>${escapeHtml(persona.prompt)}</p>
-      <div class="actions">
-        <button class="primary" data-persona-id="${escapeHtml(persona.id)}">${escapeHtml(t("actions.usePersona"))}</button>
-      </div>
-    </article>
+  const sorted = filtered
+    .slice()
+    .sort((left, right) => {
+      if (left.id === state.activePersonaId) {
+        return -1;
+      }
+      if (right.id === state.activePersonaId) {
+        return 1;
+      }
+      return String(left.displayName).localeCompare(String(right.displayName), state.locale);
+    });
+  const activePersona = sorted[0] || personas.find(persona => persona.id === state.activePersonaId) || personas[0];
+  const visibleLimit = state.personaExpanded ? sorted.length : 10;
+  const visible = sorted.slice(0, visibleLimit);
+  const chips = visible.map(persona => `
+    <button type="button" class="persona-chip ${persona.id === state.activePersonaId ? "is-selected" : ""}" data-persona-id="${escapeHtml(persona.id)}">
+      <strong>${escapeHtml(persona.mbtiType || "N/A")}</strong>
+      <span>${escapeHtml(persona.displayName)}</span>
+    </button>
   `).join("");
 
-  const filteredHtml = cards || `<div class="empty-state">${escapeHtml(t("state.personaFilteredEmpty"))}</div>`;
+  const compactBody = filtered.length > 0
+    ? `
+      <article class="persona-active">
+        <div class="persona-active-head">
+          <strong>${escapeHtml(t("fields.personaCompact"))}: ${escapeHtml(activePersona.displayName)}</strong>
+          <span class="meta-pill is-mbti">${escapeHtml(activePersona.mbtiType || "N/A")}</span>
+        </div>
+        <div class="persona-meta">
+          <span class="meta-pill">${escapeHtml(t("persona.temperament"))}: ${escapeHtml(activePersona.temperament || "-")}</span>
+          <span class="meta-pill">${escapeHtml(t("persona.decisionLens"))}: ${escapeHtml(activePersona.decisionLens || "-")}</span>
+          <span class="meta-pill">${escapeHtml(t("label.userId"))}: ${escapeHtml(activePersona.userId)}</span>
+        </div>
+        <details>
+          <summary>${escapeHtml(t("persona.prompt"))}</summary>
+          <p>${escapeHtml(activePersona.prompt)}</p>
+          <p>${escapeHtml(activePersona.description)}</p>
+        </details>
+      </article>
+      <p class="persona-hint">${escapeHtml(t("state.personaCompactHint"))}</p>
+      <div class="persona-chip-grid">${chips}</div>
+      ${filtered.length > 10 ? `<div class="actions"><button type="button" class="secondary" data-persona-toggle>${escapeHtml(t(state.personaExpanded ? "actions.showLess" : "actions.showMore"))}</button></div>` : ""}
+    `
+    : `<div class="empty-state">${escapeHtml(t("state.personaFilteredEmpty"))}</div>`;
 
   container.innerHTML = `
     <div class="persona-toolbar">
@@ -1593,7 +1847,7 @@ function renderPersonas(personas, options = {}) {
       </div>
       <p class="persona-count">${escapeHtml(t("fields.personaCount", { visible: String(filtered.length), total: String(personas.length) }))}</p>
     </div>
-    <div class="persona-grid">${filteredHtml}</div>
+    <div class="persona-compact-view">${compactBody}</div>
   `;
 
   const searchInput = document.getElementById("persona-search");
@@ -1613,6 +1867,14 @@ function renderPersonas(personas, options = {}) {
     });
   }
 
+  const personaToggle = container.querySelector("[data-persona-toggle]");
+  if (personaToggle) {
+    personaToggle.addEventListener("click", () => {
+      state.personaExpanded = !state.personaExpanded;
+      renderPersonas(state.personas, { skipAnimation: true });
+    });
+  }
+
   document.querySelectorAll("[data-persona-id]").forEach(button => {
     button.addEventListener("click", () => runSafely(() => applyPersona(button.dataset.personaId)));
   });
@@ -1628,6 +1890,7 @@ function renderPersonas(personas, options = {}) {
   if (!options.skipAnimation) {
     animateChildren("persona-view");
   }
+  renderJourneyHub();
 }
 
 async function applyPersona(personaId) {
@@ -2025,6 +2288,7 @@ function renderSequence() {
   `).join("");
 
   animateChildren("sequence-view");
+  renderJourneyHub();
 }
 
 async function api(url, options) {

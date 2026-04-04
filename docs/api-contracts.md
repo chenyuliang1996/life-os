@@ -100,6 +100,15 @@
     - `content`
     - `locale`
 
+### POI 发现
+
+- `GET /api/v1/poi/festivals?locale=zh-CN&query=...`
+  - 返回节日 POI 聚合卡片
+  - 聚合策略：
+    - `seeded`（本地种子）
+    - `skill`（FlyAI / MCP skill）
+    - `crawler`（合规抓取端点，按配置可选）
+
 ## 3. AG-UI
 
 - `POST /agui/agents/default/runs`

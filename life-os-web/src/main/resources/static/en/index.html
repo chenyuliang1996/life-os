@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OtterLife</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="/styles.css?v=20260404a">
+    <link rel="stylesheet" href="/styles.css?v=20260404e">
 </head>
 <body data-default-locale="en-US" data-surface="toc">
 <div class="page-shell">
@@ -60,7 +60,18 @@
     </header>
 
     <main class="content-grid">
-        <section class="card full sequence-card" data-surface="toc">
+        <section class="card full hub-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.hub.title">Trip Journey Hub</h2>
+                    <p class="section-subtitle" data-i18n="sections.hub.subtitle">Connect inspiration, calendar, companions, and execution into one continuous flow.</p>
+                </div>
+                <span class="pill" data-i18n="sections.hub.pill">Journey Hub</span>
+            </div>
+            <div id="journey-hub" class="hub-surface"></div>
+        </section>
+
+        <section id="section-sequence" class="card full sequence-card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.sequence.title">User Journey Guide</h2>
@@ -71,7 +82,7 @@
             <div id="sequence-view" class="sequence-rail"></div>
         </section>
 
-        <section class="card wide festival-card" data-surface="toc">
+        <section id="section-festival" class="card wide festival-card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.festivals.title">Upcoming Holiday POIs</h2>
@@ -82,7 +93,7 @@
             <div id="festival-view" class="festival-stage"></div>
         </section>
 
-        <section class="card wide calendar-card" data-surface="toc">
+        <section id="section-calendar" class="card wide calendar-card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.calendar.title">Trip Calendar</h2>
@@ -106,7 +117,7 @@
             <div id="calendar-detail" class="calendar-detail"></div>
         </section>
 
-        <section class="card" data-surface="toc">
+        <section id="section-persona" class="card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.personas.title">MBTI Personas</h2>
@@ -117,7 +128,7 @@
             <div id="persona-view" class="persona-panel"></div>
         </section>
 
-        <section class="card group-card" data-surface="toc">
+        <section id="section-group" class="card group-card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.group.title">Group Travel Collaboration</h2>
@@ -149,7 +160,7 @@
             <div id="group-summary" class="result-strip" data-i18n="state.groupEmpty">No companions yet, planning as a solo trip.</div>
         </section>
 
-        <section class="card chat-card" data-surface="toc">
+        <section id="section-control" class="card chat-card" data-surface="toc">
             <div class="section-head">
                 <div>
                     <h2 data-i18n="sections.control.title">Mission Control</h2>
@@ -374,6 +385,20 @@
         </section>
     </main>
 </div>
-<script src="/app.js?v=20260404c"></script>
+<div id="day-plan-sheet" class="sheet-overlay" hidden>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="day-plan-title">
+        <div class="sheet-head">
+            <h3 id="day-plan-title" data-i18n="calendar.sheet.title">Edit Day Plan</h3>
+            <button id="day-plan-close" type="button" class="secondary" data-i18n="actions.close">Close</button>
+        </div>
+        <p id="day-plan-date" class="sheet-date">-</p>
+        <textarea id="day-plan-input" placeholder="Add highlights, time blocks, and constraints"></textarea>
+        <div class="sheet-actions">
+            <button id="day-plan-clear" type="button" class="secondary" data-i18n="actions.clearDayPlan">Clear day plan</button>
+            <button id="day-plan-save" type="button" class="primary" data-i18n="actions.saveDayPlan">Save day plan</button>
+        </div>
+    </div>
+</div>
+<script src="/app.js?v=20260404e"></script>
 </body>
 </html>

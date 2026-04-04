@@ -120,6 +120,7 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 
 - [架构说明](docs/architecture.md)
 - [实现细节](docs/implementation-guide.md)
+- [PMF 核心闭环](docs/pmf-core-loop.md)
 - [AgentScope 能力印证](docs/agentscope-validation.md)
 - [RAG 选型](docs/rag-selection.md)
 - [FlyAI 与 A2A 旅行链路](docs/flyai-a2a-travel-search.md)

@@ -172,6 +172,14 @@ class LifeOsApplicationTests {
     }
 
     @Test
+    void shouldExposeFestivalPoiFeed() throws Exception {
+        mockMvc.perform(get("/api/v1/poi/festivals?locale=zh-CN"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(greaterThanOrEqualTo(2)))
+                .andExpect(jsonPath("$[0].pois").isArray());
+    }
+
+    @Test
     void shouldKeepModuleProbesReadOnly() throws Exception {
         int confirmationsBefore = new com.fasterxml.jackson.databind.ObjectMapper().readTree(
                 mockMvc.perform(get("/api/v1/confirmations?userId=lifeos-user"))
