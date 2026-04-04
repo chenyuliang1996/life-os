@@ -61,9 +61,9 @@ const TRANSLATIONS = {
     "sections.connectors.title": "连接器",
     "sections.connectors.subtitle": "展示工具层可用能力和外部依赖状态。",
     "sections.connectors.pill": "Tools",
-    "sections.personas.title": "身份场景",
-    "sections.personas.subtitle": "切换真实用户画像，快速验证旅行、学习和运营观察视角。",
-    "sections.personas.pill": "Persona",
+    "sections.personas.title": "MBTI 人格场景",
+    "sections.personas.subtitle": "按 MBTI 人格切换真实用户画像，快速验证不同决策风格下的服务表现。",
+    "sections.personas.pill": "MBTI",
     "sections.guardrails.title": "用户护栏",
     "sections.guardrails.subtitle": "展示当前身份的信任级别、写入审批和外部连接限制。",
     "sections.guardrails.pill": "Safety",
@@ -297,9 +297,9 @@ const TRANSLATIONS = {
     "sections.connectors.title": "Connectors",
     "sections.connectors.subtitle": "Available tool capabilities and external dependency status exposed by the tool layer.",
     "sections.connectors.pill": "Tools",
-    "sections.personas.title": "Personas",
-    "sections.personas.subtitle": "Switch between realistic user identities for travel, learning, and operations review.",
-    "sections.personas.pill": "Persona",
+    "sections.personas.title": "MBTI Personas",
+    "sections.personas.subtitle": "Switch MBTI persona profiles to validate service behavior under different decision styles.",
+    "sections.personas.pill": "MBTI",
     "sections.guardrails.title": "User Guardrails",
     "sections.guardrails.subtitle": "Shows trust level, write approvals, and outbound restrictions for the active identity.",
     "sections.guardrails.pill": "Safety",
@@ -924,7 +924,7 @@ async function addKnowledge() {
   await loadAuditTrail();
 }
 
-function renderPersonas(personas) {
+function renderPersonas(personas, options = {}) {
   const container = document.getElementById("persona-view");
   if (!container) {
     return;
@@ -953,7 +953,7 @@ function renderPersonas(personas) {
     return byTemperament && bySearch;
   });
 
-  const options = [
+  const temperamentOptions = [
     `<option value="all"${activeTemperament === "all" ? " selected" : ""}>${escapeHtml(t("option.allTemperaments"))}</option>`,
     ...temperaments.map(temperament => `<option value="${escapeHtml(temperament)}"${temperament === activeTemperament ? " selected" : ""}>${escapeHtml(temperament)}</option>`)
   ].join("");
@@ -991,7 +991,7 @@ function renderPersonas(personas) {
       </div>
       <div class="persona-filter">
         <label for="persona-temperament">${escapeHtml(t("fields.personaTemperament"))}</label>
-        <select id="persona-temperament">${options}</select>
+        <select id="persona-temperament">${temperamentOptions}</select>
       </div>
       <p class="persona-count">${escapeHtml(t("fields.personaCount", { visible: String(filtered.length), total: String(personas.length) }))}</p>
     </div>
@@ -1001,8 +1001,9 @@ function renderPersonas(personas) {
   const searchInput = document.getElementById("persona-search");
   if (searchInput) {
     searchInput.addEventListener("input", event => {
+      const cursor = event.target.selectionStart ?? String(event.target.value || "").length;
       state.personaSearch = event.target.value || "";
-      renderPersonas(state.personas);
+      renderPersonas(state.personas, { preserveSearchFocus: true, searchCursor: cursor, skipAnimation: true });
     });
   }
 
@@ -1010,14 +1011,25 @@ function renderPersonas(personas) {
   if (temperamentSelect) {
     temperamentSelect.addEventListener("change", event => {
       state.personaTemperament = event.target.value || "all";
-      renderPersonas(state.personas);
+      renderPersonas(state.personas, { skipAnimation: true });
     });
   }
 
   document.querySelectorAll("[data-persona-id]").forEach(button => {
     button.addEventListener("click", () => runSafely(() => applyPersona(button.dataset.personaId)));
   });
-  animateChildren("persona-view");
+  if (options.preserveSearchFocus) {
+    const restoredSearch = document.getElementById("persona-search");
+    if (restoredSearch) {
+      const cursor = Math.min(Number(options.searchCursor ?? restoredSearch.value.length), restoredSearch.value.length);
+      restoredSearch.focus();
+      restoredSearch.setSelectionRange(cursor, cursor);
+    }
+  }
+
+  if (!options.skipAnimation) {
+    animateChildren("persona-view");
+  }
 }
 
 async function applyPersona(personaId) {
