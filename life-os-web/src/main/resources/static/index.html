@@ -403,13 +403,22 @@
 </div>
 <div id="day-plan-sheet" class="sheet-overlay" hidden>
     <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="day-plan-title">
+        <div class="sheet-handle" aria-hidden="true"></div>
         <div class="sheet-head">
-            <h3 id="day-plan-title" data-i18n="calendar.sheet.title">编辑当天规划</h3>
+            <div>
+                <h3 id="day-plan-title" data-i18n="calendar.sheet.title">编辑当天规划</h3>
+                <p class="sheet-subtitle" data-i18n="calendar.sheet.subtitle">快速记录今天重点、节奏和注意事项。</p>
+            </div>
             <button id="day-plan-close" type="button" class="secondary" data-i18n="actions.close">关闭</button>
         </div>
         <p id="day-plan-date" class="sheet-date">-</p>
-        <textarea id="day-plan-input" placeholder="安排重点活动、时段和注意事项"></textarea>
+        <div id="day-plan-quick" class="sheet-quick"></div>
+        <textarea id="day-plan-input" data-i18n-placeholder="calendar.sheet.placeholder" placeholder="安排重点活动、时段和注意事项"></textarea>
+        <div class="sheet-meta">
+            <span id="day-plan-length">0</span>
+        </div>
         <div class="sheet-actions">
+            <button id="day-plan-cancel" type="button" class="secondary" data-i18n="actions.cancel">取消</button>
             <button id="day-plan-clear" type="button" class="secondary" data-i18n="actions.clearDayPlan">清空当天规划</button>
             <button id="day-plan-save" type="button" class="primary" data-i18n="actions.saveDayPlan">保存当天规划</button>
         </div>

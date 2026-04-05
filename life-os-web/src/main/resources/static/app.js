@@ -122,6 +122,7 @@ const TRANSLATIONS = {
     "actions.saveDayPlan": "保存当天规划",
     "actions.applyFestivalPoi": "用于本次规划",
     "actions.close": "关闭",
+    "actions.cancel": "取消",
     "actions.showMore": "展开更多",
     "actions.showLess": "收起",
     "actions.showImage": "看图片",
@@ -212,6 +213,12 @@ const TRANSLATIONS = {
     "calendar.editPrompt": "请输入 {date} 的主要规划内容",
     "calendar.groupSummary": "共 {count} 天有计划",
     "calendar.sheet.title": "编辑当天规划",
+    "calendar.sheet.subtitle": "快速记录今天重点、节奏和注意事项。",
+    "calendar.sheet.placeholder": "例如：上午逛浅草和上野；下午回酒店休息；晚间河边散步。",
+    "calendar.sheet.length": "已输入 {count} 字",
+    "calendar.sheet.template.relaxed": "上午轻松打卡，下午安排恢复时间，晚上只保留一项活动。",
+    "calendar.sheet.template.efficient": "按片区连线减少换乘，每 2 小时预留 20 分钟机动。",
+    "calendar.sheet.template.family": "优先室内亲子点位，中午固定休息，夜间不安排远距离移动。",
     "group.style.culture": "文化体验",
     "group.style.food": "美食探索",
     "group.style.family": "亲子友好",
@@ -430,6 +437,7 @@ const TRANSLATIONS = {
     "actions.saveDayPlan": "Save day plan",
     "actions.applyFestivalPoi": "Use for planning",
     "actions.close": "Close",
+    "actions.cancel": "Cancel",
     "actions.showMore": "Show more",
     "actions.showLess": "Show less",
     "actions.showImage": "Image",
@@ -520,6 +528,12 @@ const TRANSLATIONS = {
     "calendar.editPrompt": "Enter the main plan for {date}",
     "calendar.groupSummary": "{count} planned day(s)",
     "calendar.sheet.title": "Edit Day Plan",
+    "calendar.sheet.subtitle": "Capture highlights, pace, and constraints for this day.",
+    "calendar.sheet.placeholder": "Example: Morning in Asakusa/Ueno, afternoon recovery window, calm evening walk.",
+    "calendar.sheet.length": "{count} characters",
+    "calendar.sheet.template.relaxed": "Keep the morning light, reserve an afternoon recovery window, one evening activity only.",
+    "calendar.sheet.template.efficient": "Route by district to reduce transfers, leave a 20-minute buffer every 2 hours.",
+    "calendar.sheet.template.family": "Prioritize indoor family-friendly spots, fixed midday break, no long night transfers.",
     "group.style.culture": "Culture",
     "group.style.food": "Food",
     "group.style.family": "Family-friendly",
@@ -1479,11 +1493,7 @@ function initCalendarExperience() {
         const dayButton = event.target.closest("[data-date]");
         if (dayButton) {
           state.selectedDate = dayButton.dataset.date;
-          if (state.calendarView === "day") {
-            editDayPlan();
-          } else {
-            renderCalendarView();
-          }
+          renderCalendarView();
           persistWorkbenchState();
           renderSequence();
           return;
@@ -1858,10 +1868,14 @@ function initDayPlanSheet() {
     return;
   }
   const closeButton = document.getElementById("day-plan-close");
+  const cancelButton = document.getElementById("day-plan-cancel");
   const saveButton = document.getElementById("day-plan-save");
   const clearButton = document.getElementById("day-plan-clear");
+  const input = document.getElementById("day-plan-input");
+  const quick = document.getElementById("day-plan-quick");
 
   closeButton?.addEventListener("click", closeDayPlanSheet);
+  cancelButton?.addEventListener("click", closeDayPlanSheet);
   saveButton?.addEventListener("click", saveDayPlanSheet);
   clearButton?.addEventListener("click", () => {
     if (!state.editingDate) {
@@ -1873,6 +1887,23 @@ function initDayPlanSheet() {
     renderCalendarView();
     renderSequence();
   });
+  if (input) {
+    input.addEventListener("input", updateDayPlanInputMeta);
+  }
+  if (quick) {
+    quick.addEventListener("click", event => {
+      const template = event.target.closest("[data-day-plan-template]")?.dataset.dayPlanTemplate;
+      if (!template || !input) {
+        return;
+      }
+      input.value = input.value.trim()
+        ? `${input.value.trim()}\n${template}`
+        : template;
+      updateDayPlanInputMeta();
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    });
+  }
 
   overlay.addEventListener("click", event => {
     if (event.target === overlay) {
@@ -1885,6 +1916,11 @@ function initDayPlanSheet() {
       closeDayPlanSheet();
     }
   });
+  overlay.hidden = true;
+  document.body.classList.remove("sheet-open");
+  state.editingDate = null;
+  renderDayPlanQuickTemplates();
+  updateDayPlanInputMeta();
   overlay.dataset.bound = "true";
 }
 
@@ -1895,9 +1931,14 @@ function openDayPlanSheet(date) {
   if (!overlay || !dateLabel || !input) {
     return;
   }
+  if (!date) {
+    return;
+  }
   state.editingDate = date;
   dateLabel.textContent = date;
   input.value = state.dayPlans[date] || "";
+  renderDayPlanQuickTemplates();
+  updateDayPlanInputMeta();
   overlay.hidden = false;
   document.body.classList.add("sheet-open");
   window.setTimeout(() => {
@@ -1913,6 +1954,7 @@ function closeDayPlanSheet() {
   }
   overlay.hidden = true;
   document.body.classList.remove("sheet-open");
+  state.editingDate = null;
 }
 
 function saveDayPlanSheet() {
@@ -1930,6 +1972,30 @@ function saveDayPlanSheet() {
   closeDayPlanSheet();
   renderCalendarView();
   renderSequence();
+}
+
+function renderDayPlanQuickTemplates() {
+  const quick = document.getElementById("day-plan-quick");
+  if (!quick) {
+    return;
+  }
+  const templates = [
+    t("calendar.sheet.template.relaxed"),
+    t("calendar.sheet.template.efficient"),
+    t("calendar.sheet.template.family")
+  ];
+  quick.innerHTML = templates.map(template => `
+    <button type="button" class="quick-chip" data-day-plan-template="${escapeHtml(template)}">${escapeHtml(template)}</button>
+  `).join("");
+}
+
+function updateDayPlanInputMeta() {
+  const input = document.getElementById("day-plan-input");
+  const length = document.getElementById("day-plan-length");
+  if (!input || !length) {
+    return;
+  }
+  length.textContent = t("calendar.sheet.length", { count: String(input.value.trim().length) });
 }
 
 // Default the first-load experience to a clean persona instead of the legacy generic user / 首次加载优先进入干净 persona，避免历史测试数据污染真实体验。
@@ -2693,6 +2759,11 @@ function applyTranslations() {
   document.querySelectorAll("[data-i18n]").forEach(node => {
     node.textContent = t(node.dataset.i18n);
   });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(node => {
+    node.setAttribute("placeholder", t(node.dataset.i18nPlaceholder));
+  });
+  renderDayPlanQuickTemplates();
+  updateDayPlanInputMeta();
   refreshContextStrip();
 }
 
