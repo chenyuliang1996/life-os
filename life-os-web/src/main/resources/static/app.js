@@ -755,6 +755,8 @@ async function bootstrap() {
   initGroupExperience();
   initJourneyHub();
   initDayPlanSheet();
+  // Hard-close any residual day-plan overlay state on bootstrap / 启动时强制收起弹层，避免历史状态或缓存导致首屏被遮挡。
+  closeDayPlanSheet();
   renderFestivalView();
   renderCalendarView();
   renderGroupMembers();
