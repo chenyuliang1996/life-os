@@ -4,3 +4,6 @@ target/
 /.data/
 **/.data/
 *.log
+.omx/
+.omx-worktrees/
+.codex/

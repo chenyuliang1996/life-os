@@ -49,6 +49,10 @@
   - `Dockerfile`
   - `deploy/docker-compose.cluster.yml`
   - `deploy/k8s/*`
+- 工程协作执行层：
+  - 已接入 `oh-my-codex (OMX)` 作为研发工作流层
+  - 提供项目级 `AGENTS.md` 约束、`setup/start/doctor` 可执行脚本
+  - OMX 状态存储在 `.omx/`（已忽略提交）
 
 ## 模块
 
@@ -75,6 +79,26 @@ mvn -f life-os-web/pom.xml spring-boot:run
 
 - 中文：[http://127.0.0.1:8080/](http://127.0.0.1:8080/)
 - 英文：[http://127.0.0.1:8080/en/index.html](http://127.0.0.1:8080/en/index.html)
+
+## OMX 协作层（研发）
+
+首次接入：
+
+```bash
+bash scripts/omx/setup-project.sh
+```
+
+启动 OMX：
+
+```bash
+bash scripts/omx/start.sh
+```
+
+基础诊断：
+
+```bash
+bash scripts/omx/doctor.sh
+```
 
 ### 集群部署
 
@@ -134,3 +158,4 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - [真实用户动线验证](docs/user-journey-validation.md)
 - [分布式部署说明](docs/deployment-cluster.md)
 - [API 契约](docs/api-contracts.md)
+- [oh-my-codex 接入](docs/oh-my-codex-integration.md)
