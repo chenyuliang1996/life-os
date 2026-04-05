@@ -88,7 +88,7 @@ class LifeOsApplicationTests {
                 .andExpect(jsonPath("$.deploymentMode").value("single-node"))
                 .andExpect(jsonPath("$.persistenceMode").value("database"))
                 .andExpect(jsonPath("$.database").value("h2-file"))
-                .andExpect(jsonPath("$.travelSearch").value("seeded-search-plus-optional-flyai"))
+                .andExpect(jsonPath("$.travelSearch").value("claw-skill-plus-flyai-plus-seeded-fallback"))
                 .andExpect(jsonPath("$.travelSpecialist").value("local-travel-agent-plus-optional-a2a"));
     }
 
@@ -199,8 +199,9 @@ class LifeOsApplicationTests {
         mockMvc.perform(get("/api/v1/system/connectors"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].connectorName").value("search"))
-                .andExpect(jsonPath("$[1].connectorName").value("flyai-search"))
-                .andExpect(jsonPath("$[1].enabled").value(false));
+                .andExpect(jsonPath("$[*].connectorName", hasItem("claw-skill-search")))
+                .andExpect(jsonPath("$[*].connectorName", hasItem("flyai-search")))
+                .andExpect(jsonPath("$[?(@.connectorName=='flyai-search')].enabled").value(hasItem(false)));
     }
 
     @Test

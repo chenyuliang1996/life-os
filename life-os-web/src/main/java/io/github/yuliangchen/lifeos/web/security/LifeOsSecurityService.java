@@ -739,7 +739,7 @@ public class LifeOsSecurityService {
                 mcpTrustedUserPrefixes = List.of("lifeos-", "persona-travel", "persona-mbti-", "persona-ops");
             }
             if (outboundAllowlist == null || outboundAllowlist.isEmpty()) {
-                outboundAllowlist = List.of("api.openai.com", "localhost", "127.0.0.1", "flyai.example");
+                outboundAllowlist = List.of("api.openai.com", "localhost", "127.0.0.1", "open.fly.ai", "clawhub.ai", "flyai.example");
             }
         }
     }

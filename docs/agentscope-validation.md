@@ -53,13 +53,15 @@
 ### 1.5 MCP
 
 - 已落地：
+  - `ClawSkillConnector` 通过 `McpClientBuilder` 对接 Claw skill 端点
   - `FlyAiSearchConnector` 通过 `McpClientBuilder` 对接外部 MCP 搜索端点
   - 支持 `sse` 和 `streamable-http`
   - 工具名支持显式配置和懒发现
 - 代码位置：
+  - `life-os-tools/.../ClawSkillConnector.java`
   - `life-os-tools/.../FlyAiSearchConnector.java`
 - 说明：
-  - 当前把 `FlyAI` 作为旅行搜索增强源接入
+  - 当前按 `Claw -> FlyAI -> seeded` provider 链接入旅行搜索
   - 若未配置端点，则自动回退到种子知识检索
 - 官方参考：
   - [MCP 文档](https://java.agentscope.io/en/task/mcp.html)

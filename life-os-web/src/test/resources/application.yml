@@ -21,6 +21,8 @@ lifeos:
       enabled: false
   flyai:
     enabled: false
+  claw:
+    enabled: false
   a2a:
     travel:
       enabled: false

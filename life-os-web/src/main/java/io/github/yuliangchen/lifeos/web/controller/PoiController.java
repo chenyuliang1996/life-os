@@ -21,7 +21,10 @@ public class PoiController {
 
     @GetMapping("/festivals")
     public List<FestivalPoiCard> festivals(@RequestParam(defaultValue = "zh-CN") String locale,
-                                           @RequestParam(required = false) String query) {
-        return poiDiscoveryService.discover(locale, query);
+                                           @RequestParam(required = false) String query,
+                                           @RequestParam(required = false) String travelers,
+                                           @RequestParam(required = false) String budget,
+                                           @RequestParam(required = false) String timeWindow) {
+        return poiDiscoveryService.discover(locale, query, travelers, budget, timeWindow);
     }
 }

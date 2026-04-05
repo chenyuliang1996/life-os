@@ -19,7 +19,7 @@ lifeos:
     rag-store: postgresql-plus-pgvector
     session-store: shared-volume-json-session
     topology: ag-ui-gateway-plus-stateless-app-replicas-with-travel-a2a
-    travel-search: flyai-mcp-plus-seeded-fallback
+    travel-search: claw-skill-plus-flyai-plus-seeded-fallback
     travel-specialist: remote-a2a-travel-specialist-with-local-fallback
   session-storage-dir: ${LIFEOS_SESSION_STORAGE_DIR:/data/sessions}
   rag:
@@ -30,6 +30,14 @@ lifeos:
     transport: ${LIFEOS_FLYAI_TRANSPORT:sse}
     endpoint: ${LIFEOS_FLYAI_ENDPOINT:}
     tool-name: ${LIFEOS_FLYAI_TOOL_NAME:}
+  claw:
+    enabled: ${LIFEOS_CLAW_ENABLED:false}
+    transport: ${LIFEOS_CLAW_TRANSPORT:sse}
+    endpoint: ${LIFEOS_CLAW_ENDPOINT:}
+    tool-name: ${LIFEOS_CLAW_TOOL_NAME:travel_search}
+    auth-header-name: ${LIFEOS_CLAW_AUTH_HEADER_NAME:}
+    auth-header-value: ${LIFEOS_CLAW_AUTH_HEADER_VALUE:}
+    timeout-seconds: ${LIFEOS_CLAW_TIMEOUT_SECONDS:20}
   a2a:
     travel:
       enabled: ${LIFEOS_A2A_TRAVEL_ENABLED:false}

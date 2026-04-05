@@ -13,7 +13,10 @@ data:
   LIFEOS_TOPOLOGY: ag-ui-gateway-plus-stateless-app-replicas-with-travel-a2a
   LIFEOS_SESSION_STORAGE_DIR: /data/sessions
   LIFEOS_RAG_VECTOR_ENABLED: "true"
-  LIFEOS_TRAVEL_SEARCH: flyai-mcp-plus-seeded-fallback
+  LIFEOS_TRAVEL_SEARCH: claw-skill-plus-flyai-plus-seeded-fallback
   LIFEOS_TRAVEL_SPECIALIST: remote-a2a-travel-specialist-with-local-fallback
   LIFEOS_FLYAI_ENABLED: "false"
+  LIFEOS_CLAW_ENABLED: "false"
+  LIFEOS_CLAW_TRANSPORT: sse
+  LIFEOS_CLAW_TIMEOUT_SECONDS: "20"
   LIFEOS_A2A_TRAVEL_ENABLED: "false"

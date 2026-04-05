@@ -116,11 +116,12 @@
 
 ### POI 发现
 
-- `GET /api/v1/poi/festivals?locale=zh-CN&query=...`
+- `GET /api/v1/poi/festivals?locale=zh-CN&query=...&travelers=...&budget=...&timeWindow=...`
   - 返回节日 POI 聚合卡片
   - 聚合策略：
     - `seeded`（本地种子）
-    - `skill`（FlyAI / MCP skill）
+    - `claw-skill`（Claw Skill）
+    - `flyai-skill`（FlyAI / MCP）
     - `crawler`（合规抓取端点，按配置可选）
 
 ### UX 埋点

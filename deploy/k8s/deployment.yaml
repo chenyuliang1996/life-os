@@ -59,6 +59,36 @@ spec:
                   name: life-os-external
                   key: flyai-tool-name
                   optional: true
+            - name: LIFEOS_CLAW_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: life-os-config
+                  key: LIFEOS_CLAW_ENABLED
+                  optional: true
+            - name: LIFEOS_CLAW_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-external
+                  key: claw-endpoint
+                  optional: true
+            - name: LIFEOS_CLAW_TOOL_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-external
+                  key: claw-tool-name
+                  optional: true
+            - name: LIFEOS_CLAW_AUTH_HEADER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-external
+                  key: claw-auth-header-name
+                  optional: true
+            - name: LIFEOS_CLAW_AUTH_HEADER_VALUE
+              valueFrom:
+                secretKeyRef:
+                  name: life-os-external
+                  key: claw-auth-header-value
+                  optional: true
             - name: LIFEOS_A2A_TRAVEL_ENABLED
               valueFrom:
                 configMapKeyRef:

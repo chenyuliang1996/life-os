@@ -9,7 +9,7 @@ const TRANSLATIONS = {
     "hero.title": "OtterLife",
     "hero.subtitle": "面向真实用户的出行与生活协同服务，统一承接节日灵感、行程规划、多人协作与执行闭环。",
     "hero.badgeRag": "Hybrid RAG",
-    "hero.badgeSearch": "FlyAI Search",
+    "hero.badgeSearch": "Claw + FlyAI Search",
     "hero.badgeA2a": "A2A Travel",
     "hero.runPreview": "生成可执行方案",
     "hero.refresh": "刷新数据",
@@ -70,7 +70,7 @@ const TRANSLATIONS = {
     "sections.profile.subtitle": "查看和编辑长期记忆中的偏好。",
     "sections.profile.pill": "Memory",
     "sections.knowledge.title": "知识库",
-    "sections.knowledge.subtitle": "持久化文档进入混合 RAG 层，支持 PostgreSQL + pgvector，并可叠加 FlyAI 旅行搜索。",
+    "sections.knowledge.subtitle": "持久化文档进入混合 RAG 层，支持 PostgreSQL + pgvector，并可叠加 Claw Skill 与 FlyAI 旅行搜索。",
     "sections.knowledge.pill": "RAG Seeds",
     "sections.modules.title": "模块探针",
     "sections.modules.subtitle": "查看每个模块的健康探针和执行摘要。",
@@ -324,7 +324,7 @@ const TRANSLATIONS = {
     "hero.title": "OtterLife",
     "hero.subtitle": "A user-facing travel service that connects holiday inspiration, itinerary planning, collaboration, and execution in one flow.",
     "hero.badgeRag": "Hybrid RAG",
-    "hero.badgeSearch": "FlyAI Search",
+    "hero.badgeSearch": "Claw + FlyAI Search",
     "hero.badgeA2a": "A2A Travel",
     "hero.runPreview": "Create Action Plan",
     "hero.refresh": "Refresh Data",
@@ -385,7 +385,7 @@ const TRANSLATIONS = {
     "sections.profile.subtitle": "Inspect and edit long-term memory preferences.",
     "sections.profile.pill": "Memory",
     "sections.knowledge.title": "Knowledge Base",
-    "sections.knowledge.subtitle": "Persist documents into the hybrid RAG layer with PostgreSQL + pgvector and optional FlyAI travel search.",
+    "sections.knowledge.subtitle": "Persist documents into the hybrid RAG layer with PostgreSQL + pgvector and optional Claw Skill plus FlyAI travel search.",
     "sections.knowledge.pill": "RAG Seeds",
     "sections.modules.title": "Module Probes",
     "sections.modules.subtitle": "Inspect health probes and execution summaries for every module.",
@@ -1132,7 +1132,16 @@ async function loadPersonas() {
 async function loadFestivalFeed() {
   try {
     const query = document.getElementById("plan-input")?.value.trim() || "";
-    const cards = await api(`/api/v1/poi/festivals?locale=${encodeURIComponent(state.locale)}&query=${encodeURIComponent(query)}`);
+    const travelers = Math.max(1, (state.groupMembers?.length || 0) + 1);
+    const budget = document.getElementById("budget-level")?.value || "";
+    const timeWindow = state.selectedDate || "";
+    const cards = await api(
+      `/api/v1/poi/festivals?locale=${encodeURIComponent(state.locale)}`
+      + `&query=${encodeURIComponent(query)}`
+      + `&travelers=${encodeURIComponent(String(travelers))}`
+      + `&budget=${encodeURIComponent(budget)}`
+      + `&timeWindow=${encodeURIComponent(timeWindow)}`
+    );
     state.festivalFeed = Array.isArray(cards) ? cards : [];
   } catch (error) {
     state.festivalFeed = [];
@@ -1398,7 +1407,7 @@ function renderFestivalView() {
     : current.imageUrl
       ? `<img class="festival-media" src="${escapeHtml(current.imageUrl)}" alt="${escapeHtml(current.name)}">`
       : "";
-  const sourceText = current.source || "seeded";
+  const sourceText = formatPoiSource(current.source || "seeded");
   container.innerHTML = `
     <article class="festival-card-panel">
       <div class="festival-head">
@@ -2582,7 +2591,7 @@ function renderSequence() {
   const festival = state.festivalFeed[state.festivalIndex];
   const plannedDays = Object.keys(state.dayPlans).length;
   const hasGroup = state.groupMembers.length > 0;
-  const searchMode = connectorSummary("flyai-search", state.architecture?.travelSearch || "seeded-search-plus-optional-flyai");
+  const searchMode = connectorSummary("search", state.architecture?.travelSearch || "claw-skill-plus-flyai-plus-seeded-fallback");
   const approvalState = state.confirmationCount > 0 ? t("sequence.hitlWaiting") : t("sequence.hitlClear");
 
   const steps = [
@@ -2889,8 +2898,8 @@ function formatPolicyReason(policy) {
       ? "种子知识与个人文档始终可用于生成有依据的回答。"
       : "Seeded knowledge plus personal documents are always available for grounded answers.",
     "travel.search|guarded-live": isChineseLocale()
-      ? "可在白名单范围内调用 FlyAI 或实时旅行搜索。"
-      : "FlyAI and live travel search can run only against the outbound allowlist.",
+      ? "可在白名单范围内调用 Claw Skill、FlyAI 或其他实时旅行搜索。"
+      : "Claw skill, FlyAI, and live travel search can run only against the outbound allowlist.",
     "travel.search|seeded-only": isChineseLocale()
       ? "当前仅使用内置知识，不会访问外部搜索。"
       : "Search stays on seeded knowledge only until the identity becomes trusted.",
@@ -2919,8 +2928,11 @@ function formatPolicyReason(policy) {
 function formatConnectorSummary(connector) {
   const mappings = {
     search: connector.enabled
-      ? (isChineseLocale() ? "旅行搜索聚合连接器已启用。" : "Unified travel search is available.")
+      ? (isChineseLocale() ? "旅行搜索聚合连接器已启用（Claw -> FlyAI -> 种子回退）。" : "Unified travel search is active (Claw -> FlyAI -> seeded fallback).")
       : (isChineseLocale() ? "旅行搜索聚合连接器当前不可用。" : "Unified travel search is currently unavailable."),
+    "claw-skill-search": connector.enabled
+      ? (isChineseLocale() ? "Claw Skill 搜索已接入，可优先提供实时 POI 与节日灵感。" : "Claw skill search is connected and serves as the primary live POI source.")
+      : (isChineseLocale() ? "Claw Skill 搜索未启用，系统将继续尝试 FlyAI 或种子回退。" : "Claw skill search is disabled, so the service continues with FlyAI or seeded fallback."),
     "flyai-search": connector.enabled
       ? (isChineseLocale() ? "FlyAI 搜索已接入，可为旅行建议补充实时信息。" : "FlyAI search is connected and can enrich travel planning with live results.")
       : (isChineseLocale() ? "FlyAI 搜索未启用，当前回退到内置种子知识。" : "FlyAI search is disabled, so the service falls back to seeded knowledge."),
@@ -2935,6 +2947,17 @@ function formatConnectorSummary(connector) {
       : connector.summary
   };
   return mappings[connector.connectorName] || connector.summary;
+}
+
+function formatPoiSource(source) {
+  const mappings = {
+    seeded: isChineseLocale() ? "种子知识" : "Seeded",
+    crawler: isChineseLocale() ? "聚合抓取" : "Crawler",
+    skill: isChineseLocale() ? "技能检索" : "Skill",
+    "claw-skill": "Claw Skill",
+    "flyai-skill": "FlyAI Skill"
+  };
+  return mappings[source] || humanizeValue(source);
 }
 
 function formatKnowledgeScope(doc) {
@@ -2968,7 +2991,10 @@ function formatArchitectureValue(key, value) {
       "modular-monolith-ready-for-cluster": isChineseLocale() ? "模块化单体，可平滑演进到集群" : "Modular monolith with a clean path to cluster deployment"
     },
     "architecture.travelSearch": {
-      "seeded-search-plus-optional-flyai": isChineseLocale() ? "内置知识检索 + 可选 FlyAI 实时搜索" : "Seeded retrieval with optional FlyAI live search"
+      "seeded-search-plus-optional-flyai": isChineseLocale() ? "内置知识检索 + 可选 FlyAI 实时搜索" : "Seeded retrieval with optional FlyAI live search",
+      "claw-skill-plus-flyai-plus-seeded-fallback": isChineseLocale()
+        ? "Claw Skill 优先 + FlyAI 补充 + 种子知识回退"
+        : "Claw skill first, FlyAI secondary, seeded fallback"
     },
     "architecture.travelSpecialist": {
       "local-travel-agent-plus-optional-a2a": isChineseLocale() ? "本地旅行专家 + 可选 A2A 远程专家" : "Local travel specialist with optional A2A remote advisor"

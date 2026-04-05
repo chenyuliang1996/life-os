@@ -75,6 +75,14 @@ lifeos:
     auth-header-name: ${LIFEOS_FLYAI_AUTH_HEADER_NAME:}
     auth-header-value: ${LIFEOS_FLYAI_AUTH_HEADER_VALUE:}
     timeout-seconds: ${LIFEOS_FLYAI_TIMEOUT_SECONDS:20}
+  claw:
+    enabled: ${LIFEOS_CLAW_ENABLED:false}
+    transport: ${LIFEOS_CLAW_TRANSPORT:sse}
+    endpoint: ${LIFEOS_CLAW_ENDPOINT:}
+    tool-name: ${LIFEOS_CLAW_TOOL_NAME:travel_search}
+    auth-header-name: ${LIFEOS_CLAW_AUTH_HEADER_NAME:}
+    auth-header-value: ${LIFEOS_CLAW_AUTH_HEADER_VALUE:}
+    timeout-seconds: ${LIFEOS_CLAW_TIMEOUT_SECONDS:20}
   a2a:
     travel:
       enabled: ${LIFEOS_A2A_TRAVEL_ENABLED:false}
@@ -90,7 +98,7 @@ lifeos:
     rag-store: ${LIFEOS_RAG_STORE:hybrid-text-plus-pgvector-ready}
     session-store: ${LIFEOS_SESSION_STORE:json-session}
     topology: ${LIFEOS_TOPOLOGY:modular-monolith-ready-for-cluster}
-    travel-search: ${LIFEOS_TRAVEL_SEARCH:seeded-search-plus-optional-flyai}
+    travel-search: ${LIFEOS_TRAVEL_SEARCH:claw-skill-plus-flyai-plus-seeded-fallback}
     travel-specialist: ${LIFEOS_TRAVEL_SPECIALIST:local-travel-agent-plus-optional-a2a}
   runtime:
     openai-api-key: ${OPENAI_API_KEY:}
@@ -103,7 +111,7 @@ lifeos:
     operator-user-prefixes: ${LIFEOS_SECURITY_OPERATOR_PREFIXES:persona-ops,ops-,admin-}
     restricted-user-prefixes: ${LIFEOS_SECURITY_RESTRICTED_PREFIXES:guest-,external-}
     mcp-trusted-user-prefixes: ${LIFEOS_SECURITY_MCP_PREFIXES:lifeos-,persona-travel,persona-mbti-,persona-ops}
-    outbound-allowlist: ${LIFEOS_SECURITY_ALLOWLIST:api.openai.com,localhost,127.0.0.1,flyai.example}
+    outbound-allowlist: ${LIFEOS_SECURITY_ALLOWLIST:api.openai.com,localhost,127.0.0.1,open.fly.ai,clawhub.ai,flyai.example}
     outbound-network-enabled: ${LIFEOS_SECURITY_OUTBOUND_ENABLED:true}
     exec-enabled: ${LIFEOS_SECURITY_EXEC_ENABLED:false}
     force-approval-for-operators: ${LIFEOS_SECURITY_FORCE_APPROVAL_OPERATORS:true}

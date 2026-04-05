@@ -43,7 +43,7 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 
 ### 3.2 按需打开
 
-- `FlyAI` 旅行搜索增强
+- `Claw Skill` + `FlyAI` 旅行搜索增强
 - 远程 `A2A` 旅行 specialist
 
 对应环境变量：
@@ -51,6 +51,11 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - `LIFEOS_FLYAI_ENABLED`
 - `LIFEOS_FLYAI_ENDPOINT`
 - `LIFEOS_FLYAI_TOOL_NAME`
+- `LIFEOS_CLAW_ENABLED`
+- `LIFEOS_CLAW_ENDPOINT`
+- `LIFEOS_CLAW_TOOL_NAME`
+- `LIFEOS_CLAW_AUTH_HEADER_NAME`
+- `LIFEOS_CLAW_AUTH_HEADER_VALUE`
 - `LIFEOS_A2A_TRAVEL_ENABLED`
 - `LIFEOS_A2A_TRAVEL_BASE_URL`
 
@@ -60,7 +65,7 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 
 - PostgreSQL 由外部托管或独立运维
 - Secret `life-os-db` 由平台注入
-- Secret `life-os-external` 可选注入 FlyAI / A2A 外部地址
+- Secret `life-os-external` 可选注入 Claw / FlyAI / A2A 外部地址
 - session 目录挂在共享 PVC 上
 
 ## 5. 为什么 session 先用共享目录
@@ -86,6 +91,6 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 
 1. 保持当前应用双副本
 2. 打开 pgvector，稳定 hybrid RAG
-3. 接 FlyAI 搜索端点
+3. 接 Claw 与 FlyAI 搜索端点
 4. 把旅行 specialist 变成独立 A2A 服务
 5. 最后补统一 trace、限流、熔断和权限

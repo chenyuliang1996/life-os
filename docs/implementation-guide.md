@@ -81,17 +81,21 @@
 - 保持单机和集群都能稳定运行
 - 将生产选型真正落到代码，而不是只写在文档里
 
-## 5. FlyAI 搜索增强
+## 5. Claw + FlyAI 搜索增强
 
 实现方式：
 
-- `ToolModuleFacade` 的 `search` 工具统一收口到 `FlyAiSearchConnector`
+- `ToolModuleFacade` 的 `search` 工具统一收口到 provider 链
+- 第一层 `ClawSkillConnector`
+- 第二层 `FlyAiSearchConnector`
+- 第三层 `seeded fallback`
 - `FlyAiSearchConnector` 使用 `McpClientBuilder`
+- `ClawSkillConnector` 也使用 `McpClientBuilder`
 - 当前支持：
   - `sse`
   - `streamable-http`
-- 如果配置了 `FlyAI` 端点，会在首次调用时懒初始化 MCP client
-- 会尝试发现可用 search tool
+- 如果配置了 `Claw/FlyAI` 端点，会在首次调用时懒初始化 MCP client
+- 会尝试发现可用 search tool，并兼容多种入参命名
 - 如果外部不可用，会回退到种子旅行知识
 
 这样实现的原因：
@@ -108,7 +112,7 @@
 - `TravelA2aAdvisor` 负责远程 specialist 调用
 - 当前场景是：
   - 主编排器本地拆解任务
-  - 旅行搜索先拿本地 / FlyAI 搜索结果
+  - 旅行搜索先走 Claw -> FlyAI -> seeded 的链路
   - 再通过 A2A 远程拿旅行专家补充建议
   - 最后由本地 `TravelAgent` 合并成可执行计划
 
@@ -151,7 +155,7 @@
 - 共享 PostgreSQL
 - 共享 session 目录
 - Nginx/Ingress 做统一入口
-- 集群配置支持打开 pgvector、FlyAI 搜索和远程 A2A specialist
+- 集群配置支持打开 pgvector、Claw/FlyAI 搜索和远程 A2A specialist
 
 ## 9. 用户作用域隔离
 

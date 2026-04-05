@@ -79,7 +79,7 @@ public class LifeOsRuntimeConfiguration {
                 topology = "modular-monolith-ready-for-cluster";
             }
             if (travelSearch == null || travelSearch.isBlank()) {
-                travelSearch = "seeded-search-plus-optional-flyai";
+                travelSearch = "claw-skill-plus-flyai-plus-seeded-fallback";
             }
             if (travelSpecialist == null || travelSpecialist.isBlank()) {
                 travelSpecialist = "local-travel-agent-plus-optional-a2a";

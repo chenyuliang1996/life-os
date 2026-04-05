@@ -19,6 +19,7 @@ flowchart LR
     WEB --> ORCH["life-os-orchestrator"]
     WEB --> SEC["security / persona / audit controllers"]
     ORCH --> AGENTS["travel / learning / schedule"]
+    AGENTS --> CLAW["Claw Skill Search<br/>(optional)"]
     AGENTS --> FLY["FlyAI MCP Search<br/>(optional)"]
     AGENTS --> A2A["Remote Travel Specialist<br/>(optional A2A)"]
     ORCH --> MEMORY["life-os-memory"]
@@ -60,6 +61,8 @@ flowchart LR
     APP2 --> SESSION
     APP1 --> TA2A["Travel specialist service (A2A, optional)"]
     APP2 --> TA2A
+    APP1 --> CLAW["Claw skill endpoint (optional)"]
+    APP2 --> CLAW
     APP1 --> FLY["FlyAI MCP endpoint (optional)"]
     APP2 --> FLY
 ```
@@ -73,6 +76,7 @@ sequenceDiagram
     participant O as Orchestrator
     participant T as TravelAgent
     participant R as Hybrid RAG
+    participant C as Claw Skill
     participant F as FlyAI MCP
     participant A as A2A Travel Specialist
     participant H as HITL Gate
@@ -82,7 +86,8 @@ sequenceDiagram
     UI->>O: POST /api/v1/plans/preview
     O->>R: Retrieve grounded snippets
     O->>T: Build travel contribution
-    T->>F: Optional live travel search
+    T->>C: Optional primary live search
+    T->>F: Optional secondary live search fallback
     T->>A: Optional remote travel advice
     T-->>O: Travel tasks + metadata
     O->>H: Create confirmation requests

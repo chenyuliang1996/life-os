@@ -38,7 +38,7 @@
   - 已支持 `PgVectorStore`、chunking 和文本回退
   - 生产选型明确收敛到 `PostgreSQL + pgvector`
 - 外部能力增强：
-  - 可选 `FlyAI` MCP 旅行搜索
+  - 可选 `Claw Skill` + `FlyAI` MCP 旅行搜索
   - 可选远程 `A2A` 旅行专家
 - 安全控制面：
   - 用户信任分层
@@ -142,6 +142,13 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - `LIFEOS_FLYAI_ENABLED`
 - `LIFEOS_FLYAI_ENDPOINT`
 - `LIFEOS_FLYAI_TOOL_NAME`
+- `LIFEOS_CLAW_ENABLED`
+- `LIFEOS_CLAW_TRANSPORT`
+- `LIFEOS_CLAW_ENDPOINT`
+- `LIFEOS_CLAW_TOOL_NAME`
+- `LIFEOS_CLAW_AUTH_HEADER_NAME`
+- `LIFEOS_CLAW_AUTH_HEADER_VALUE`
+- `LIFEOS_CLAW_TIMEOUT_SECONDS`
 - `LIFEOS_A2A_TRAVEL_ENABLED`
 - `LIFEOS_A2A_TRAVEL_BASE_URL`
 - `LIFEOS_SECURITY_TRUSTED_PREFIXES`
@@ -166,6 +173,7 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - [RAG 选型](docs/rag-selection.md)
 - [FlyAI 与 A2A 旅行链路](docs/flyai-a2a-travel-search.md)
 - [FlyAI 与 Claw Skill 打通](docs/flyai-claw-integration.md)
+- [Claw 融合四职能交付](docs/claw-fusion-4lane-delivery.md)
 - [安全架构与多身份模拟](docs/security-architecture.md)
 - [MBTI 人格优化方案](docs/mbti-persona-optimization.md)
 - [真实用户动线验证](docs/user-journey-validation.md)

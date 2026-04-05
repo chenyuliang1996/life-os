@@ -19,8 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -45,6 +47,14 @@ public class PoiDiscoveryService {
     }
 
     public List<FestivalPoiCard> discover(String locale, String query) {
+        return discover(locale, query, null, null, null);
+    }
+
+    public List<FestivalPoiCard> discover(String locale,
+                                          String query,
+                                          String travelers,
+                                          String budget,
+                                          String timeWindow) {
         String resolvedLocale = normalizeLocale(locale);
         List<FestivalPoiCard> cards = new ArrayList<>();
 
@@ -52,7 +62,7 @@ public class PoiDiscoveryService {
             cards.addAll(seedCards(resolvedLocale));
         }
 
-        cards.add(skillCard(resolvedLocale, query));
+        cards.add(skillCard(resolvedLocale, query, travelers, budget, timeWindow));
         cards.addAll(crawlerCards(resolvedLocale, query));
 
         return cards.stream()
@@ -62,30 +72,62 @@ public class PoiDiscoveryService {
                 .toList();
     }
 
-    private FestivalPoiCard skillCard(String locale, String query) {
+    private FestivalPoiCard skillCard(String locale,
+                                      String query,
+                                      String travelers,
+                                      String budget,
+                                      String timeWindow) {
         String topic = StringUtils.hasText(query)
                 ? query
                 : locale.startsWith("zh")
                 ? "近期节日可玩poi推荐，包含热门和低疲劳路线"
                 : "Upcoming holiday playable POIs with low-fatigue itinerary tips";
         try {
-            ToolResult result = toolModuleFacade.execute(new ToolRequest("search", java.util.Map.of(
-                    "topic", topic,
-                    "locale", locale
-            )));
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("topic", topic);
+            parameters.put("locale", locale);
+            if (StringUtils.hasText(travelers)) {
+                parameters.put("travelers", travelers);
+            }
+            if (StringUtils.hasText(budget)) {
+                parameters.put("budget", budget);
+            }
+            if (StringUtils.hasText(timeWindow)) {
+                parameters.put("time_window", timeWindow);
+            }
+            ToolResult result = toolModuleFacade.execute(new ToolRequest("search", parameters));
             String summary = result.summary();
             List<String> pois = extractPois(summary, locale);
             if (pois.isEmpty()) {
                 return null;
             }
+            Map<String, String> metadata = result.metadata() == null ? Map.of() : result.metadata();
+            String provider = metadata.getOrDefault("provider", "seeded-fallback");
+            String source = sourceFromProvider(provider);
+            String title = switch (source) {
+                case "claw-skill" -> locale.startsWith("zh") ? "Claw 实时发现" : "Claw Live Discovery";
+                case "flyai-skill" -> locale.startsWith("zh") ? "FlyAI 实时发现" : "FlyAI Live Discovery";
+                default -> locale.startsWith("zh") ? "种子知识推荐" : "Seeded Knowledge Discovery";
+            };
+            String vibe = switch (source) {
+                case "claw-skill" -> locale.startsWith("zh")
+                        ? "Claw Skill 聚合 + 用户偏好融合"
+                        : "Claw skill aggregation fused with user preferences";
+                case "flyai-skill" -> locale.startsWith("zh")
+                        ? "FlyAI 实时检索 + 用户偏好融合"
+                        : "FlyAI live retrieval fused with user preferences";
+                default -> locale.startsWith("zh")
+                        ? "内置知识回退结果"
+                        : "Seeded fallback knowledge result";
+            };
             return new FestivalPoiCard(
-                    "skill-flyai-" + UUID.randomUUID(),
+                    source + "-" + UUID.randomUUID(),
                     LocalDate.now().plusDays(1).toString(),
-                    locale.startsWith("zh") ? "FlyAI 实时发现" : "FlyAI Live Discovery",
+                    title,
                     locale.startsWith("zh") ? "多城市" : "Multi-city",
                     pois,
-                    locale.startsWith("zh") ? "实时检索 + 用户偏好融合" : "Live retrieval fused with user preferences",
-                    "skill",
+                    vibe,
+                    source,
                     "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1400&q=80",
                     "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
             );
@@ -233,5 +275,15 @@ public class PoiDiscoveryService {
             return "zh-CN";
         }
         return "en-US";
+    }
+
+    private String sourceFromProvider(String provider) {
+        if ("claw-skill".equalsIgnoreCase(provider)) {
+            return "claw-skill";
+        }
+        if ("flyai-mcp".equalsIgnoreCase(provider)) {
+            return "flyai-skill";
+        }
+        return "seeded";
     }
 }

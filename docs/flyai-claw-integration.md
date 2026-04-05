@@ -1,54 +1,93 @@
-# FlyAI 打通方案（Claw / Skill 路径）
+# Claw + FlyAI 搜索融合实现
 
-## 1. 结论
+## 1. 当前实现结论
 
-当前服务已经支持通过 MCP 方式接入 FlyAI（`FlyAiSearchConnector`），所以“打通 FlyAI”不需要改主流程，只需要补齐一个稳定的 MCP skill 接入层。
+项目已落地统一搜索 provider 链：
 
-推荐路径：
+`Claw Skill -> FlyAI MCP -> Seeded Fallback`
 
-1. 在 `clawhub.ai` 选择已有 FlyAI 检索 skill（如果有可直接复用）
-2. 如果没有完全匹配的 skill，就按我们的旅行场景自建一个 `travel_search` skill
-3. 把 skill 暴露成 SSE/HTTP MCP endpoint，填到服务配置
+对应代码：
 
-## 2. 对接点
+- `life-os-tools/.../ClawSkillConnector.java`
+- `life-os-tools/.../FlyAiSearchConnector.java`
+- `life-os-tools/.../ToolModuleFacade.java`
 
-服务读取以下配置：
+## 2. 为什么这样做
 
-- `LIFEOS_FLYAI_ENABLED=true`
-- `LIFEOS_FLYAI_ENDPOINT=<mcp endpoint>`
-- `LIFEOS_FLYAI_TRANSPORT=sse`（或 `http`）
-- `LIFEOS_FLYAI_TOOL_NAME=travel_search`（可选）
+- Claw 适合承接 skill 级别的聚合搜索能力。
+- FlyAI 作为第二层实时源，提升可用性和覆盖面。
+- 两者不可用时回退到内置知识，保证主链路稳定可响应。
+
+这样可同时满足实时性和稳定性，不把单一外部依赖做成硬故障点。
+
+## 3. 配置项
+
+FlyAI：
+
+- `LIFEOS_FLYAI_ENABLED`
+- `LIFEOS_FLYAI_ENDPOINT`
+- `LIFEOS_FLYAI_TRANSPORT`
+- `LIFEOS_FLYAI_TOOL_NAME`
 - `LIFEOS_FLYAI_AUTH_HEADER_NAME`
 - `LIFEOS_FLYAI_AUTH_HEADER_VALUE`
+- `LIFEOS_FLYAI_TIMEOUT_SECONDS`
 
-连接器会在首次调用时懒初始化，并自动探测搜索工具名：
+Claw：
 
-- `travel_search`
-- `search_travel`
-- `search`
-- `trip_search`
-- `destination_search`
+- `LIFEOS_CLAW_ENABLED`
+- `LIFEOS_CLAW_ENDPOINT`
+- `LIFEOS_CLAW_TRANSPORT`
+- `LIFEOS_CLAW_TOOL_NAME`（默认 `travel_search`）
+- `LIFEOS_CLAW_AUTH_HEADER_NAME`
+- `LIFEOS_CLAW_AUTH_HEADER_VALUE`
+- `LIFEOS_CLAW_TIMEOUT_SECONDS`
 
-## 3. 推荐 Skill Schema（旅行场景）
+## 4. 工具参数兼容策略
 
-工具名建议统一为：`travel_search`
+Claw/FlyAI 工具调用会尝试多种入参命名，兼容不同 skill schema：
 
-参数建议至少包含：
+- `query`
+- `topic`
+- `keyword`
+- `destination`
+- 扩展字段：`travelers`、`budget`、`time_window`
 
-- `query`：用户目标（目的地 + 偏好）
-- `locale`：语言
-- `travelers`：人数
-- `budget`：预算级别
-- `time_window`：出行时间窗口
+前端 POI 接口已支持：
 
-输出建议：
+- `GET /api/v1/poi/festivals?locale=...&query=...&travelers=...&budget=...&timeWindow=...`
 
-- `poi_candidates`（结构化）
-- `route_suggestion`（分日建议）
-- `risk_notes`（天气/拥堵/闭馆）
+## 5. ToB 可观测输出
 
-## 4. 运维验证
+`GET /api/v1/system/connectors` 现在可看到：
 
-1. 打开 ToB 的连接器面板，确认 `flyai-search` 为可用
-2. 在 ToC 输入旅行目标，检查计划中 `travel.search` 元数据是否为实时内容
-3. 关闭 FlyAI endpoint，验证服务自动回退到 seeded search（不中断主链路）
+- `search`（统一聚合入口）
+- `claw-skill-search`
+- `flyai-search`
+
+前端会区分 connector 状态与 POI 来源标签：
+
+- `claw-skill`
+- `flyai-skill`
+- `seeded`
+- `crawler`
+
+## 6. 安全策略
+
+保持现有信任与审批模型不变：
+
+- `mcpTrusted` 才可进入远程实时搜索能力
+- 仍受 outbound allowlist 限制
+- 外部写入动作继续走确认流
+
+默认 allowlist 已补充：
+
+- `open.fly.ai`
+- `clawhub.ai`
+
+## 7. 验证建议
+
+1. 开启 Claw，关闭 FlyAI：验证 `claw-skill-search` 生效。
+2. 关闭 Claw，开启 FlyAI：验证回落到 FlyAI。
+3. 同时关闭：验证回退到 seeded，且主链路不中断。
+4. ToB 中查看 connectors，确认 provider 切换符合预期。
+

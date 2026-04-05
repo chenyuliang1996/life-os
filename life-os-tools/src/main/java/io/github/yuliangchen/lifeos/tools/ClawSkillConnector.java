@@ -20,9 +20,9 @@ import java.util.Locale;
 import java.util.Map;
 
 @Component
-public class FlyAiSearchConnector implements DisposableBean {
+public class ClawSkillConnector implements DisposableBean {
 
-    private static final Logger log = LoggerFactory.getLogger(FlyAiSearchConnector.class);
+    private static final Logger log = LoggerFactory.getLogger(ClawSkillConnector.class);
 
     private final boolean enabled;
     private final String endpoint;
@@ -35,22 +35,14 @@ public class FlyAiSearchConnector implements DisposableBean {
     private volatile McpClientWrapper clientWrapper;
     private volatile String resolvedToolName;
 
-    public FlyAiSearchConnector(Environment environment) {
-        this.enabled = Boolean.parseBoolean(environment.getProperty("lifeos.flyai.enabled", "false"));
-        this.endpoint = environment.getProperty("lifeos.flyai.endpoint", "");
-        this.transport = environment.getProperty("lifeos.flyai.transport", "sse");
-        this.configuredToolName = environment.getProperty("lifeos.flyai.tool-name", "");
-        this.authHeaderName = environment.getProperty("lifeos.flyai.auth-header-name", "");
-        this.authHeaderValue = environment.getProperty("lifeos.flyai.auth-header-value", "");
-        this.timeout = Duration.ofSeconds(Integer.parseInt(environment.getProperty("lifeos.flyai.timeout-seconds", "20")));
-    }
-
-    public ToolResult search(String topic, String locale) {
-        ToolResult live = searchLive(topic, locale, Map.of());
-        if (live != null) {
-            return live;
-        }
-        return fallbackSearch(topic, locale);
+    public ClawSkillConnector(Environment environment) {
+        this.enabled = Boolean.parseBoolean(environment.getProperty("lifeos.claw.enabled", "false"));
+        this.endpoint = environment.getProperty("lifeos.claw.endpoint", "");
+        this.transport = environment.getProperty("lifeos.claw.transport", "sse");
+        this.configuredToolName = environment.getProperty("lifeos.claw.tool-name", "");
+        this.authHeaderName = environment.getProperty("lifeos.claw.auth-header-name", "");
+        this.authHeaderValue = environment.getProperty("lifeos.claw.auth-header-value", "");
+        this.timeout = Duration.ofSeconds(Integer.parseInt(environment.getProperty("lifeos.claw.timeout-seconds", "20")));
     }
 
     public ToolResult searchLive(String topic, String locale, Map<String, String> context) {
@@ -59,7 +51,7 @@ public class FlyAiSearchConnector implements DisposableBean {
         }
 
         try {
-            // Lazy MCP initialization keeps local startup stable / 延迟初始化 MCP，避免未配置外部端点时启动变脆。
+            // Keep initialization lazy so local dev remains stable when Claw endpoint is absent.
             McpClientWrapper wrapper = getOrCreateClient();
             String toolName = getOrResolveToolName(wrapper);
             if (!StringUtils.hasText(toolName)) {
@@ -73,22 +65,22 @@ public class FlyAiSearchConnector implements DisposableBean {
 
             return new ToolResult("search", response, metadata(toolName));
         } catch (Exception exception) {
-            log.warn("FlyAI search failed. Falling back to next provider.", exception);
+            log.warn("Claw skill search failed. Falling back to next provider.", exception);
             return null;
         }
     }
 
     public ConnectorStatus connectorStatus() {
         if (!enabled) {
-            return new ConnectorStatus("flyai-search", false, "FlyAI MCP search is disabled.");
+            return new ConnectorStatus("claw-skill-search", false, "Claw skill search is disabled.");
         }
         if (!StringUtils.hasText(endpoint)) {
-            return new ConnectorStatus("flyai-search", false, "FlyAI is enabled in config but no endpoint is configured.");
+            return new ConnectorStatus("claw-skill-search", false, "Claw is enabled in config but no endpoint is configured.");
         }
         String summary = StringUtils.hasText(resolvedToolName)
-                ? "FlyAI MCP search is active via tool " + resolvedToolName + "."
-                : "FlyAI MCP endpoint is configured and will be discovered lazily on first use.";
-        return new ConnectorStatus("flyai-search", true, summary);
+                ? "Claw skill search is active via tool " + resolvedToolName + "."
+                : "Claw endpoint is configured and the skill tool will be discovered lazily on first use.";
+        return new ConnectorStatus("claw-skill-search", true, summary);
     }
 
     @Override
@@ -102,22 +94,6 @@ public class FlyAiSearchConnector implements DisposableBean {
         return enabled && StringUtils.hasText(endpoint);
     }
 
-    public ToolResult fallbackSearch(String topic, String locale) {
-        String lowerLocale = locale == null ? "en-us" : locale.toLowerCase(Locale.ROOT);
-        String summary = lowerLocale.startsWith("zh")
-                ? "未命中实时搜索，已使用内置旅行知识提供\"" + topic + "\"的低疲劳行程建议。"
-                : "Live search was unavailable, so seeded travel knowledge generated a low-fatigue itinerary suggestion for \"" + topic + "\".";
-        return new ToolResult(
-                "search",
-                summary,
-                Map.of(
-                        "provider", "seeded-fallback",
-                        "connector", "search",
-                        "mode", "fallback"
-                )
-        );
-    }
-
     private McpClientWrapper getOrCreateClient() {
         if (clientWrapper != null) {
             return clientWrapper;
@@ -128,7 +104,7 @@ public class FlyAiSearchConnector implements DisposableBean {
                 return clientWrapper;
             }
 
-            McpClientBuilder builder = McpClientBuilder.create("flyai-search");
+            McpClientBuilder builder = McpClientBuilder.create("claw-skill-search");
             if ("http".equalsIgnoreCase(transport) || "streamable-http".equalsIgnoreCase(transport)) {
                 builder.streamableHttpTransport(endpoint);
             } else {
@@ -161,7 +137,13 @@ public class FlyAiSearchConnector implements DisposableBean {
             return null;
         }
 
-        List<String> aliases = List.of("travel_search", "search_travel", "search", "trip_search", "destination_search");
+        List<String> aliases = List.of(
+                "travel_search",
+                "poi_search",
+                "destination_search",
+                "flyai_search",
+                "search"
+        );
         for (String alias : aliases) {
             for (McpSchema.Tool tool : tools) {
                 if (tool.name().equalsIgnoreCase(alias)) {
@@ -173,7 +155,12 @@ public class FlyAiSearchConnector implements DisposableBean {
 
         for (McpSchema.Tool tool : tools) {
             String lowered = tool.name().toLowerCase(Locale.ROOT);
-            if (lowered.contains("search") || lowered.contains("travel") || lowered.contains("trip")) {
+            if (lowered.contains("claw")
+                    || lowered.contains("flyai")
+                    || lowered.contains("travel")
+                    || lowered.contains("poi")
+                    || lowered.contains("destination")
+                    || lowered.contains("search")) {
                 resolvedToolName = tool.name();
                 return resolvedToolName;
             }
@@ -188,14 +175,7 @@ public class FlyAiSearchConnector implements DisposableBean {
                                   String topic,
                                   String locale,
                                   Map<String, String> context) {
-        // Different MCP servers use different argument names / 不同 MCP 服务的参数命名并不统一，这里做一层宽松兼容。
-        List<Map<String, Object>> attempts = new ArrayList<>();
-        attempts.add(Map.of("query", topic, "locale", locale));
-        attempts.add(Map.of("topic", topic, "locale", locale));
-        attempts.add(Map.of("keyword", topic, "locale", locale));
-        attempts.add(Map.of("destination", topic, "locale", locale));
-        attempts.add(extendedPayload(topic, locale, context));
-
+        List<Map<String, Object>> attempts = buildAttempts(topic, locale, context);
         for (Map<String, Object> attempt : attempts) {
             try {
                 McpSchema.CallToolResult result = wrapper.callTool(toolName, attempt).block(timeout);
@@ -204,23 +184,48 @@ public class FlyAiSearchConnector implements DisposableBean {
                     return text;
                 }
             } catch (Exception exception) {
-                log.debug("FlyAI tool invocation failed for payload {}", attempt, exception);
+                log.debug("Claw tool invocation failed for payload {}", attempt, exception);
             }
         }
         return null;
     }
 
-    private Map<String, Object> extendedPayload(String topic, String locale, Map<String, String> context) {
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("query", topic);
-        payload.put("locale", locale);
-        putIfHasText(payload, "travelers", valueOrNull(context, "travelers"));
-        putIfHasText(payload, "budget", valueOrNull(context, "budget"));
+    private List<Map<String, Object>> buildAttempts(String topic, String locale, Map<String, String> context) {
+        String resolvedTopic = StringUtils.hasText(topic) ? topic : "upcoming holiday travel ideas";
+        String resolvedLocale = StringUtils.hasText(locale) ? locale : "en-US";
+        String travelers = valueOrNull(context, "travelers");
+        String budget = valueOrNull(context, "budget");
         String timeWindow = valueOrNull(context, "time_window");
         if (timeWindow == null) {
             timeWindow = valueOrNull(context, "timeWindow");
         }
-        putIfHasText(payload, "time_window", timeWindow);
+
+        List<Map<String, Object>> attempts = new ArrayList<>();
+
+        attempts.add(basePayload("query", resolvedTopic, resolvedLocale));
+        attempts.add(basePayload("topic", resolvedTopic, resolvedLocale));
+        attempts.add(basePayload("keyword", resolvedTopic, resolvedLocale));
+        attempts.add(basePayload("destination", resolvedTopic, resolvedLocale));
+
+        Map<String, Object> extended = basePayload("query", resolvedTopic, resolvedLocale);
+        putIfHasText(extended, "travelers", travelers);
+        putIfHasText(extended, "budget", budget);
+        putIfHasText(extended, "time_window", timeWindow);
+        attempts.add(extended);
+
+        Map<String, Object> extendedAlias = basePayload("query", resolvedTopic, resolvedLocale);
+        putIfHasText(extendedAlias, "traveler_count", travelers);
+        putIfHasText(extendedAlias, "budget_level", budget);
+        putIfHasText(extendedAlias, "time_window", timeWindow);
+        attempts.add(extendedAlias);
+
+        return attempts;
+    }
+
+    private Map<String, Object> basePayload(String key, String topic, String locale) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put(key, topic);
+        payload.put("locale", locale);
         return payload;
     }
 
@@ -240,8 +245,8 @@ public class FlyAiSearchConnector implements DisposableBean {
 
     private Map<String, String> metadata(String toolName) {
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("provider", "flyai-mcp");
-        metadata.put("connector", "flyai-search");
+        metadata.put("provider", "claw-skill");
+        metadata.put("connector", "claw-skill-search");
         metadata.put("mode", "live");
         metadata.put("toolName", toolName);
         return metadata;
@@ -263,3 +268,4 @@ public class FlyAiSearchConnector implements DisposableBean {
                 .orElse(null);
     }
 }
+
