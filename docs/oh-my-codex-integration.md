@@ -78,6 +78,18 @@ $team 3:executor "针对多模块改造并行落地"
 - OMX 产生的流程状态落在 `.omx/`，不污染业务数据库。
 - 业务数据仍按现有架构写入 `PostgreSQL/pgvector` 和应用持久层。
 
+## 多 Agent 协作落地
+
+已提供四职能并行协作脚本（产品、设计、前端、后端）：
+
+- `scripts/omx/four-agent/start-team.sh`
+- `scripts/omx/four-agent/bootstrap.sh`
+- `scripts/omx/four-agent/status.sh`
+
+详细流程见：
+
+- `docs/multi-agent-delivery-workflow.md`
+
 ## 验证清单
 
 ```bash

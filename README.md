@@ -100,6 +100,19 @@ bash scripts/omx/start.sh
 bash scripts/omx/doctor.sh
 ```
 
+四职能并行开发（产品 / 设计 / 前端 / 后端）：
+
+```bash
+# 1) 启动团队 runtime（需 tmux）
+bash scripts/omx/four-agent/start-team.sh --goal "本轮迭代目标"
+
+# 2) 注入四职能任务（替换 team 名）
+bash scripts/omx/four-agent/bootstrap.sh --team <team-name> --goal "本轮迭代目标"
+
+# 3) 查看团队任务状态
+bash scripts/omx/four-agent/status.sh --team <team-name>
+```
+
 ### 集群部署
 
 ```bash
@@ -159,3 +172,4 @@ docker compose -f deploy/docker-compose.cluster.yml up --build
 - [分布式部署说明](docs/deployment-cluster.md)
 - [API 契约](docs/api-contracts.md)
 - [oh-my-codex 接入](docs/oh-my-codex-integration.md)
+- [四职能多 Agent 工作流](docs/multi-agent-delivery-workflow.md)

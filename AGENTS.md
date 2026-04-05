@@ -37,6 +37,13 @@ Delivery constraints:
 - Any ToC UX change should remain mobile-first for embedded H5.
 - Any ToB capability should remain traceable by `sessionId/contextId/traceId`.
 
+Preferred 4-lane delivery mode for non-trivial iterations:
+- `product-agent`: scope, acceptance criteria, KPI definition.
+- `designer-agent`: IA, UX flow, bilingual copy and motion spec.
+- `frontend-agent`: H5 implementation, interaction quality, telemetry wiring.
+- `backend-agent`: API/orchestration/integration/observability delivery.
+- Coordination role (leader) owns integration decisions and final acceptance.
+
 Verification gates:
 - Build: `mvn -DskipTests install`
 - Test: `mvn test`
