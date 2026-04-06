@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>OtterLife</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="/styles.css?v=20260405a">
+    <link rel="stylesheet" href="/styles.css?v=20260406a">
 </head>
 <body data-default-locale="en-US" data-surface="toc">
 <div class="page-shell">
@@ -184,6 +184,22 @@
                     <input id="thread-id" type="text" value="thread-travel-primary" placeholder="thread-travel-primary">
                 </div>
             </div>
+            <div class="auth-inline">
+                <div>
+                    <label for="auth-username" data-i18n="fields.authUsername">Username</label>
+                    <input id="auth-username" type="text" placeholder="demo-user">
+                </div>
+                <div>
+                    <label for="auth-password" data-i18n="fields.authPassword">Password</label>
+                    <input id="auth-password" type="password" placeholder="******">
+                </div>
+            </div>
+            <div class="hero-actions compact auth-actions">
+                <button id="auth-register" class="secondary" type="button" data-i18n="actions.register">Sign Up</button>
+                <button id="auth-login" class="secondary" type="button" data-i18n="actions.login">Sign In</button>
+                <button id="auth-logout" class="secondary" type="button" data-i18n="actions.logout">Sign Out</button>
+            </div>
+            <div id="auth-status" class="result-strip" data-i18n="state.authGuest">Signed out. Register or sign in to enable user-level memory and trace.</div>
             <div id="context-strip" class="context-strip"></div>
             <div class="hero-actions compact">
                 <button id="run-agent" class="secondary" data-i18n="hero.runAssistant">Run Assistant</button>
@@ -220,6 +236,17 @@
                     <p class="section-subtitle" data-i18n="sections.trace.subtitle">Correlate user requests and UX actions via session / context / trace ids.</p>
                 </div>
                 <span class="pill" data-i18n="sections.trace.pill">Trace Lens</span>
+            </div>
+            <div class="trace-filter-grid">
+                <input id="trace-filter-user" type="text" data-i18n-placeholder="fields.traceUserFilter" placeholder="Filter by user">
+                <input id="trace-filter-session" type="text" data-i18n-placeholder="fields.traceSessionFilter" placeholder="Filter by session">
+                <input id="trace-filter-context" type="text" data-i18n-placeholder="fields.traceContextFilter" placeholder="Filter by context">
+                <input id="trace-filter-trace" type="text" data-i18n-placeholder="fields.traceIdFilter" placeholder="Filter by trace">
+                <input id="trace-filter-operation" type="text" data-i18n-placeholder="fields.traceOperationFilter" placeholder="Filter by operation">
+            </div>
+            <div class="hero-actions compact">
+                <button id="trace-filter-apply" class="secondary" type="button" data-i18n="actions.applyFilter">Apply Filters</button>
+                <button id="trace-filter-reset" class="secondary" type="button" data-i18n="actions.resetFilter">Reset Filters</button>
             </div>
             <div id="trace-view" class="list-stack"></div>
         </section>
@@ -342,6 +369,8 @@
             <div class="hero-actions compact">
                 <button id="save-profile" class="primary" data-i18n="actions.saveProfile">Save Profile</button>
             </div>
+            <div id="memory-summary" class="result-strip"></div>
+            <div id="memory-ops-view" class="list-stack capped"></div>
             <pre id="profile-view" class="code-box"></pre>
         </section>
 
@@ -428,6 +457,6 @@
     <button id="h5-run-preview" class="primary" data-i18n="hero.runPreview">Create Action Plan</button>
     <button id="h5-run-agent" class="secondary" data-i18n="hero.runAssistant">Run Assistant</button>
 </div>
-<script src="/app.js?v=20260405a"></script>
+<script src="/app.js?v=20260406a"></script>
 </body>
 </html>

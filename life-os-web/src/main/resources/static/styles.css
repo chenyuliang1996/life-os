@@ -519,6 +519,33 @@ textarea {
     margin-top: 12px;
 }
 
+.auth-inline {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.auth-actions {
+    margin-top: 10px;
+}
+
+#auth-status {
+    margin-top: 10px;
+}
+
+.trace-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.trace-filter-grid input {
+    padding: 12px 14px;
+    font-size: 14px;
+}
+
 .result-strip,
 .code-box,
 .list-item,
@@ -1700,6 +1727,10 @@ body.is-ready .card {
         grid-template-columns: 1fr;
     }
 
+    .trace-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .sequence-node:nth-child(2n)::after,
     .sequence-node:nth-child(2n)::before {
         display: none;
@@ -1716,6 +1747,8 @@ body.is-ready .card {
     .hero-actions,
     .hero-panel,
     .form-row,
+    .auth-inline,
+    .trace-filter-grid,
     .calendar-toolbar {
         grid-template-columns: 1fr;
         flex-direction: column;

@@ -187,6 +187,127 @@ class LifeOsApplicationTests {
     }
 
     @Test
+    void shouldRegisterLoginAndResolveCurrentUser() throws Exception {
+        String registerResponse = mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "username": "tester-auth",
+                                  "password": "pass123456",
+                                  "displayName": "Tester",
+                                  "locale": "en-US"
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$.username").value("tester-auth"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String token = new com.fasterxml.jackson.databind.ObjectMapper()
+                .readTree(registerResponse)
+                .get("token")
+                .asText();
+
+        mockMvc.perform(get("/api/v1/auth/me")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("tester-auth"))
+                .andExpect(jsonPath("$.userId").exists());
+
+        mockMvc.perform(post("/api/v1/auth/logout")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldQueryTraceLinksByUserFilter() throws Exception {
+        mockMvc.perform(post("/api/v1/telemetry/ux")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "action": "h5_interaction",
+                                  "surface": "toc",
+                                  "locale": "zh-CN",
+                                  "userId": "trace-user-a",
+                                  "threadId": "thread-a",
+                                  "sessionId": "sess-a",
+                                  "contextId": "ctx-a",
+                                  "traceId": "trc-a",
+                                  "durationMs": 111,
+                                  "success": true
+                                }
+                                """))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(post("/api/v1/telemetry/ux")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "action": "h5_interaction",
+                                  "surface": "toc",
+                                  "locale": "zh-CN",
+                                  "userId": "trace-user-b",
+                                  "threadId": "thread-b",
+                                  "sessionId": "sess-b",
+                                  "contextId": "ctx-b",
+                                  "traceId": "trc-b",
+                                  "durationMs": 95,
+                                  "success": true
+                                }
+                                """))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/system/trace-links?userId=trace-user-a&limit=10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(greaterThanOrEqualTo(1)))
+                .andExpect(jsonPath("$[0].userId").value("trace-user-a"));
+    }
+
+    @Test
+    void shouldExposeMemoryDetailsWithRecentOperations() throws Exception {
+        mockMvc.perform(put("/api/v1/profile?userId=memory-user")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "preferences": {
+                                    "travelStyle": "balanced",
+                                    "budgetLevel": "medium",
+                                    "studyGoal": "english"
+                                  },
+                                  "goals": []
+                                }
+                                """))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/v1/telemetry/ux")
+                        .contentType("application/json")
+                        .content("""
+                                {
+                                  "action": "save_profile",
+                                  "surface": "toc",
+                                  "locale": "zh-CN",
+                                  "userId": "memory-user",
+                                  "threadId": "thread-memory",
+                                  "sessionId": "sess-memory",
+                                  "contextId": "ctx-memory",
+                                  "traceId": "trc-memory",
+                                  "durationMs": 140,
+                                  "success": true
+                                }
+                                """))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/profile/memory-details?userId=memory-user&limit=5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value("memory-user"))
+                .andExpect(jsonPath("$.preferences.travelStyle").value("balanced"))
+                .andExpect(jsonPath("$.recentOperations.length()").value(greaterThanOrEqualTo(1)))
+                .andExpect(jsonPath("$.summary").exists());
+    }
+
+    @Test
     void shouldExposeRagRuntimeStatus() throws Exception {
         mockMvc.perform(get("/api/v1/system/rag"))
                 .andExpect(status().isOk())

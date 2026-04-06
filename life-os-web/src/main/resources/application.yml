@@ -48,6 +48,10 @@ lifeos:
   persistence:
     mode: ${LIFEOS_PERSISTENCE_MODE:database}
   session-storage-dir: .data/sessions
+  auth:
+    session-ttl-hours: ${LIFEOS_AUTH_SESSION_TTL_HOURS:72}
+    password-pepper: ${LIFEOS_AUTH_PASSWORD_PEPPER:life-os-local-pepper}
+    registration-enabled: ${LIFEOS_AUTH_REGISTRATION_ENABLED:true}
   confirmation:
     enabled: true
   rag:

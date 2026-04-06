@@ -22,6 +22,10 @@ lifeos:
     travel-search: claw-skill-plus-flyai-plus-seeded-fallback
     travel-specialist: remote-a2a-travel-specialist-with-local-fallback
   session-storage-dir: ${LIFEOS_SESSION_STORAGE_DIR:/data/sessions}
+  auth:
+    session-ttl-hours: ${LIFEOS_AUTH_SESSION_TTL_HOURS:72}
+    password-pepper: ${LIFEOS_AUTH_PASSWORD_PEPPER:life-os-cluster-pepper}
+    registration-enabled: ${LIFEOS_AUTH_REGISTRATION_ENABLED:true}
   rag:
     vector:
       enabled: ${LIFEOS_RAG_VECTOR_ENABLED:true}

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>OtterLife</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="stylesheet" href="/styles.css?v=20260405a">
+    <link rel="stylesheet" href="/styles.css?v=20260406a">
 </head>
 <body data-default-locale="zh-CN" data-surface="toc">
 <div class="page-shell">
@@ -184,6 +184,22 @@
                     <input id="thread-id" type="text" value="thread-travel-primary" placeholder="thread-travel-primary">
                 </div>
             </div>
+            <div class="auth-inline">
+                <div>
+                    <label for="auth-username" data-i18n="fields.authUsername">登录名</label>
+                    <input id="auth-username" type="text" placeholder="demo-user">
+                </div>
+                <div>
+                    <label for="auth-password" data-i18n="fields.authPassword">密码</label>
+                    <input id="auth-password" type="password" placeholder="******">
+                </div>
+            </div>
+            <div class="hero-actions compact auth-actions">
+                <button id="auth-register" class="secondary" type="button" data-i18n="actions.register">注册</button>
+                <button id="auth-login" class="secondary" type="button" data-i18n="actions.login">登录</button>
+                <button id="auth-logout" class="secondary" type="button" data-i18n="actions.logout">退出</button>
+            </div>
+            <div id="auth-status" class="result-strip" data-i18n="state.authGuest">当前未登录，可注册或登录后启用用户级记忆与轨迹。</div>
             <div id="context-strip" class="context-strip"></div>
             <div class="hero-actions compact">
                 <button id="run-agent" class="secondary" data-i18n="hero.runAssistant">运行助手</button>
@@ -220,6 +236,17 @@
                     <p class="section-subtitle" data-i18n="sections.trace.subtitle">按 session / context / trace 关联用户请求和前端交互。</p>
                 </div>
                 <span class="pill" data-i18n="sections.trace.pill">Trace Lens</span>
+            </div>
+            <div class="trace-filter-grid">
+                <input id="trace-filter-user" type="text" data-i18n-placeholder="fields.traceUserFilter" placeholder="按用户筛选">
+                <input id="trace-filter-session" type="text" data-i18n-placeholder="fields.traceSessionFilter" placeholder="按会话筛选">
+                <input id="trace-filter-context" type="text" data-i18n-placeholder="fields.traceContextFilter" placeholder="按上下文筛选">
+                <input id="trace-filter-trace" type="text" data-i18n-placeholder="fields.traceIdFilter" placeholder="按链路筛选">
+                <input id="trace-filter-operation" type="text" data-i18n-placeholder="fields.traceOperationFilter" placeholder="按操作筛选">
+            </div>
+            <div class="hero-actions compact">
+                <button id="trace-filter-apply" class="secondary" type="button" data-i18n="actions.applyFilter">应用筛选</button>
+                <button id="trace-filter-reset" class="secondary" type="button" data-i18n="actions.resetFilter">重置筛选</button>
             </div>
             <div id="trace-view" class="list-stack"></div>
         </section>
@@ -342,6 +369,8 @@
             <div class="hero-actions compact">
                 <button id="save-profile" class="primary" data-i18n="actions.saveProfile">保存画像</button>
             </div>
+            <div id="memory-summary" class="result-strip"></div>
+            <div id="memory-ops-view" class="list-stack capped"></div>
             <pre id="profile-view" class="code-box"></pre>
         </section>
 
@@ -428,6 +457,6 @@
     <button id="h5-run-preview" class="primary" data-i18n="hero.runPreview">生成可执行方案</button>
     <button id="h5-run-agent" class="secondary" data-i18n="hero.runAssistant">运行助手</button>
 </div>
-<script src="/app.js?v=20260405a"></script>
+<script src="/app.js?v=20260406a"></script>
 </body>
 </html>

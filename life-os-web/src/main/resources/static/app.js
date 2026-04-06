@@ -96,6 +96,13 @@ const TRANSLATIONS = {
     "fields.travelStyle": "旅行风格",
     "fields.budgetLevel": "预算等级",
     "fields.studyGoal": "学习目标",
+    "fields.authUsername": "登录名",
+    "fields.authPassword": "密码",
+    "fields.traceUserFilter": "按用户筛选",
+    "fields.traceSessionFilter": "按会话筛选",
+    "fields.traceContextFilter": "按上下文筛选",
+    "fields.traceIdFilter": "按链路筛选",
+    "fields.traceOperationFilter": "按操作筛选",
     "fields.personaSearch": "搜索人格",
     "fields.personaTemperament": "气质分组",
     "fields.personaCount": "展示 {visible}/{total} 个身份",
@@ -108,6 +115,11 @@ const TRANSLATIONS = {
     "fields.knowledgeSummary": "摘要",
     "fields.knowledgeContent": "正文",
     "actions.saveProfile": "保存画像",
+    "actions.login": "登录",
+    "actions.register": "注册",
+    "actions.logout": "退出",
+    "actions.applyFilter": "应用筛选",
+    "actions.resetFilter": "重置筛选",
     "actions.addKnowledge": "新增知识",
     "actions.openPlan": "打开",
     "actions.approve": "通过",
@@ -145,7 +157,13 @@ const TRANSLATIONS = {
     "state.auditEmpty": "审计流水会显示在这里。",
     "state.profileLoading": "正在加载画像...",
     "state.requestFailed": "请求失败，请查看控制台日志。",
+    "state.authGuest": "当前未登录，可注册或登录后启用用户级记忆与轨迹。",
+    "state.authLoggedIn": "已登录：{name}（{userId}）",
+    "state.authExpired": "登录已失效，请重新登录。",
+    "state.authLoginSuccess": "登录成功，已切换到当前账号。",
+    "state.authLogoutSuccess": "已退出登录。",
     "state.traceEmpty": "尚无链路数据，先发起一次请求查看关联关系。",
+    "state.memoryOpsEmpty": "暂无可用的记忆操作明细。",
     "state.groupEmpty": "暂无同行成员，默认按单人出行规划。",
     "state.festivalEmpty": "暂无可用节日灵感。",
     "state.calendarEmpty": "当天还没有规划内容，点击“编辑当天规划”开始记录。",
@@ -268,6 +286,7 @@ const TRANSLATIONS = {
     "label.session": "会话",
     "label.context": "上下文",
     "label.trace": "链路",
+    "label.timestamp": "时间",
     "common.enabled": "已启用",
     "common.disabled": "已关闭",
     "security.workspaceTrusted": "工作区信任",
@@ -411,6 +430,13 @@ const TRANSLATIONS = {
     "fields.travelStyle": "Travel style",
     "fields.budgetLevel": "Budget level",
     "fields.studyGoal": "Study goal",
+    "fields.authUsername": "Username",
+    "fields.authPassword": "Password",
+    "fields.traceUserFilter": "Filter by user",
+    "fields.traceSessionFilter": "Filter by session",
+    "fields.traceContextFilter": "Filter by context",
+    "fields.traceIdFilter": "Filter by trace",
+    "fields.traceOperationFilter": "Filter by operation",
     "fields.personaSearch": "Search personas",
     "fields.personaTemperament": "Temperament",
     "fields.personaCount": "Showing {visible}/{total} personas",
@@ -423,6 +449,11 @@ const TRANSLATIONS = {
     "fields.knowledgeSummary": "Summary",
     "fields.knowledgeContent": "Content",
     "actions.saveProfile": "Save Profile",
+    "actions.login": "Sign In",
+    "actions.register": "Sign Up",
+    "actions.logout": "Sign Out",
+    "actions.applyFilter": "Apply Filters",
+    "actions.resetFilter": "Reset Filters",
     "actions.addKnowledge": "Add Knowledge",
     "actions.openPlan": "Open",
     "actions.approve": "Approve",
@@ -460,7 +491,13 @@ const TRANSLATIONS = {
     "state.auditEmpty": "Audit events will appear here after loading.",
     "state.profileLoading": "Loading profile...",
     "state.requestFailed": "Request failed. Please inspect the console logs.",
+    "state.authGuest": "Signed out. Register or sign in to enable user-level memory and trace.",
+    "state.authLoggedIn": "Signed in: {name} ({userId})",
+    "state.authExpired": "Session expired. Please sign in again.",
+    "state.authLoginSuccess": "Signed in successfully. Identity has been updated.",
+    "state.authLogoutSuccess": "Signed out.",
     "state.traceEmpty": "No trace data yet. Run an action to start correlation.",
+    "state.memoryOpsEmpty": "No memory operation details yet.",
     "state.groupEmpty": "No companions yet, planning as a solo trip.",
     "state.festivalEmpty": "No holiday ideas available right now.",
     "state.calendarEmpty": "No plan yet for this day. Click \"Edit day plan\" to add one.",
@@ -583,6 +620,7 @@ const TRANSLATIONS = {
     "label.session": "Session",
     "label.context": "Context",
     "label.trace": "Trace",
+    "label.timestamp": "Timestamp",
     "common.enabled": "Enabled",
     "common.disabled": "Disabled",
     "security.workspaceTrusted": "Workspace trust",
@@ -667,6 +705,17 @@ const state = {
   auditEntries: [],
   connectors: [],
   traceEvents: [],
+  traceFilter: {
+    userId: "",
+    sessionId: "",
+    contextId: "",
+    traceId: "",
+    operation: ""
+  },
+  auth: {
+    token: "",
+    user: null
+  },
   confirmationCount: 0,
   requestContext: {
     sessionId: "",
@@ -681,6 +730,7 @@ const CONFIRMATION_LIST_LIMIT = 6;
 const FESTIVAL_ROTATE_MS = 12000;
 const MAX_GROUP_MEMBERS = 8;
 const TRACE_LIST_LIMIT = 24;
+const AUTH_TOKEN_STORAGE_KEY = "otterlife-auth-token";
 
 const FESTIVAL_LIBRARY = {
   "zh-CN": [
@@ -705,6 +755,7 @@ document.addEventListener("DOMContentLoaded", () => {
   state.calendarAnchor = today;
   state.selectedDate = today;
   initHostEmbedding();
+  restoreAuthState();
   applyTranslations();
   prepareMotion();
   restoreSurfaceMode();
@@ -712,6 +763,8 @@ document.addEventListener("DOMContentLoaded", () => {
   bindSurfaceSwitch();
   bindTocDensitySwitch();
   bindIdentityInputs();
+  bindAuthActions();
+  bindTraceFilters();
   bindActionButton("run-preview", runPreview);
   bindActionButton("run-agent", runAssistant);
   bindActionButton("h5-run-preview", runPreview);
@@ -719,6 +772,11 @@ document.addEventListener("DOMContentLoaded", () => {
   bindActionButton("reload-data", bootstrap);
   bindActionButton("save-profile", saveProfile);
   bindActionButton("add-knowledge", addKnowledge);
+  bindActionButton("auth-register", registerWithPassword);
+  bindActionButton("auth-login", loginWithPassword);
+  bindActionButton("auth-logout", logoutCurrentUser);
+  bindActionButton("trace-filter-apply", applyTraceFilters);
+  bindActionButton("trace-filter-reset", resetTraceFilters);
   refreshContextStrip();
   document.getElementById("profile-view").textContent = t("state.profileLoading");
   bootstrap()
@@ -738,6 +796,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function bootstrap() {
+  await hydrateAuthIdentity();
   await Promise.all([
     loadArchitecture(),
     loadRagStatus(),
@@ -771,6 +830,236 @@ async function bootstrap() {
     loadPlans()
   ]);
   renderSequence();
+}
+
+function restoreAuthState() {
+  state.auth.token = window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) || "";
+  state.auth.user = null;
+}
+
+function bindAuthActions() {
+  const usernameInput = document.getElementById("auth-username");
+  const passwordInput = document.getElementById("auth-password");
+  if (!usernameInput || !passwordInput) {
+    return;
+  }
+
+  passwordInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      runSafely(() => loginWithPassword());
+    }
+  });
+
+  usernameInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      passwordInput.focus();
+    }
+  });
+
+  renderAuthStatus();
+}
+
+async function hydrateAuthIdentity() {
+  if (!state.auth.token) {
+    state.auth.user = null;
+    renderAuthStatus();
+    syncTraceFilterInputs();
+    return;
+  }
+  try {
+    const me = await api("/api/v1/auth/me");
+    state.auth.user = me;
+    const usernameInput = document.getElementById("auth-username");
+    if (usernameInput && me.username) {
+      usernameInput.value = me.username;
+    }
+    const userInput = document.getElementById("user-id");
+    if (userInput && me.userId) {
+      userInput.value = me.userId;
+    }
+    if (!state.traceFilter.userId && me.userId) {
+      state.traceFilter.userId = me.userId;
+    }
+    syncTraceFilterInputs();
+    renderAuthStatus();
+  } catch (error) {
+    clearAuthState();
+    renderAuthStatus(t("state.authExpired"));
+  }
+}
+
+function clearAuthState() {
+  state.auth.token = "";
+  state.auth.user = null;
+  window.localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+}
+
+function renderAuthStatus(explicitMessage) {
+  const status = document.getElementById("auth-status");
+  if (!status) {
+    return;
+  }
+  const message = explicitMessage || (state.auth.user
+    ? t("state.authLoggedIn", {
+      name: state.auth.user.displayName || state.auth.user.username || state.auth.user.userId || "user",
+      userId: state.auth.user.userId || "unknown"
+    })
+    : t("state.authGuest"));
+  status.textContent = message;
+}
+
+async function registerWithPassword() {
+  const usernameInput = document.getElementById("auth-username");
+  const passwordInput = document.getElementById("auth-password");
+  const username = usernameInput?.value.trim() || "";
+  const password = passwordInput?.value.trim() || "";
+  if (!username || !password) {
+    throw new Error("missing_username_or_password");
+  }
+
+  const response = await api("/api/v1/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    skipAuth: true,
+    body: JSON.stringify({
+      username,
+      password,
+      displayName: username,
+      locale: state.locale
+    })
+  });
+  await applyAuthSession(response);
+}
+
+async function loginWithPassword() {
+  const usernameInput = document.getElementById("auth-username");
+  const passwordInput = document.getElementById("auth-password");
+  const username = usernameInput?.value.trim() || "";
+  const password = passwordInput?.value.trim() || "";
+  if (!username || !password) {
+    throw new Error("missing_username_or_password");
+  }
+
+  const response = await api("/api/v1/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    skipAuth: true,
+    body: JSON.stringify({ username, password })
+  });
+  await applyAuthSession(response);
+}
+
+async function applyAuthSession(session) {
+  if (!session?.token) {
+    throw new Error("invalid_auth_response");
+  }
+
+  state.auth.token = session.token;
+  state.auth.user = {
+    userId: session.userId,
+    username: session.username,
+    displayName: session.displayName,
+    locale: session.locale,
+    sessionExpiresAt: session.expiresAt
+  };
+  window.localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, session.token);
+  const userInput = document.getElementById("user-id");
+  if (userInput && session.userId) {
+    userInput.value = session.userId;
+  }
+  const usernameInput = document.getElementById("auth-username");
+  const passwordInput = document.getElementById("auth-password");
+  if (usernameInput && session.username) {
+    usernameInput.value = session.username;
+  }
+  if (passwordInput) {
+    passwordInput.value = "";
+  }
+  if (session.userId) {
+    state.traceFilter.userId = session.userId;
+  }
+  syncTraceFilterInputs();
+  renderAuthStatus();
+  document.getElementById("preview-summary").textContent = t("state.authLoginSuccess");
+  flashElement("preview-summary", "is-updated");
+  await handleIdentityChange();
+  await loadOperations();
+}
+
+async function logoutCurrentUser() {
+  if (state.auth.token) {
+    try {
+      await api("/api/v1/auth/logout", { method: "POST" });
+    } catch (error) {
+      // Local logout should still succeed even if server token is already expired.
+      console.debug("auth logout request failed", error);
+    }
+  }
+  clearAuthState();
+  state.traceFilter.userId = "";
+  syncTraceFilterInputs();
+  renderAuthStatus(t("state.authLogoutSuccess"));
+  await handleIdentityChange();
+  await loadOperations();
+}
+
+function bindTraceFilters() {
+  ["trace-filter-user", "trace-filter-session", "trace-filter-context", "trace-filter-trace", "trace-filter-operation"]
+    .map(id => document.getElementById(id))
+    .filter(Boolean)
+    .forEach(input => {
+      input.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          runSafely(() => applyTraceFilters());
+        }
+      });
+    });
+  syncTraceFilterInputs();
+}
+
+function readTraceFilterInputs() {
+  state.traceFilter.userId = document.getElementById("trace-filter-user")?.value.trim() || "";
+  state.traceFilter.sessionId = document.getElementById("trace-filter-session")?.value.trim() || "";
+  state.traceFilter.contextId = document.getElementById("trace-filter-context")?.value.trim() || "";
+  state.traceFilter.traceId = document.getElementById("trace-filter-trace")?.value.trim() || "";
+  state.traceFilter.operation = document.getElementById("trace-filter-operation")?.value.trim() || "";
+}
+
+function syncTraceFilterInputs() {
+  const authUserId = state.auth.user?.userId || "";
+  const values = {
+    "trace-filter-user": state.traceFilter.userId || authUserId,
+    "trace-filter-session": state.traceFilter.sessionId || "",
+    "trace-filter-context": state.traceFilter.contextId || "",
+    "trace-filter-trace": state.traceFilter.traceId || "",
+    "trace-filter-operation": state.traceFilter.operation || ""
+  };
+  Object.entries(values).forEach(([id, value]) => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.value = value;
+    }
+  });
+}
+
+async function applyTraceFilters() {
+  readTraceFilterInputs();
+  await loadTraceLinks();
+}
+
+async function resetTraceFilters() {
+  state.traceFilter = {
+    userId: state.auth.user?.userId || "",
+    sessionId: "",
+    contextId: "",
+    traceId: "",
+    operation: ""
+  };
+  syncTraceFilterInputs();
+  await loadTraceLinks();
 }
 
 // Keep motion setup centralized so new cards inherit the same stagger / 集中管理入场动效，后续新增卡片会自动继承节奏。
@@ -1116,7 +1405,20 @@ async function loadOperations() {
 
 async function loadTraceLinks() {
   try {
-    state.traceEvents = await api(`/api/v1/system/trace-links?limit=${TRACE_LIST_LIMIT}`);
+    const params = new URLSearchParams({ limit: String(TRACE_LIST_LIMIT) });
+    const activeFilters = {
+      userId: state.traceFilter.userId,
+      sessionId: state.traceFilter.sessionId,
+      contextId: state.traceFilter.contextId,
+      traceId: state.traceFilter.traceId,
+      operation: state.traceFilter.operation
+    };
+    Object.entries(activeFilters).forEach(([key, value]) => {
+      if (value && value.trim()) {
+        params.set(key, value.trim());
+      }
+    });
+    state.traceEvents = await api(`/api/v1/system/trace-links?${params.toString()}`);
   } catch (error) {
     state.traceEvents = [];
   }
@@ -1197,10 +1499,16 @@ async function loadRuntime() {
 
 async function loadProfile() {
   const userId = currentUserId();
-  const data = await api(`/api/v1/profile?userId=${encodeURIComponent(userId)}`);
-  document.getElementById("travel-style").value = data.preferences.travelStyle || "";
-  document.getElementById("budget-level").value = data.preferences.budgetLevel || "";
-  document.getElementById("study-goal").value = data.preferences.studyGoal || "";
+  const data = await api(`/api/v1/profile/memory-details?userId=${encodeURIComponent(userId)}&limit=8`);
+  const preferences = data.preferences || {};
+  document.getElementById("travel-style").value = preferences.travelStyle || "";
+  document.getElementById("budget-level").value = preferences.budgetLevel || "";
+  document.getElementById("study-goal").value = preferences.studyGoal || "";
+  const summary = document.getElementById("memory-summary");
+  if (summary) {
+    summary.textContent = data.summary || "";
+  }
+  renderMemoryOperations(data.recentOperations || []);
   document.getElementById("profile-view").textContent = JSON.stringify(data, null, 2);
 }
 
@@ -1272,6 +1580,10 @@ async function loadTimeline(runId) {
 
 async function handleIdentityChange() {
   syncActivePersona();
+  if (!state.traceFilter.userId && state.auth.user?.userId) {
+    state.traceFilter.userId = state.auth.user.userId;
+  }
+  syncTraceFilterInputs();
   initializeRequestContext(new URLSearchParams(), {});
   refreshContextStrip();
   resetUserScopedViews();
@@ -1304,6 +1616,14 @@ function resetUserScopedViews() {
   document.getElementById("timeline-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.timelineEmpty"))}</div>`;
   document.getElementById("plans-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.planEmpty"))}</div>`;
   document.getElementById("confirmations-view").innerHTML = `<div class="empty-state">${escapeHtml(t("state.confirmationEmpty"))}</div>`;
+  const memorySummary = document.getElementById("memory-summary");
+  if (memorySummary) {
+    memorySummary.textContent = "";
+  }
+  const memoryOps = document.getElementById("memory-ops-view");
+  if (memoryOps) {
+    memoryOps.innerHTML = `<div class="empty-state">${escapeHtml(t("state.memoryOpsEmpty"))}</div>`;
+  }
 }
 
 function workbenchStorageKey() {
@@ -2035,7 +2355,15 @@ function initializeDefaultPersona() {
 }
 
 async function saveProfile() {
-  await api(`/api/v1/profile?userId=${encodeURIComponent(currentUserId())}`, {
+  const profileParams = new URLSearchParams({
+    userId: currentUserId(),
+    sessionId: state.requestContext.sessionId,
+    contextId: state.requestContext.contextId,
+    traceId: state.requestContext.traceId,
+    surface: state.surface,
+    locale: state.locale
+  });
+  await api(`/api/v1/profile?${profileParams.toString()}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -2410,6 +2738,7 @@ function renderTraceLinks(events) {
   const html = events.map(event => `
     <div class="list-item">
       <strong>${escapeHtml(event.operation)}</strong>
+      <small>${escapeHtml(t("label.timestamp"))}: ${escapeHtml(formatDateTime(event.timestamp))}</small>
       <small>${escapeHtml(t("label.userId"))}: ${escapeHtml(event.userId || "unknown")} · ${escapeHtml(t("label.thread"))}: ${escapeHtml(event.threadId || "unknown")}</small>
       <small>${escapeHtml(t("label.session"))}: ${escapeHtml(event.sessionId || "unknown")}</small>
       <small>${escapeHtml(t("label.context"))}: ${escapeHtml(event.contextId || "unknown")} · ${escapeHtml(t("label.trace"))}: ${escapeHtml(event.traceId || "unknown")}</small>
@@ -2418,6 +2747,27 @@ function renderTraceLinks(events) {
   `).join("");
   container.innerHTML = html;
   animateChildren("trace-view");
+}
+
+function renderMemoryOperations(events) {
+  const container = document.getElementById("memory-ops-view");
+  if (!container) {
+    return;
+  }
+  if (!Array.isArray(events) || events.length === 0) {
+    container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.memoryOpsEmpty"))}</div>`;
+    return;
+  }
+
+  container.innerHTML = events.map(event => `
+    <div class="list-item">
+      <strong>${escapeHtml(event.operation || "unknown")}</strong>
+      <small>${escapeHtml(t("label.timestamp"))}: ${escapeHtml(formatDateTime(event.timestamp))}</small>
+      <small>${escapeHtml(t("label.context"))}: ${escapeHtml(event.contextId || "unknown")} · ${escapeHtml(t("label.trace"))}: ${escapeHtml(event.traceId || "unknown")}</small>
+      <small>${escapeHtml(t("label.status"))}: ${escapeHtml(event.success ? t("outcome.SUCCESS") : t("outcome.FAILURE"))} · ${escapeHtml(formatMillis(event.durationMs || 0))}</small>
+    </div>
+  `).join("");
+  animateChildren("memory-ops-view");
 }
 
 function renderAssistantReply(reply) {
@@ -2652,12 +3002,44 @@ function renderSequence() {
   renderJourneyHub();
 }
 
-async function api(url, options) {
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
+async function api(url, options = {}) {
+  const {
+    skipAuth = false,
+    ...fetchOptions
+  } = options || {};
+  const headers = new Headers(fetchOptions.headers || {});
+  if (!skipAuth && state.auth.token && !headers.has("Authorization")) {
+    headers.set("Authorization", `Bearer ${state.auth.token}`);
   }
-  return response.json();
+
+  const response = await fetch(url, {
+    ...fetchOptions,
+    headers
+  });
+  const contentType = response.headers.get("content-type") || "";
+
+  if (!response.ok) {
+    let detail = "";
+    try {
+      if (contentType.includes("application/json")) {
+        const payload = await response.json();
+        detail = payload.message || payload.error || JSON.stringify(payload);
+      } else {
+        detail = (await response.text()).trim();
+      }
+    } catch (error) {
+      detail = "";
+    }
+    throw new Error(`API request failed: ${response.status}${detail ? ` ${detail}` : ""}`);
+  }
+
+  if (response.status === 204) {
+    return null;
+  }
+  if (contentType.includes("application/json")) {
+    return response.json();
+  }
+  return response.text();
 }
 
 // Re-animate freshly rendered children so updates feel alive / 数据刷新后重新给子项做入场动画。
@@ -2728,7 +3110,12 @@ function resolveUxAction(id) {
     "h5-run-agent": "assistant_message",
     "reload-data": "refresh_dashboard",
     "save-profile": "save_profile",
-    "add-knowledge": "add_knowledge"
+    "add-knowledge": "add_knowledge",
+    "auth-register": "auth_register",
+    "auth-login": "auth_login",
+    "auth-logout": "auth_logout",
+    "trace-filter-apply": "trace_filter_apply",
+    "trace-filter-reset": "trace_filter_reset"
   }[id] || id;
 }
 
@@ -2750,6 +3137,9 @@ function currentRequestPayload() {
 }
 
 function currentUserId() {
+  if (state.auth.user?.userId) {
+    return state.auth.user.userId;
+  }
   return document.getElementById("user-id").value.trim() || "lifeos-user";
 }
 
@@ -2776,6 +3166,8 @@ function applyTranslations() {
   renderDayPlanQuickTemplates();
   updateDayPlanInputMeta();
   refreshContextStrip();
+  syncTraceFilterInputs();
+  renderAuthStatus();
 }
 
 function runSafely(action) {
@@ -3121,6 +3513,23 @@ function formatPercentage(value) {
 
 function formatMillis(value) {
   return `${Math.round(Number(value || 0))}ms`;
+}
+
+function formatDateTime(value) {
+  if (!value) {
+    return "-";
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+  return date.toLocaleString(state.locale === "zh-CN" ? "zh-CN" : "en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 }
 
 function formatCompactNumber(value) {

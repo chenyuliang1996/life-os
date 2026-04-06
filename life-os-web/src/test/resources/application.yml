@@ -16,6 +16,10 @@ lifeos:
   persistence:
     mode: database
   session-storage-dir: ${java.io.tmpdir}/life-os-test-sessions
+  auth:
+    session-ttl-hours: 24
+    password-pepper: test-pepper
+    registration-enabled: true
   rag:
     vector:
       enabled: false

@@ -62,6 +62,69 @@
 - 持久化对象和领域对象解耦，后续换成 MyBatis / jOOQ / 事件存储都容易
 - `Map`、`List`、`PlanTask`、`TimelineEvent` 这类结构使用 JSON 列存储，便于快速演进服务数据模型
 
+### 3.4 记忆机制明细（新增）
+
+当前记忆链路拆成两层：
+
+- 长期记忆（profile）：
+  - `MemoryModuleFacade` 负责合并 `preferences` 与 `goals`
+  - 结果持久化到 `user_profiles`
+- 记忆操作明细（memory details）：
+  - 所有关键操作写入 `request_trace_events`
+  - `GET /api/v1/profile/memory-details` 会把 profile 与最近操作明细合并返回
+
+这次补齐后，记忆不再只有“当前快照”，还可以追溯“最近是哪些操作在改变用户状态”。
+
+### 3.5 轨迹落库与查询（新增）
+
+新增轨迹仓储：
+
+- `RequestTraceRepository`
+- `DatabaseRequestTraceRepository`
+- `InMemoryRequestTraceRepository`
+
+新增持久化对象：
+
+- `RequestTraceEventEntity`（表：`request_trace_events`）
+
+`LifeOsObservabilityService.recordTraceEvent(...)` 现在会同时：
+
+1. 记录指标（Micrometer）
+2. 写入内存窗口（用于实时活跃统计）
+3. 持久化到数据库（用于按 user/session/context/trace/operation 查询）
+
+查询入口：
+
+- `GET /api/v1/system/trace-links`
+- `GET /api/v1/system/trace-links/query`
+
+两者都支持过滤参数，前端 ToB 可以直接做运维排查视图。
+
+### 3.6 登录与会话（新增）
+
+新增认证域模型与仓储：
+
+- `AuthUserAccount` / `AuthSession`
+- `AuthUserAccountRepository` / `AuthSessionRepository`
+- 对应数据库表：
+  - `auth_user_accounts`
+  - `auth_sessions`
+
+新增服务与接口：
+
+- `LifeOsAuthService`
+- `/api/v1/auth/register`
+- `/api/v1/auth/login`
+- `/api/v1/auth/me`
+- `/api/v1/auth/logout`
+
+实现要点：
+
+- 密码做 `SHA-256 + pepper`
+- session token 服务端签发并落库，可失效/可撤销
+- 前端会自动携带 `Authorization: Bearer <token>`
+- 登录后会自动切换到当前账号 `userId`，并按该账号查询记忆与轨迹
+
 ## 4. RAG 实现
 
 当前实现是“**数据库文本召回 + pgvector 可选增强**”：

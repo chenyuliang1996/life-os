@@ -25,8 +25,32 @@
 - `GET /api/v1/system/operations`
   - 返回容量、SLO、延迟与链路聚合指标（含 `activeSessions` / `activeContexts` / `recentTraceEvents`）
 - `GET /api/v1/system/trace-links?limit=20`
-  - 返回最近请求链路事件
-  - 字段包含 `operation`、`userId`、`threadId`、`sessionId`、`contextId`、`traceId`、`surface`、`durationMs`
+  - 返回最近请求链路事件（已持久化到数据库表 `request_trace_events`）
+  - 支持过滤参数：`userId`、`sessionId`、`contextId`、`traceId`、`operation`
+  - 字段包含 `timestamp`、`operation`、`userId`、`threadId`、`sessionId`、`contextId`、`traceId`、`surface`、`durationMs`
+- `GET /api/v1/system/trace-links/query?...`
+  - 与 `/trace-links` 等价，便于前端单独挂“查询”入口
+
+### 认证与登录
+
+- `POST /api/v1/auth/register`
+  - 请求体：
+    - `username`
+    - `password`
+    - `displayName`
+    - `locale`
+  - 返回 `token`、`userId`、`username`、`displayName`、`locale`、`expiresAt`
+- `POST /api/v1/auth/login`
+  - 请求体：
+    - `username`
+    - `password`
+  - 返回同上
+- `GET /api/v1/auth/me`
+  - Header：`Authorization: Bearer <token>`
+  - 返回当前登录用户与会话到期时间
+- `POST /api/v1/auth/logout`
+  - Header：`Authorization: Bearer <token>`
+  - 撤销当前 session
 
 ### 安全与 Persona
 
@@ -73,7 +97,14 @@
 ### 用户画像
 
 - `GET /api/v1/profile?userId=lifeos-user`
-- `PUT /api/v1/profile?userId=lifeos-user`
+- `PUT /api/v1/profile?userId=lifeos-user&sessionId=...&contextId=...&traceId=...&surface=toc&locale=zh-CN`
+  - 支持带链路参数，写入画像时会同步落轨迹事件
+- `GET /api/v1/profile/memory-details?userId=lifeos-user&limit=10`
+  - 返回长期记忆明细：
+    - `preferences`
+    - `goals`
+    - `summary`
+    - `recentOperations`（最近操作轨迹，来自持久化轨迹表）
 
 ### 计划与执行
 

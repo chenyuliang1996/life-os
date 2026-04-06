@@ -6,6 +6,7 @@ import io.github.yuliangchen.lifeos.domain.model.RequestTraceEvent;
 import io.github.yuliangchen.lifeos.domain.model.ServiceLevelTarget;
 import io.github.yuliangchen.lifeos.domain.model.UxTelemetryEvent;
 import io.github.yuliangchen.lifeos.domain.repository.ConfirmationRequestRepository;
+import io.github.yuliangchen.lifeos.domain.repository.RequestTraceRepository;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -27,6 +28,7 @@ public class LifeOsObservabilityService {
 
     private final MeterRegistry meterRegistry;
     private final ConfirmationRequestRepository confirmationRequestRepository;
+    private final RequestTraceRepository requestTraceRepository;
     private final ServiceLevelProperties properties;
     private final AtomicLong totalRequests;
     private final AtomicLong totalFailures;
@@ -45,9 +47,11 @@ public class LifeOsObservabilityService {
 
     public LifeOsObservabilityService(MeterRegistry meterRegistry,
                                       ConfirmationRequestRepository confirmationRequestRepository,
+                                      RequestTraceRepository requestTraceRepository,
                                       ServiceLevelProperties properties) {
         this.meterRegistry = meterRegistry;
         this.confirmationRequestRepository = confirmationRequestRepository;
+        this.requestTraceRepository = requestTraceRepository;
         this.properties = properties;
         this.totalRequests = new AtomicLong();
         this.totalFailures = new AtomicLong();
@@ -130,6 +134,19 @@ public class LifeOsObservabilityService {
         recordBackendRequest("profile.update", durationMs, success, profileUpdateTimer);
     }
 
+    public void recordProfileUpdate(long durationMs,
+                                    boolean success,
+                                    String userId,
+                                    String threadId,
+                                    String sessionId,
+                                    String contextId,
+                                    String traceId,
+                                    String surface,
+                                    String locale) {
+        recordBackendRequest("profile.update", durationMs, success, profileUpdateTimer);
+        recordTraceEvent("profile.update", userId, threadId, sessionId, contextId, traceId, surface, locale, success, durationMs);
+    }
+
     public void recordKnowledgeWrite(long durationMs, boolean success) {
         recordBackendRequest("knowledge.write", durationMs, success, knowledgeWriteTimer);
     }
@@ -159,13 +176,50 @@ public class LifeOsObservabilityService {
     }
 
     public List<RequestTraceEvent> recentTraceEvents(int limit) {
+        int normalizedLimit = Math.max(1, Math.min(limit, 500));
+        List<RequestTraceEvent> persisted = requestTraceRepository.findRecent(normalizedLimit);
+        if (!persisted.isEmpty()) {
+            return persisted;
+        }
         synchronized (traceWindowMonitor) {
             pruneTrace(System.currentTimeMillis());
             return traceWindow.stream()
                     .sorted((left, right) -> right.timestamp().compareTo(left.timestamp()))
-                    .limit(Math.max(limit, 1))
+                    .limit(normalizedLimit)
                     .toList();
         }
+    }
+
+    public List<RequestTraceEvent> queryTraceEvents(String userId,
+                                                    String sessionId,
+                                                    String contextId,
+                                                    String traceId,
+                                                    String operation,
+                                                    int limit) {
+        int normalizedLimit = Math.max(1, Math.min(limit, 500));
+        List<RequestTraceEvent> base;
+        if (isFilterValue(traceId)) {
+            base = requestTraceRepository.findRecentByTraceId(traceId, normalizedLimit);
+        } else if (isFilterValue(contextId)) {
+            base = requestTraceRepository.findRecentByContextId(contextId, normalizedLimit);
+        } else if (isFilterValue(sessionId)) {
+            base = requestTraceRepository.findRecentBySessionId(sessionId, normalizedLimit);
+        } else if (isFilterValue(userId)) {
+            base = requestTraceRepository.findRecentByUserId(userId, normalizedLimit);
+        } else if (isFilterValue(operation)) {
+            base = requestTraceRepository.findRecentByOperation(operation, normalizedLimit);
+        } else {
+            base = requestTraceRepository.findRecent(normalizedLimit);
+        }
+
+        return base.stream()
+                .filter(event -> matchesFilter(event.userId(), userId))
+                .filter(event -> matchesFilter(event.sessionId(), sessionId))
+                .filter(event -> matchesFilter(event.contextId(), contextId))
+                .filter(event -> matchesFilter(event.traceId(), traceId))
+                .filter(event -> matchesFilter(event.operation(), operation))
+                .limit(normalizedLimit)
+                .toList();
     }
 
     public OperationsSnapshot snapshot() {
@@ -275,6 +329,8 @@ public class LifeOsObservabilityService {
             }
         }
 
+        requestTraceRepository.save(event);
+
         meterRegistry.counter(
                 "lifeos.trace.event.total",
                 "operation", event.operation(),
@@ -357,6 +413,13 @@ public class LifeOsObservabilityService {
         return Math.round(value * 100.0) / 100.0;
     }
 
+    private boolean matchesFilter(String actual, String requested) {
+        if (!isFilterValue(requested)) {
+            return true;
+        }
+        return normalize(actual).equals(normalize(requested));
+    }
+
     private String buildSummary(boolean withinCapacity, boolean withinSlo, double currentQps, long pendingConfirmations) {
         if (withinCapacity && withinSlo) {
             return "Service is operating within capacity and SLO guardrails.";
@@ -372,6 +435,10 @@ public class LifeOsObservabilityService {
 
     private String normalize(String value) {
         return value == null || value.isBlank() ? "unknown" : value;
+    }
+
+    private boolean isFilterValue(String value) {
+        return value != null && !value.isBlank() && !"all".equalsIgnoreCase(value);
     }
 
     private boolean isTraceIdentifier(String value) {
