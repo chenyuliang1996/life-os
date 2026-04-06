@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -331,6 +332,23 @@ class LifeOsApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(greaterThanOrEqualTo(2)))
                 .andExpect(jsonPath("$[0].pois").isArray());
+    }
+
+    @Test
+    void shouldExposePoiCrawlerStatus() throws Exception {
+        mockMvc.perform(get("/api/v1/poi/crawler/status"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enabled").value(false))
+                .andExpect(jsonPath("$.storedTotal").exists())
+                .andExpect(jsonPath("$.storedBySource.xiaohongshu").exists());
+    }
+
+    @Test
+    void shouldAllowManualPoiCrawlerRunWhenDisabled() throws Exception {
+        mockMvc.perform(post("/api/v1/poi/crawler/run"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enabled").value(false))
+                .andExpect(jsonPath("$.lastError").value(nullValue()));
     }
 
     @Test

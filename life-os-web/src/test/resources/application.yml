@@ -20,6 +20,20 @@ lifeos:
     session-ttl-hours: 24
     password-pepper: test-pepper
     registration-enabled: true
+  poi:
+    seed-enabled: true
+    discovery-limit: 10
+    crawler:
+      enabled: false
+      schedule-enabled: true
+      schedule-cron: "0 */30 * * * *"
+      retention-days: 7
+      max-items-per-source: 10
+      request-timeout-seconds: 5
+      xiaohongshu:
+        enabled: false
+      mafengwo:
+        enabled: false
   rag:
     vector:
       enabled: false

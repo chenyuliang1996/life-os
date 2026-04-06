@@ -54,6 +54,28 @@ lifeos:
     registration-enabled: ${LIFEOS_AUTH_REGISTRATION_ENABLED:true}
   confirmation:
     enabled: true
+  poi:
+    seed-enabled: ${LIFEOS_POI_SEED_ENABLED:true}
+    discovery-limit: ${LIFEOS_POI_DISCOVERY_LIMIT:10}
+    crawler:
+      enabled: ${LIFEOS_POI_CRAWLER_ENABLED:false}
+      schedule-enabled: ${LIFEOS_POI_CRAWLER_SCHEDULE_ENABLED:true}
+      schedule-cron: ${LIFEOS_POI_CRAWLER_SCHEDULE_CRON:0 */30 * * * *}
+      retention-days: ${LIFEOS_POI_CRAWLER_RETENTION_DAYS:14}
+      max-items-per-source: ${LIFEOS_POI_CRAWLER_MAX_ITEMS_PER_SOURCE:30}
+      request-timeout-seconds: ${LIFEOS_POI_CRAWLER_TIMEOUT_SECONDS:12}
+      xiaohongshu:
+        enabled: ${LIFEOS_POI_XHS_ENABLED:false}
+        endpoint: ${LIFEOS_POI_XHS_ENDPOINT:}
+        auth-header-name: ${LIFEOS_POI_XHS_AUTH_HEADER_NAME:}
+        auth-header-value: ${LIFEOS_POI_XHS_AUTH_HEADER_VALUE:}
+        locale: ${LIFEOS_POI_XHS_LOCALE:zh-CN}
+      mafengwo:
+        enabled: ${LIFEOS_POI_MFW_ENABLED:false}
+        endpoint: ${LIFEOS_POI_MFW_ENDPOINT:}
+        auth-header-name: ${LIFEOS_POI_MFW_AUTH_HEADER_NAME:}
+        auth-header-value: ${LIFEOS_POI_MFW_AUTH_HEADER_VALUE:}
+        locale: ${LIFEOS_POI_MFW_LOCALE:zh-CN}
   rag:
     vector:
       enabled: ${LIFEOS_RAG_VECTOR_ENABLED:false}

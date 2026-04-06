@@ -26,14 +26,22 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
+/**
+ * POI 发现服务，融合种子数据、技能搜索和抓取数据源。
+ * POI discovery service combining seeded cards, skill search, and crawler sources.
+ */
 public class PoiDiscoveryService {
 
     private final ToolModuleFacade toolModuleFacade;
     private final ObjectMapper objectMapper;
+    private final PoiCrawlerService poiCrawlerService;
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     @Value("${lifeos.poi.seed-enabled:true}")
     private boolean seedEnabled;
+
+    @Value("${lifeos.poi.discovery-limit:10}")
+    private int discoveryLimit;
 
     @Value("${lifeos.poi.crawler-enabled:false}")
     private boolean crawlerEnabled;
@@ -41,15 +49,30 @@ public class PoiDiscoveryService {
     @Value("${lifeos.poi.crawler-endpoint:}")
     private String crawlerEndpoint;
 
-    public PoiDiscoveryService(ToolModuleFacade toolModuleFacade, ObjectMapper objectMapper) {
+    /**
+     * 构造 POI 发现服务。
+     * Constructs POI discovery service.
+     */
+    public PoiDiscoveryService(ToolModuleFacade toolModuleFacade,
+                              ObjectMapper objectMapper,
+                              PoiCrawlerService poiCrawlerService) {
         this.toolModuleFacade = toolModuleFacade;
         this.objectMapper = objectMapper;
+        this.poiCrawlerService = poiCrawlerService;
     }
 
+    /**
+     * 简化版 POI 发现入口。
+     * Simplified discover entry with locale and query only.
+     */
     public List<FestivalPoiCard> discover(String locale, String query) {
         return discover(locale, query, null, null, null);
     }
 
+    /**
+     * 完整版 POI 发现入口，支持多人、预算与时间窗参数。
+     * Full discover entry supporting travelers, budget, and time-window context.
+     */
     public List<FestivalPoiCard> discover(String locale,
                                           String query,
                                           String travelers,
@@ -63,15 +86,20 @@ public class PoiDiscoveryService {
         }
 
         cards.add(skillCard(resolvedLocale, query, travelers, budget, timeWindow));
+        cards.addAll(poiCrawlerService.discoverCards(resolvedLocale, query, discoveryLimit));
         cards.addAll(crawlerCards(resolvedLocale, query));
 
-        return cards.stream()
+        return deduplicateCards(cards).stream()
                 .filter(card -> card != null && card.pois() != null && !card.pois().isEmpty())
                 .sorted(Comparator.comparing(FestivalPoiCard::date))
-                .limit(10)
+                .limit(Math.max(1, discoveryLimit))
                 .toList();
     }
 
+    /**
+     * 通过技能搜索生成一张实时推荐卡片。
+     * Builds one live recommendation card from skill search output.
+     */
     private FestivalPoiCard skillCard(String locale,
                                       String query,
                                       String travelers,
@@ -136,6 +164,10 @@ public class PoiDiscoveryService {
         }
     }
 
+    /**
+     * 从抓取端点读取并转换推荐卡片。
+     * Reads crawler endpoint and converts payload into POI cards.
+     */
     private List<FestivalPoiCard> crawlerCards(String locale, String query) {
         if (!crawlerEnabled || !StringUtils.hasText(crawlerEndpoint)) {
             return List.of();
@@ -192,6 +224,10 @@ public class PoiDiscoveryService {
         }
     }
 
+    /**
+     * 返回内置种子卡片。
+     * Returns built-in seeded POI cards by locale.
+     */
     private List<FestivalPoiCard> seedCards(String locale) {
         if (locale.startsWith("zh")) {
             return List.of(
@@ -245,6 +281,10 @@ public class PoiDiscoveryService {
         );
     }
 
+    /**
+     * 从文本摘要中提取 POI 候选列表。
+     * Extracts POI candidates from search summary text.
+     */
     private List<String> extractPois(String summary, String locale) {
         if (!StringUtils.hasText(summary)) {
             return List.of();
@@ -266,6 +306,10 @@ public class PoiDiscoveryService {
         return List.of(locale.startsWith("zh") ? "热门景点推荐" : "Trending POIs");
     }
 
+    /**
+     * 归一化 locale 到 zh-CN/en-US。
+     * Normalizes locale to zh-CN or en-US.
+     */
     private String normalizeLocale(String locale) {
         if (!StringUtils.hasText(locale)) {
             return "zh-CN";
@@ -277,6 +321,10 @@ public class PoiDiscoveryService {
         return "en-US";
     }
 
+    /**
+     * 将 provider 标识映射为来源标签。
+     * Maps provider key into source label.
+     */
     private String sourceFromProvider(String provider) {
         if ("claw-skill".equalsIgnoreCase(provider)) {
             return "claw-skill";
@@ -285,5 +333,60 @@ public class PoiDiscoveryService {
             return "flyai-skill";
         }
         return "seeded";
+    }
+
+    /**
+     * 对候选卡片做去重，保留更高优先级来源。
+     * Deduplicates candidate cards and keeps higher-priority source.
+     */
+    private List<FestivalPoiCard> deduplicateCards(List<FestivalPoiCard> cards) {
+        Map<String, FestivalPoiCard> merged = new java.util.LinkedHashMap<>();
+        for (FestivalPoiCard card : cards) {
+            if (card == null) {
+                continue;
+            }
+            String key = String.join("|",
+                    safe(card.date()),
+                    safe(card.name()),
+                    safe(card.city()));
+            FestivalPoiCard existing = merged.get(key);
+            if (existing == null) {
+                merged.put(key, card);
+                continue;
+            }
+            if (priority(card.source()) > priority(existing.source())) {
+                merged.put(key, card);
+            }
+        }
+        return new ArrayList<>(merged.values());
+    }
+
+    /**
+     * 卡片来源优先级，crawler/skill 高于 seeded。
+     * Source priority for deduplication merge strategy.
+     */
+    private int priority(String source) {
+        if (!StringUtils.hasText(source)) {
+            return 0;
+        }
+        String normalized = source.toLowerCase(Locale.ROOT);
+        if (normalized.startsWith("crawler-")) {
+            return 3;
+        }
+        if (normalized.contains("skill")) {
+            return 2;
+        }
+        if ("seeded".equals(normalized)) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * 空值安全转换为去重键文本。
+     * Safely converts nullable value for dedupe key.
+     */
+    private String safe(String value) {
+        return value == null ? "" : value.trim();
     }
 }
