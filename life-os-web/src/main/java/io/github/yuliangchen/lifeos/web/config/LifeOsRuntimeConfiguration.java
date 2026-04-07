@@ -14,14 +14,26 @@ import java.nio.file.Path;
         LifeOsRuntimeConfiguration.LifeOsStorageProperties.class,
         LifeOsRuntimeConfiguration.LifeOsArchitectureProperties.class
 })
+/**
+ * Web 运行时配置，注册会话存储与系统架构状态 Bean。
+ * Web runtime configuration registering session storage and architecture status beans.
+ */
 public class LifeOsRuntimeConfiguration {
 
     @Bean
+    /**
+     * 构建 AgentScope JsonSession。
+     * Builds AgentScope JsonSession store.
+     */
     JsonSession jsonSession(LifeOsStorageProperties properties) {
         return new JsonSession(Path.of(properties.sessionStorageDir()));
     }
 
     @Bean
+    /**
+     * 构建系统架构状态快照对象。
+     * Builds system architecture status snapshot bean.
+     */
     SystemArchitectureStatus systemArchitectureStatus(LifeOsArchitectureProperties properties,
                                                       LifeOsStorageProperties storageProperties) {
         return new SystemArchitectureStatus(
@@ -38,8 +50,16 @@ public class LifeOsRuntimeConfiguration {
     }
 
     @ConfigurationProperties(prefix = "lifeos")
+    /**
+     * 存储相关配置。
+     * Storage-related configuration properties.
+     */
     public record LifeOsStorageProperties(String sessionStorageDir) {
 
+        /**
+         * 设置默认会话目录。
+         * Applies default session storage directory.
+         */
         public LifeOsStorageProperties {
             if (sessionStorageDir == null || sessionStorageDir.isBlank()) {
                 sessionStorageDir = ".data/sessions";
@@ -48,6 +68,10 @@ public class LifeOsRuntimeConfiguration {
     }
 
     @ConfigurationProperties(prefix = "lifeos.architecture")
+    /**
+     * 架构与拓扑展示配置。
+     * Architecture and topology presentation properties.
+     */
     public record LifeOsArchitectureProperties(
             String deploymentMode,
             String persistenceMode,
@@ -59,6 +83,10 @@ public class LifeOsRuntimeConfiguration {
             String travelSpecialist
     ) {
 
+        /**
+         * 应用架构配置默认值。
+         * Applies default values for architecture presentation fields.
+         */
         public LifeOsArchitectureProperties {
             if (deploymentMode == null || deploymentMode.isBlank()) {
                 deploymentMode = "single-node";
@@ -79,7 +107,7 @@ public class LifeOsRuntimeConfiguration {
                 topology = "modular-monolith-ready-for-cluster";
             }
             if (travelSearch == null || travelSearch.isBlank()) {
-                travelSearch = "claw-skill-plus-flyai-plus-seeded-fallback";
+                travelSearch = "intent-router-plus-flyai-cli-with-fallback";
             }
             if (travelSpecialist == null || travelSpecialist.isBlank()) {
                 travelSpecialist = "local-travel-agent-plus-optional-a2a";

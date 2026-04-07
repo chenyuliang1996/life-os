@@ -89,7 +89,7 @@ class LifeOsApplicationTests {
                 .andExpect(jsonPath("$.deploymentMode").value("single-node"))
                 .andExpect(jsonPath("$.persistenceMode").value("database"))
                 .andExpect(jsonPath("$.database").value("h2-file"))
-                .andExpect(jsonPath("$.travelSearch").value("claw-skill-plus-flyai-plus-seeded-fallback"))
+                .andExpect(jsonPath("$.travelSearch").value("intent-router-plus-flyai-cli-with-fallback"))
                 .andExpect(jsonPath("$.travelSpecialist").value("local-travel-agent-plus-optional-a2a"));
     }
 

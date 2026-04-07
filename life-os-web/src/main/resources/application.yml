@@ -95,12 +95,17 @@ lifeos:
       ollama-base-url: ${OLLAMA_BASE_URL:}
   flyai:
     enabled: ${LIFEOS_FLYAI_ENABLED:false}
+    mode: ${LIFEOS_FLYAI_MODE:hybrid}
     transport: ${LIFEOS_FLYAI_TRANSPORT:sse}
     endpoint: ${LIFEOS_FLYAI_ENDPOINT:}
     tool-name: ${LIFEOS_FLYAI_TOOL_NAME:}
     auth-header-name: ${LIFEOS_FLYAI_AUTH_HEADER_NAME:}
     auth-header-value: ${LIFEOS_FLYAI_AUTH_HEADER_VALUE:}
     timeout-seconds: ${LIFEOS_FLYAI_TIMEOUT_SECONDS:20}
+    cli-enabled: ${LIFEOS_FLYAI_CLI_ENABLED:false}
+    cli-command: ${LIFEOS_FLYAI_CLI_COMMAND:flyai}
+    cli-working-directory: ${LIFEOS_FLYAI_CLI_WORKING_DIRECTORY:}
+    cli-timeout-seconds: ${LIFEOS_FLYAI_CLI_TIMEOUT_SECONDS:18}
   claw:
     enabled: ${LIFEOS_CLAW_ENABLED:false}
     transport: ${LIFEOS_CLAW_TRANSPORT:sse}
@@ -124,7 +129,7 @@ lifeos:
     rag-store: ${LIFEOS_RAG_STORE:hybrid-text-plus-pgvector-ready}
     session-store: ${LIFEOS_SESSION_STORE:json-session}
     topology: ${LIFEOS_TOPOLOGY:modular-monolith-ready-for-cluster}
-    travel-search: ${LIFEOS_TRAVEL_SEARCH:claw-skill-plus-flyai-plus-seeded-fallback}
+    travel-search: ${LIFEOS_TRAVEL_SEARCH:intent-router-plus-flyai-cli-with-fallback}
     travel-specialist: ${LIFEOS_TRAVEL_SPECIALIST:local-travel-agent-plus-optional-a2a}
   runtime:
     openai-api-key: ${OPENAI_API_KEY:}

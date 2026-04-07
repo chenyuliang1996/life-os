@@ -4413,7 +4413,7 @@ function renderSequence() {
   const festival = state.festivalFeed[state.festivalIndex];
   const plannedDays = Object.keys(state.dayPlans).length;
   const hasGroup = state.groupMembers.length > 0;
-  const searchMode = connectorSummary("search", state.architecture?.travelSearch || "claw-skill-plus-flyai-plus-seeded-fallback");
+  const searchMode = connectorSummary("search", state.architecture?.travelSearch || "intent-router-plus-flyai-cli-with-fallback");
   const approvalState = state.confirmationCount > 0 ? t("sequence.hitlWaiting") : t("sequence.hitlClear");
 
   const steps = [
@@ -4892,7 +4892,7 @@ function formatPolicyReason(policy) {
 function formatConnectorSummary(connector) {
   const mappings = {
     search: connector.enabled
-      ? (isChineseLocale() ? "旅行搜索聚合连接器已启用（Claw -> FlyAI -> 种子回退）。" : "Unified travel search is active (Claw -> FlyAI -> seeded fallback).")
+      ? (isChineseLocale() ? "旅行检索路由已启用（普通问答走核心模型，旅行走 FlyAI 并带回退链路）。" : "Intent-routed search is active (general QA to core model, travel to FlyAI with fallback chain).")
       : (isChineseLocale() ? "旅行搜索聚合连接器当前不可用。" : "Unified travel search is currently unavailable."),
     "claw-skill-search": connector.enabled
       ? (isChineseLocale() ? "Claw Skill 搜索已接入，可优先提供实时 POI 与节日灵感。" : "Claw skill search is connected and serves as the primary live POI source.")
@@ -4958,7 +4958,10 @@ function formatArchitectureValue(key, value) {
       "seeded-search-plus-optional-flyai": isChineseLocale() ? "内置知识检索 + 可选 FlyAI 实时搜索" : "Seeded retrieval with optional FlyAI live search",
       "claw-skill-plus-flyai-plus-seeded-fallback": isChineseLocale()
         ? "Claw Skill 优先 + FlyAI 补充 + 种子知识回退"
-        : "Claw skill first, FlyAI secondary, seeded fallback"
+        : "Claw skill first, FlyAI secondary, seeded fallback",
+      "intent-router-plus-flyai-cli-with-fallback": isChineseLocale()
+        ? "意图路由 + FlyAI CLI 本地服务层 + 分级回退链路"
+        : "Intent router + FlyAI CLI local service layer + tiered fallback chain"
     },
     "architecture.travelSpecialist": {
       "local-travel-agent-plus-optional-a2a": isChineseLocale() ? "本地旅行专家 + 可选 A2A 远程专家" : "Local travel specialist with optional A2A remote advisor"
