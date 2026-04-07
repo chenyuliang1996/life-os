@@ -1,0 +1,600 @@
+(() => {
+  const root = document.getElementById("react-root");
+  if (!root || !window.React || !window.ReactDOM) {
+    return;
+  }
+
+  const locale = (document.body.dataset.defaultLocale || "zh-CN").toLowerCase();
+  const zhActive = locale.startsWith("zh") ? "is-active" : "";
+  const enActive = locale.startsWith("zh") ? "" : "is-active";
+
+  const markup = `
+<div class="page-shell">
+    <div class="ambient ambient-a" aria-hidden="true"></div>
+    <div class="ambient ambient-b" aria-hidden="true"></div>
+
+    <header class="topbar">
+        <p class="eyebrow" data-i18n="topbar.badge">OtterLife Service Platform</p>
+        <div class="topbar-actions">
+            <div class="surface-switch" aria-label="Surface switch">
+                <button type="button" class="surface-pill is-active" data-surface-target="toc" data-i18n="topbar.surfaceToc">ToC 体验</button>
+                <button type="button" class="surface-pill" data-surface-target="tob" data-i18n="topbar.surfaceTob">ToB 观测</button>
+            </div>
+            <div class="toc-density-switch" data-surface="toc" aria-label="ToC density switch">
+                <button type="button" class="density-pill is-active" data-density-target="focus" data-i18n="topbar.tocFocus">聚焦模式</button>
+                <button type="button" class="density-pill" data-density-target="studio" data-i18n="topbar.tocStudio">全功能</button>
+            </div>
+            <nav class="locale-switch" aria-label="Language switch">
+                <a href="/" class="locale-pill __ZH_ACTIVE__">中文</a>
+                <a href="/en/index.html" class="locale-pill __EN_ACTIVE__">English</a>
+            </nav>
+            <div class="topbar-auth">
+                <button id="auth-entry" type="button" class="auth-entry" data-auth-open="login">
+                    <span id="auth-entry-name" data-i18n="actions.login">登录</span>
+                    <small id="auth-entry-meta" data-i18n="state.authGuestShort">未登录</small>
+                </button>
+                <button id="topbar-logout" type="button" class="secondary topbar-logout" data-i18n="actions.logout">退出</button>
+            </div>
+        </div>
+    </header>
+
+    <header class="hero hero-intro" data-surface="toc">
+        <div class="hero-copy">
+            <h1 data-i18n="hero.title">OtterLife</h1>
+            <p class="subtitle" data-i18n="hero.subtitle">面向真实用户的出行与生活协同服务，统一承接节日灵感、行程规划、多人协作与执行闭环。</p>
+            <div class="hero-badges" aria-label="Product highlights">
+                <span class="hero-badge" data-i18n="hero.badgeRag">Hybrid RAG</span>
+                <span class="hero-badge" data-i18n="hero.badgeSearch">Claw + FlyAI Search</span>
+                <span class="hero-badge" data-i18n="hero.badgeA2a">A2A Travel</span>
+            </div>
+        </div>
+        <div class="hero-rail">
+            <article class="hero-rail-card">
+                <span data-i18n="sections.sequence.pill">Journey</span>
+                <strong data-i18n="sections.sequence.title">用户动线引导</strong>
+                <small data-i18n="sequence.actionDraft">先在任务控制台输入目标，或选择节日 POI 自动填入。</small>
+            </article>
+            <article class="hero-rail-card">
+                <span data-i18n="sections.calendar.pill">Calendar</span>
+                <strong data-i18n="sections.calendar.title">行程日历</strong>
+                <small data-i18n="calendar.sheet.subtitle">快速记录今天重点、节奏和注意事项。</small>
+            </article>
+        </div>
+    </header>
+
+    <header class="hero hero-ops" data-surface="tob">
+        <div class="hero-copy">
+            <h1 data-i18n="topbar.surfaceTob">ToB 观测</h1>
+            <p class="subtitle" data-i18n="sections.operations.subtitle">基于真实请求、审批和前端体验埋点汇总容量、可靠性与体验指标。</p>
+        </div>
+        <div class="hero-panel">
+            <div class="metric">
+                <span class="metric-label" data-i18n="metrics.targetDau">DAU 目标</span>
+                <strong id="target-dau">200k</strong>
+            </div>
+            <div class="metric">
+                <span class="metric-label" data-i18n="metrics.currentQps">当前 QPS</span>
+                <strong id="current-qps">0.0</strong>
+            </div>
+            <div class="metric">
+                <span class="metric-label" data-i18n="metrics.successRate">成功率</span>
+                <strong id="success-rate">100%</strong>
+            </div>
+            <div class="metric">
+                <span class="metric-label" data-i18n="metrics.assistantP95">助手 P95</span>
+                <strong id="assistant-p95">0ms</strong>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-grid">
+        <section id="section-control" class="card full mission-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.control.title">任务控制台</h2>
+                    <p class="section-subtitle" data-i18n="sections.control.subtitle">统一入口，触发规划、运行助手、查看结构化输出。</p>
+                </div>
+                <span class="pill" data-i18n="sections.control.pill">编排流</span>
+            </div>
+            <div class="mission-grid">
+                <div class="mission-main">
+                    <label for="plan-input" data-i18n="fields.prompt">提示词</label>
+                    <textarea id="plan-input">本周末两天一夜周边游，交通尽量地铁可达，预算友好，晚上保留轻松散步时间。</textarea>
+                    <div class="prompt-template-strip">
+                        <span class="prompt-template-label" data-i18n="fields.quickStart">快速开始</span>
+                        <button type="button" class="template-chip" data-prompt-template-zh="安排清明后第一个周末两天一夜短途游，地铁可达，预算 1500。" data-prompt-template-en="Plan a two-day weekend city break after Qingming, metro-friendly, budget 1500.">Weekend</button>
+                        <button type="button" class="template-chip" data-prompt-template-zh="五一三人同行，1 位亲子、1 位美食、1 位拍照，生成平衡行程。" data-prompt-template-en="Three-person Labor Day trip: family-friendly, foodie, and photo-focused. Build a balanced itinerary.">Group</button>
+                        <button type="button" class="template-chip" data-prompt-template-zh="端午假期想要低体力路线，白天逛展，夜间轻散步。" data-prompt-template-en="Dragon Boat holiday with low-fatigue plan: exhibitions by day and easy evening walks.">Low Fatigue</button>
+                    </div>
+                    <div class="hero-actions mission-actions">
+                        <button id="run-preview" class="primary" data-i18n="hero.runPreview">生成可执行方案</button>
+                        <button id="run-agent" class="secondary" data-i18n="hero.runAssistant">运行助手</button>
+                        <button id="reload-data" class="secondary" data-i18n="hero.refresh">刷新数据</button>
+                    </div>
+                </div>
+                <aside class="mission-side">
+                    <div class="form-row">
+                        <div>
+                            <label for="user-id" data-i18n="fields.userId">用户 ID</label>
+                            <input id="user-id" type="text" value="persona-travel" placeholder="persona-travel">
+                        </div>
+                        <div>
+                            <label for="thread-id" data-i18n="fields.threadId">线程 ID</label>
+                            <input id="thread-id" type="text" value="thread-travel-primary" placeholder="thread-travel-primary">
+                        </div>
+                    </div>
+                    <div class="mission-account-row">
+                        <button id="mission-auth-open" class="secondary" type="button" data-auth-open="login" data-i18n="actions.loginOrRegister">登录 / 注册</button>
+                    </div>
+                    <div id="auth-status" class="result-strip" data-i18n="state.authGuest">当前未登录，可注册或登录后启用用户级记忆与轨迹。</div>
+                    <div id="context-strip" class="context-strip"></div>
+                    <div id="runtime-hint" class="result-strip" data-i18n="state.runtimeUnknown">运行时状态加载中...</div>
+                    <div class="result-strip" id="preview-summary" data-i18n="state.previewIdle">点击“生成可执行方案”开始规划。</div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="card full hub-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.hub.title">行程主线</h2>
+                    <p class="section-subtitle" data-i18n="sections.hub.subtitle">把灵感、日历、多人偏好和执行合成一条连续操作主线。</p>
+                </div>
+                <span class="pill" data-i18n="sections.hub.pill">Journey Hub</span>
+            </div>
+            <div id="journey-hub" class="hub-surface"></div>
+        </section>
+
+        <section id="section-sequence" class="card full sequence-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.sequence.title">用户动线引导</h2>
+                    <p class="section-subtitle" data-i18n="sections.sequence.subtitle">告诉用户“下一步做什么”，把规划、确认和执行变成可理解的操作路径。</p>
+                </div>
+                <span class="pill" data-i18n="sections.sequence.pill">Journey</span>
+            </div>
+            <div id="sequence-view" class="sequence-rail"></div>
+        </section>
+
+        <section id="section-calendar" class="card wide calendar-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.calendar.title">行程日历</h2>
+                    <p class="section-subtitle" data-i18n="sections.calendar.subtitle">默认月视图，可切换年/日；点击日期可直接修改每日规划。</p>
+                </div>
+                <span class="pill" data-i18n="sections.calendar.pill">Calendar</span>
+            </div>
+            <div class="calendar-toolbar">
+                <div class="calendar-view-switch">
+                    <button id="calendar-view-month" class="secondary" type="button" data-calendar-view="month" data-i18n="calendar.view.month">月</button>
+                    <button id="calendar-view-year" class="secondary" type="button" data-calendar-view="year" data-i18n="calendar.view.year">年</button>
+                    <button id="calendar-view-day" class="secondary" type="button" data-calendar-view="day" data-i18n="calendar.view.day">日</button>
+                    <button id="calendar-multi-toggle" class="secondary" type="button" data-i18n="actions.multiDayMode">多天模式</button>
+                </div>
+                <div class="calendar-nav">
+                    <button id="calendar-prev" class="secondary" type="button" data-i18n="actions.prev">上一个</button>
+                    <strong id="calendar-range-label">-</strong>
+                    <button id="calendar-next" class="secondary" type="button" data-i18n="actions.next">下一个</button>
+                </div>
+            </div>
+            <div id="calendar-view" class="calendar-surface"></div>
+            <div id="calendar-detail" class="calendar-detail"></div>
+        </section>
+
+        <section id="section-map" class="card wide map-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.map.title">行程轨迹地图</h2>
+                    <p class="section-subtitle" data-i18n="sections.map.subtitle">点击节点查看路径、周边景点和美食；可放大后基于地图重新规划路径。</p>
+                </div>
+                <span class="pill" data-i18n="sections.map.pill">Route Map</span>
+            </div>
+            <div class="map-toolbar">
+                <button id="map-plan-route" class="secondary" type="button" data-i18n="actions.planRoute">路径规划</button>
+                <button id="map-open-lightbox" class="primary" type="button" data-i18n="actions.expandMap">放大地图</button>
+            </div>
+            <div id="trip-map" class="trip-map"></div>
+            <div id="map-detail" class="map-detail"></div>
+        </section>
+
+        <section id="section-festival" class="card wide festival-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.festivals.title">近期节日灵感</h2>
+                    <p class="section-subtitle" data-i18n="sections.festivals.subtitle">根据近期节日推荐可玩 POI，并自动轮播刷新。</p>
+                </div>
+                <span class="pill" data-i18n="sections.festivals.pill">POI Feed</span>
+            </div>
+            <div class="festival-filter-bar">
+                <button id="festival-detect-location" class="secondary festival-location-button" type="button" data-i18n="actions.detectLocation">使用当前位置</button>
+                <span id="festival-location-label" class="festival-location-label" data-i18n="state.locationUnknown">定位未开启</span>
+                <div class="festival-scope-switch">
+                    <button type="button" class="secondary is-active" data-festival-scope="nearby" data-i18n="actions.useNearbyTrip">周边游</button>
+                    <button type="button" class="secondary" data-festival-scope="holiday" data-i18n="actions.useHolidayTrip">邻近节假日热门景点游</button>
+                    <button type="button" class="secondary" data-festival-scope="overseas" data-i18n="actions.useOverseasTrip">出国游</button>
+                </div>
+            </div>
+            <div id="festival-view" class="festival-stage"></div>
+        </section>
+
+        <section id="section-cost" class="card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.cost.title">费用明细</h2>
+                    <p class="section-subtitle" data-i18n="sections.cost.subtitle">按当前行程天数、人数与出行模式动态估算成本结构。</p>
+                </div>
+                <span class="pill" data-i18n="sections.cost.pill">Cost</span>
+            </div>
+            <div id="cost-view" class="list-stack"></div>
+        </section>
+
+        <section id="section-group" class="card group-card" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.group.title">多人出行协同</h2>
+                    <p class="section-subtitle" data-i18n="sections.group.subtitle">添加同行成员和偏好，自动生成兼顾多人诉求的规划上下文。</p>
+                </div>
+                <span class="pill" data-i18n="sections.group.pill">Group Trip</span>
+            </div>
+            <div class="group-form">
+                <div>
+                    <label for="group-member-name" data-i18n="fields.memberName">成员名称</label>
+                    <input id="group-member-name" type="text" placeholder="Alicia">
+                </div>
+                <div>
+                    <label for="group-member-style" data-i18n="fields.memberStyle">偏好类型</label>
+                    <select id="group-member-style">
+                        <option value="culture" data-i18n="group.style.culture">文化体验</option>
+                        <option value="food" data-i18n="group.style.food">美食探索</option>
+                        <option value="family" data-i18n="group.style.family">亲子友好</option>
+                        <option value="photo" data-i18n="group.style.photo">拍照打卡</option>
+                        <option value="night" data-i18n="group.style.night">夜间活动</option>
+                    </select>
+                </div>
+            </div>
+            <div class="hero-actions compact">
+                <button id="group-add-member" class="secondary" type="button" data-i18n="actions.addMember">添加成员</button>
+                <button id="group-apply-context" class="primary" type="button" data-i18n="actions.applyGroupContext">应用多人偏好</button>
+            </div>
+            <div id="group-members-view" class="group-members"></div>
+            <div id="group-summary" class="result-strip" data-i18n="state.groupEmpty">暂无同行成员，默认按单人出行规划。</div>
+        </section>
+
+        <section id="section-persona" class="card" data-surface="toc" data-toc-tier="secondary">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.personas.title">MBTI 人格场景</h2>
+                    <p class="section-subtitle" data-i18n="sections.personas.subtitle">按 MBTI 人格切换真实用户画像，快速验证不同决策风格下的服务表现。</p>
+                </div>
+                <span class="pill" data-i18n="sections.personas.pill">MBTI</span>
+            </div>
+            <div id="persona-view" class="persona-panel"></div>
+        </section>
+
+        <section class="card wide" data-surface="toc">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.plan.title">计划输出</h2>
+                    <p class="section-subtitle" data-i18n="sections.plan.subtitle">结构化展示当前生成的多 Agent 计划卡片。</p>
+                </div>
+                <span class="pill" data-i18n="sections.plan.pill">Structured</span>
+            </div>
+            <div id="plan-view" class="plan-grid">
+                <div class="empty-state" data-i18n="state.planIdle">计划卡片会显示在这里。</div>
+            </div>
+        </section>
+
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.assistant.title">助手回复</h2>
+                    <p class="section-subtitle" data-i18n="sections.assistant.subtitle">展示当前回复、亮点摘要以及运行模式。</p>
+                </div>
+                <span class="pill" data-i18n="sections.assistant.pill">Live Output</span>
+            </div>
+            <div id="assistant-view" class="empty-state" data-i18n="state.assistantIdle">运行助手后，这里会显示最新回复。</div>
+        </section>
+
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.guardrails.title">用户护栏</h2>
+                    <p class="section-subtitle" data-i18n="sections.guardrails.subtitle">展示当前身份的信任级别、写入审批和外部连接限制。</p>
+                </div>
+                <span class="pill" data-i18n="sections.guardrails.pill">Safety</span>
+            </div>
+            <div id="guardrail-view" class="list-stack"></div>
+        </section>
+
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.confirmations.title">待确认动作</h2>
+                    <p class="section-subtitle" data-i18n="sections.confirmations.subtitle">写入外部系统前统一经过人工确认。</p>
+                </div>
+                <span class="pill" data-i18n="sections.confirmations.pill">Human Loop</span>
+            </div>
+            <div id="confirmations-view" class="list-stack capped"></div>
+        </section>
+
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.history.title">计划历史</h2>
+                    <p class="section-subtitle" data-i18n="sections.history.subtitle">数据库持久化后的历史计划。</p>
+                </div>
+                <span class="pill" data-i18n="sections.history.pill">Stored Plans</span>
+            </div>
+            <div id="plans-view" class="list-stack capped"></div>
+        </section>
+
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.profile.title">用户画像</h2>
+                    <p class="section-subtitle" data-i18n="sections.profile.subtitle">查看和编辑长期记忆中的偏好。</p>
+                </div>
+                <span class="pill" data-i18n="sections.profile.pill">Memory</span>
+            </div>
+            <label for="travel-style" data-i18n="fields.travelStyle">旅行风格</label>
+            <input id="travel-style" type="text" value="relaxed">
+            <label for="budget-level" data-i18n="fields.budgetLevel">预算等级</label>
+            <input id="budget-level" type="text" value="medium">
+            <label for="study-goal" data-i18n="fields.studyGoal">学习目标</label>
+            <input id="study-goal" type="text" value="english">
+            <div class="hero-actions compact">
+                <button id="save-profile" class="primary" data-i18n="actions.saveProfile">保存画像</button>
+            </div>
+            <div id="memory-summary" class="result-strip"></div>
+            <div id="memory-ops-view" class="list-stack capped"></div>
+            <pre id="profile-view" class="code-box"></pre>
+        </section>
+
+        <section class="card" data-surface="toc" data-toc-tier="secondary">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.knowledge.title">知识库</h2>
+                    <p class="section-subtitle" data-i18n="sections.knowledge.subtitle">持久化文档进入混合 RAG 层，支持 PostgreSQL + pgvector，并可叠加 Claw Skill 与 FlyAI 旅行搜索。</p>
+                </div>
+                <span class="pill" data-i18n="sections.knowledge.pill">RAG Seeds</span>
+            </div>
+            <label for="knowledge-title" data-i18n="fields.knowledgeTitle">标题</label>
+            <input id="knowledge-title" type="text" placeholder="东京低疲劳路线">
+            <label for="knowledge-tags" data-i18n="fields.knowledgeTags">标签</label>
+            <input id="knowledge-tags" type="text" placeholder="travel,tokyo">
+            <label for="knowledge-summary" data-i18n="fields.knowledgeSummary">摘要</label>
+            <textarea id="knowledge-summary">以片区游玩为主的东京路线建议，减少每天换乘次数。</textarea>
+            <label for="knowledge-content" data-i18n="fields.knowledgeContent">正文</label>
+            <textarea id="knowledge-content">建议按上野、浅草、银座、代官山等片区安排行程，每天下午留恢复窗口。</textarea>
+            <div class="hero-actions compact">
+                <button id="add-knowledge" class="primary" data-i18n="actions.addKnowledge">新增知识</button>
+            </div>
+            <div id="knowledge-view" class="list-stack"></div>
+        </section>
+
+        <section class="card" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.runtime.title">运行时状态</h2>
+                    <p class="section-subtitle" data-i18n="sections.runtime.subtitle">确认当前是 deterministic fallback 还是 AgentScope ReAct 实时运行。</p>
+                </div>
+                <span class="pill" data-i18n="sections.runtime.pill">AgentScope</span>
+            </div>
+            <div id="runtime-view" class="list-stack"></div>
+        </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.operations.title">服务指标</h2>
+                    <p class="section-subtitle" data-i18n="sections.operations.subtitle">基于真实请求、审批和前端体验埋点汇总容量、可靠性与体验指标。</p>
+                </div>
+                <span class="pill" data-i18n="sections.operations.pill">SLO</span>
+            </div>
+            <div id="operations-view" class="ops-grid"></div>
+        </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.trace.title">链路观测</h2>
+                    <p class="section-subtitle" data-i18n="sections.trace.subtitle">按 session / context / trace 关联用户请求和前端交互。</p>
+                </div>
+                <span class="pill" data-i18n="sections.trace.pill">Trace Lens</span>
+            </div>
+            <div class="trace-filter-grid">
+                <input id="trace-filter-user" type="text" data-i18n-placeholder="fields.traceUserFilter" placeholder="按用户筛选">
+                <input id="trace-filter-session" type="text" data-i18n-placeholder="fields.traceSessionFilter" placeholder="按会话筛选">
+                <input id="trace-filter-context" type="text" data-i18n-placeholder="fields.traceContextFilter" placeholder="按上下文筛选">
+                <input id="trace-filter-trace" type="text" data-i18n-placeholder="fields.traceIdFilter" placeholder="按链路筛选">
+                <input id="trace-filter-operation" type="text" data-i18n-placeholder="fields.traceOperationFilter" placeholder="按操作筛选">
+            </div>
+            <div class="hero-actions compact">
+                <button id="trace-filter-apply" class="secondary" type="button" data-i18n="actions.applyFilter">应用筛选</button>
+                <button id="trace-filter-reset" class="secondary" type="button" data-i18n="actions.resetFilter">重置筛选</button>
+            </div>
+            <div id="trace-view" class="list-stack"></div>
+        </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.security.title">安全控制</h2>
+                    <p class="section-subtitle" data-i18n="sections.security.subtitle">查看当前身份的信任状态、工具权限和外呼白名单。</p>
+                </div>
+                <span class="pill" data-i18n="sections.security.pill">Guardrail</span>
+            </div>
+            <div id="security-view" class="security-grid"></div>
+        </section>
+
+        <section class="card" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.arch.title">部署架构</h2>
+                    <p class="section-subtitle" data-i18n="sections.arch.subtitle">展示当前部署模式、数据库、RAG 存储与会话策略。</p>
+                </div>
+                <span class="pill" data-i18n="sections.arch.pill">Cluster</span>
+            </div>
+            <div id="architecture-view" class="chip-list"></div>
+        </section>
+
+        <section class="card" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.rag.title">RAG 运行态</h2>
+                    <p class="section-subtitle" data-i18n="sections.rag.subtitle">展示当前是否启用了向量检索、采用什么 embedding provider，以及当前检索模式。</p>
+                </div>
+                <span class="pill" data-i18n="sections.rag.pill">Semantic</span>
+            </div>
+            <div id="rag-view" class="list-stack"></div>
+        </section>
+
+        <section class="card" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.timeline.title">执行时间线</h2>
+                    <p class="section-subtitle" data-i18n="sections.timeline.subtitle">查看主控 Agent 和子 Agent 的执行轨迹。</p>
+                </div>
+                <span class="pill" data-i18n="sections.timeline.pill">Execution</span>
+            </div>
+            <div id="timeline-view" class="list-stack"></div>
+        </section>
+
+        <section class="card" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.modules.title">模块执行入口</h2>
+                    <p class="section-subtitle" data-i18n="sections.modules.subtitle">验证每个模块都具备独立执行能力。</p>
+                </div>
+                <span class="pill" data-i18n="sections.modules.pill">Executable</span>
+            </div>
+            <div id="module-list" class="list-stack capped"></div>
+        </section>
+
+        <section class="card" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.connectors.title">连接器</h2>
+                    <p class="section-subtitle" data-i18n="sections.connectors.subtitle">展示工具层可用能力。</p>
+                </div>
+                <span class="pill" data-i18n="sections.connectors.pill">Tools</span>
+            </div>
+            <div id="connectors-view" class="list-stack capped"></div>
+        </section>
+
+        <section class="card wide" data-surface="tob">
+            <div class="section-head">
+                <div>
+                    <h2 data-i18n="sections.audit.title">审计流水</h2>
+                    <p class="section-subtitle" data-i18n="sections.audit.subtitle">记录计划、审批、画像更新和知识写入等关键操作。</p>
+                </div>
+                <span class="pill" data-i18n="sections.audit.pill">Audit</span>
+            </div>
+            <div id="audit-view" class="list-stack capped"></div>
+        </section>
+    </main>
+</div>
+
+<div id="day-plan-sheet" class="sheet-overlay" hidden>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="day-plan-title">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="sheet-head">
+            <div>
+                <h3 id="day-plan-title" data-i18n="calendar.sheet.title">编辑当天规划</h3>
+                <p class="sheet-subtitle" data-i18n="calendar.sheet.subtitle">快速记录今天重点、节奏和注意事项。</p>
+            </div>
+            <button id="day-plan-close" type="button" class="secondary" data-i18n="actions.close">关闭</button>
+        </div>
+        <p id="day-plan-date" class="sheet-date">-</p>
+        <div id="day-plan-quick" class="sheet-quick"></div>
+        <textarea id="day-plan-input" data-i18n-placeholder="calendar.sheet.placeholder" placeholder="安排重点活动、时段和注意事项"></textarea>
+        <div class="sheet-meta">
+            <span id="day-plan-length">0</span>
+        </div>
+        <div class="sheet-actions">
+            <button id="day-plan-cancel" type="button" class="secondary" data-i18n="actions.cancel">取消</button>
+            <button id="day-plan-clear" type="button" class="secondary" data-i18n="actions.clearDayPlan">清空当天规划</button>
+            <button id="day-plan-save" type="button" class="primary" data-i18n="actions.saveDayPlan">保存当天规划</button>
+        </div>
+    </div>
+</div>
+
+<div id="map-lightbox" class="map-lightbox" hidden>
+    <div class="map-lightbox-panel" role="dialog" aria-modal="true" aria-labelledby="map-lightbox-title">
+        <div class="map-lightbox-head">
+            <div>
+                <h3 id="map-lightbox-title" data-i18n="sections.map.title">行程轨迹地图</h3>
+                <p class="sheet-subtitle" data-i18n="sections.map.subtitle">点击节点查看路径、周边景点和美食；可放大后基于地图重新规划路径。</p>
+            </div>
+            <div class="hero-actions compact">
+                <button id="map-lightbox-plan" class="secondary" type="button" data-i18n="actions.planRoute">路径规划</button>
+                <button id="map-lightbox-close" class="secondary" type="button" data-i18n="actions.close">关闭</button>
+            </div>
+        </div>
+        <div class="map-lightbox-content">
+            <div id="map-lightbox-map" class="trip-map is-expanded"></div>
+            <div id="map-lightbox-detail" class="map-detail"></div>
+        </div>
+    </div>
+</div>
+
+<div id="auth-modal" class="auth-modal" hidden>
+    <canvas id="auth-particle-canvas" class="auth-particle-canvas"></canvas>
+    <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+        <div class="auth-modal-head">
+            <div>
+                <h3 id="auth-modal-title" data-i18n="auth.modal.title">账号连接</h3>
+                <p id="auth-modal-hint" class="sheet-subtitle" data-i18n="auth.modal.subtitle">登录后可保存记忆、同步轨迹与个性化规划。</p>
+            </div>
+            <button id="auth-modal-close" type="button" class="secondary" data-i18n="actions.close">关闭</button>
+        </div>
+        <div class="auth-mode-switch">
+            <button id="auth-mode-login" type="button" class="secondary is-active" data-auth-mode="login" data-i18n="actions.login">登录</button>
+            <button id="auth-mode-register" type="button" class="secondary" data-auth-mode="register" data-i18n="actions.register">注册</button>
+        </div>
+        <div class="auth-inline">
+            <div>
+                <label for="auth-username" data-i18n="fields.authUsername">登录名</label>
+                <input id="auth-username" type="text" placeholder="demo-user">
+            </div>
+            <div>
+                <label for="auth-password" data-i18n="fields.authPassword">密码</label>
+                <div class="password-field">
+                    <input id="auth-password" type="password" placeholder="******">
+                    <button id="auth-password-toggle" type="button" class="secondary password-toggle" aria-label="显示">显示</button>
+                </div>
+            </div>
+        </div>
+        <div class="auth-utility-row">
+            <label class="remember-check" for="auth-remember">
+                <input id="auth-remember" type="checkbox" checked>
+                <span data-i18n="actions.rememberUsername">记住登录名</span>
+            </label>
+            <div class="hero-actions compact auth-actions">
+                <button id="auth-register" class="secondary" type="button" data-i18n="actions.register">注册</button>
+                <button id="auth-login" class="primary" type="button" data-i18n="actions.login">登录</button>
+                <button id="auth-logout" class="secondary" type="button" data-i18n="actions.logout">退出</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="h5-actionbar" data-surface="toc">
+    <button id="h5-run-preview" class="primary" data-i18n="hero.runPreview">生成可执行方案</button>
+    <button id="h5-run-agent" class="secondary" data-i18n="hero.runAssistant">运行助手</button>
+</div>
+`
+    .replace("__ZH_ACTIVE__", zhActive)
+    .replace("__EN_ACTIVE__", enActive);
+
+  const app = window.React.createElement("div", {
+    className: "react-surface",
+    dangerouslySetInnerHTML: { __html: markup }
+  });
+
+  if (typeof window.ReactDOM.createRoot === "function") {
+    window.ReactDOM.createRoot(root).render(app);
+  } else {
+    window.ReactDOM.render(app, root);
+  }
+})();

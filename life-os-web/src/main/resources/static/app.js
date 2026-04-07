@@ -42,6 +42,12 @@ const TRANSLATIONS = {
     "sections.group.title": "多人出行协同",
     "sections.group.subtitle": "添加同行成员和偏好，自动生成兼顾多人诉求的规划上下文。",
     "sections.group.pill": "Group Trip",
+    "sections.map.title": "行程轨迹地图",
+    "sections.map.subtitle": "点击节点查看路径、周边景点和美食；可放大后基于地图重新规划路径。",
+    "sections.map.pill": "Route Map",
+    "sections.cost.title": "费用明细",
+    "sections.cost.subtitle": "按当前行程天数、人数与出行模式动态估算成本结构。",
+    "sections.cost.pill": "Cost",
     "sections.hub.title": "行程主线",
     "sections.hub.subtitle": "把灵感、日历、多人偏好和执行合成一条连续操作主线。",
     "sections.hub.pill": "Journey Hub",
@@ -91,6 +97,7 @@ const TRANSLATIONS = {
     "sections.audit.subtitle": "记录计划、审批、画像更新和知识写入等关键操作。",
     "sections.audit.pill": "Audit",
     "fields.prompt": "提示词",
+    "fields.quickStart": "快速开始",
     "fields.userId": "用户 ID",
     "fields.threadId": "线程 ID",
     "fields.travelStyle": "旅行风格",
@@ -129,6 +136,10 @@ const TRANSLATIONS = {
     "actions.next": "下一个",
     "actions.addMember": "添加成员",
     "actions.applyGroupContext": "应用多人偏好",
+    "actions.loginOrRegister": "登录 / 注册",
+    "actions.multiDayMode": "多天模式",
+    "actions.expandMap": "放大地图",
+    "actions.planRoute": "路径规划",
     "actions.editDayPlan": "编辑当天规划",
     "actions.clearDayPlan": "清空当天规划",
     "actions.saveDayPlan": "保存当天规划",
@@ -139,7 +150,15 @@ const TRANSLATIONS = {
     "actions.showLess": "收起",
     "actions.showImage": "看图片",
     "actions.showVideo": "看视频",
+    "actions.detectLocation": "使用当前位置",
+    "actions.useNearbyTrip": "周边游",
+    "actions.useHolidayTrip": "邻近节假日热门景点游",
+    "actions.useOverseasTrip": "出国游",
+    "actions.rememberUsername": "记住登录名",
+    "actions.showPassword": "显示",
+    "actions.hidePassword": "隐藏",
     "state.previewIdle": "点击“生成可执行方案”开始规划。",
+    "state.templateApplied": "已填入模板，可直接生成方案。",
     "state.assistantIdle": "运行助手后，这里会显示最新回复。",
     "state.planIdle": "计划卡片会显示在这里。",
     "state.knowledgeEmpty": "暂无知识文档。",
@@ -158,15 +177,40 @@ const TRANSLATIONS = {
     "state.profileLoading": "正在加载画像...",
     "state.requestFailed": "请求失败，请查看控制台日志。",
     "state.authGuest": "当前未登录，可注册或登录后启用用户级记忆与轨迹。",
+    "state.authGuestShort": "未登录",
+    "state.authRequired": "请先登录后再继续。",
     "state.authLoggedIn": "已登录：{name}（{userId}）",
     "state.authExpired": "登录已失效，请重新登录。",
     "state.authLoginSuccess": "登录成功，已切换到当前账号。",
+    "state.authRegisterSuccess": "注册成功，已自动登录。",
     "state.authLogoutSuccess": "已退出登录。",
+    "state.authLoggingIn": "正在登录...",
+    "state.authRegistering": "正在注册...",
+    "state.authLoggingOut": "正在退出...",
+    "state.authMissingCredentials": "请输入登录名和密码。",
+    "state.authUsernameRule": "登录名长度需在 3 到 32 个字符之间。",
+    "state.authPasswordRule": "密码长度需在 6 到 128 个字符之间。",
+    "state.authInvalidCredentials": "登录名或密码错误，请重试。",
+    "state.authRegisterConflict": "该登录名已存在，请更换后重试。",
+    "state.authRegisterDisabled": "当前环境已关闭注册功能。",
+    "state.authAccountDisabled": "账号已被禁用，请联系管理员。",
+    "state.authNetworkError": "网络异常，暂时无法登录，请稍后再试。",
+    "state.authUnknownError": "登录失败，请稍后重试。",
+    "state.authSessionExpiresAt": "会话至 {time}",
     "state.traceEmpty": "尚无链路数据，先发起一次请求查看关联关系。",
     "state.memoryOpsEmpty": "暂无可用的记忆操作明细。",
     "state.groupEmpty": "暂无同行成员，默认按单人出行规划。",
     "state.festivalEmpty": "暂无可用节日灵感。",
+    "state.locationUnknown": "定位未开启",
+    "state.locationLocating": "正在定位...",
+    "state.locationDenied": "定位权限被拒绝，已使用默认城市筛选。",
+    "state.locationUnavailable": "无法获取定位，已使用默认城市筛选。",
+    "state.locationReady": "已定位到 {city}",
     "state.calendarEmpty": "当天还没有规划内容，点击“编辑当天规划”开始记录。",
+    "state.calendarMultiSelection": "已选择 {count} 天，可批量编辑或清空。",
+    "state.mapEmpty": "暂无路径数据，先生成方案或选择节日点位。",
+    "state.costEmpty": "暂无费用估算，先补充行程后查看。",
+    "state.dayPlanRefining": "助手正在精简日程内容...",
     "state.personaCompactHint": "MBTI 已改为紧凑模式，可搜索后快速切换。",
     "state.profileSaved": "用户画像已保存。",
     "state.knowledgeSaved": "知识文档已入库。",
@@ -175,6 +219,9 @@ const TRANSLATIONS = {
     "state.resumeWaiting": "确认已记录，仍在等待其他确认。",
     "state.resumeBlocked": "确认被拒绝，当前运行已阻塞。",
     "state.resumeApplied": "确认完成，已恢复并执行外部写入。",
+    "state.runtimeUnknown": "运行时状态加载中...",
+    "state.runtimeLiveHint": "当前为 AgentScope ReAct 实时模型运行。",
+    "state.runtimeFallbackHint": "当前为 deterministic fallback，未接入外部模型或模型调用失败。",
     "assistant.highlights": "关键亮点",
     "assistant.mode": "运行模式",
     "assistant.planId": "计划 ID",
@@ -234,6 +281,7 @@ const TRANSLATIONS = {
     "calendar.sheet.subtitle": "快速记录今天重点、节奏和注意事项。",
     "calendar.sheet.placeholder": "例如：上午逛浅草和上野；下午回酒店休息；晚间河边散步。",
     "calendar.sheet.length": "已输入 {count} 字",
+    "calendar.sheet.multiple": "正在编辑 {count} 天：{range}",
     "calendar.sheet.template.relaxed": "上午轻松打卡，下午安排恢复时间，晚上只保留一项活动。",
     "calendar.sheet.template.efficient": "按片区连线减少换乘，每 2 小时预留 20 分钟机动。",
     "calendar.sheet.template.family": "优先室内亲子点位，中午固定休息，夜间不安排远距离移动。",
@@ -273,6 +321,18 @@ const TRANSLATIONS = {
     "ops.capacityRisk": "接近容量阈值",
     "ops.sloOk": "SLO 正常",
     "ops.sloRisk": "SLO 需关注",
+    "cost.total": "总计",
+    "cost.perPerson": "人均",
+    "cost.transport": "交通",
+    "cost.stay": "住宿",
+    "cost.food": "餐饮",
+    "cost.tickets": "门票体验",
+    "cost.misc": "机动预算",
+    "map.nearbySpots": "周边景点",
+    "map.nearbyFoods": "周边美食",
+    "map.nodeDay": "第 {day} 天",
+    "auth.modal.title": "账号连接",
+    "auth.modal.subtitle": "登录后可保存记忆、同步轨迹与个性化规划。",
     "label.owner": "负责人",
     "label.status": "状态",
     "label.comment": "备注",
@@ -287,6 +347,7 @@ const TRANSLATIONS = {
     "label.context": "上下文",
     "label.trace": "链路",
     "label.timestamp": "时间",
+    "label.distance": "距离",
     "common.enabled": "已启用",
     "common.disabled": "已关闭",
     "security.workspaceTrusted": "工作区信任",
@@ -376,6 +437,12 @@ const TRANSLATIONS = {
     "sections.group.title": "Group Travel Collaboration",
     "sections.group.subtitle": "Add companions and preferences to generate balanced multi-person planning context.",
     "sections.group.pill": "Group Trip",
+    "sections.map.title": "Route Map",
+    "sections.map.subtitle": "Click nodes to inspect route, nearby attractions, and food; expand to re-plan directly on map.",
+    "sections.map.pill": "Route Map",
+    "sections.cost.title": "Cost Breakdown",
+    "sections.cost.subtitle": "Dynamic estimation based on trip days, travelers, and selected travel mode.",
+    "sections.cost.pill": "Cost",
     "sections.hub.title": "Trip Journey Hub",
     "sections.hub.subtitle": "Connect inspiration, calendar, companions, and execution into one continuous flow.",
     "sections.hub.pill": "Journey Hub",
@@ -425,6 +492,7 @@ const TRANSLATIONS = {
     "sections.audit.subtitle": "Tracks key actions such as planning, approvals, profile edits, and knowledge writes.",
     "sections.audit.pill": "Audit",
     "fields.prompt": "Prompt",
+    "fields.quickStart": "Quick start",
     "fields.userId": "User ID",
     "fields.threadId": "Thread ID",
     "fields.travelStyle": "Travel style",
@@ -463,6 +531,10 @@ const TRANSLATIONS = {
     "actions.next": "Next",
     "actions.addMember": "Add Member",
     "actions.applyGroupContext": "Apply Group Context",
+    "actions.loginOrRegister": "Sign in / Sign up",
+    "actions.multiDayMode": "Multi-day mode",
+    "actions.expandMap": "Expand map",
+    "actions.planRoute": "Plan route",
     "actions.editDayPlan": "Edit day plan",
     "actions.clearDayPlan": "Clear day plan",
     "actions.saveDayPlan": "Save day plan",
@@ -473,7 +545,15 @@ const TRANSLATIONS = {
     "actions.showLess": "Show less",
     "actions.showImage": "Image",
     "actions.showVideo": "Video",
+    "actions.detectLocation": "Use current location",
+    "actions.useNearbyTrip": "Nearby trip",
+    "actions.useHolidayTrip": "Holiday hotspots",
+    "actions.useOverseasTrip": "Overseas trip",
+    "actions.rememberUsername": "Remember username",
+    "actions.showPassword": "Show",
+    "actions.hidePassword": "Hide",
     "state.previewIdle": "Press \"Create Action Plan\" to start planning.",
+    "state.templateApplied": "Template applied. You can generate a plan now.",
     "state.assistantIdle": "Run the assistant to see the latest reply.",
     "state.planIdle": "Plan cards will appear here.",
     "state.knowledgeEmpty": "No knowledge documents yet.",
@@ -492,15 +572,40 @@ const TRANSLATIONS = {
     "state.profileLoading": "Loading profile...",
     "state.requestFailed": "Request failed. Please inspect the console logs.",
     "state.authGuest": "Signed out. Register or sign in to enable user-level memory and trace.",
+    "state.authGuestShort": "Guest",
+    "state.authRequired": "Please sign in before continuing.",
     "state.authLoggedIn": "Signed in: {name} ({userId})",
     "state.authExpired": "Session expired. Please sign in again.",
     "state.authLoginSuccess": "Signed in successfully. Identity has been updated.",
+    "state.authRegisterSuccess": "Registration completed and you are now signed in.",
     "state.authLogoutSuccess": "Signed out.",
+    "state.authLoggingIn": "Signing in...",
+    "state.authRegistering": "Creating account...",
+    "state.authLoggingOut": "Signing out...",
+    "state.authMissingCredentials": "Please enter both username and password.",
+    "state.authUsernameRule": "Username must be between 3 and 32 characters.",
+    "state.authPasswordRule": "Password must be between 6 and 128 characters.",
+    "state.authInvalidCredentials": "Invalid username or password. Please try again.",
+    "state.authRegisterConflict": "This username is already taken.",
+    "state.authRegisterDisabled": "Registration is disabled in this environment.",
+    "state.authAccountDisabled": "This account is disabled. Please contact support.",
+    "state.authNetworkError": "Network is unavailable. Please try again shortly.",
+    "state.authUnknownError": "Unable to complete sign-in. Please retry.",
+    "state.authSessionExpiresAt": "Session expires at {time}",
     "state.traceEmpty": "No trace data yet. Run an action to start correlation.",
     "state.memoryOpsEmpty": "No memory operation details yet.",
     "state.groupEmpty": "No companions yet, planning as a solo trip.",
     "state.festivalEmpty": "No holiday ideas available right now.",
+    "state.locationUnknown": "Location not enabled",
+    "state.locationLocating": "Locating...",
+    "state.locationDenied": "Location permission denied. Using default city filter.",
+    "state.locationUnavailable": "Unable to read current location. Using default city filter.",
+    "state.locationReady": "Location ready: {city}",
     "state.calendarEmpty": "No plan yet for this day. Click \"Edit day plan\" to add one.",
+    "state.calendarMultiSelection": "{count} days selected. You can edit or clear in batch.",
+    "state.mapEmpty": "No route data yet. Create a plan or pick a holiday POI first.",
+    "state.costEmpty": "No cost estimate yet. Add trip details first.",
+    "state.dayPlanRefining": "Assistant is refining your day plan...",
     "state.personaCompactHint": "MBTI is now compact. Search and switch quickly.",
     "state.profileSaved": "Profile saved.",
     "state.knowledgeSaved": "Knowledge document persisted.",
@@ -509,6 +614,9 @@ const TRANSLATIONS = {
     "state.resumeWaiting": "The decision was saved, but the run is still waiting on other confirmations.",
     "state.resumeBlocked": "A confirmation was rejected, so the run is now blocked.",
     "state.resumeApplied": "Confirmation is complete and external writes have resumed.",
+    "state.runtimeUnknown": "Runtime status is loading...",
+    "state.runtimeLiveHint": "AgentScope ReAct with live model access is active.",
+    "state.runtimeFallbackHint": "Deterministic fallback is active because model access is not available or failed.",
     "assistant.highlights": "Highlights",
     "assistant.mode": "Mode",
     "assistant.planId": "Plan ID",
@@ -568,6 +676,7 @@ const TRANSLATIONS = {
     "calendar.sheet.subtitle": "Capture highlights, pace, and constraints for this day.",
     "calendar.sheet.placeholder": "Example: Morning in Asakusa/Ueno, afternoon recovery window, calm evening walk.",
     "calendar.sheet.length": "{count} characters",
+    "calendar.sheet.multiple": "Editing {count} day(s): {range}",
     "calendar.sheet.template.relaxed": "Keep the morning light, reserve an afternoon recovery window, one evening activity only.",
     "calendar.sheet.template.efficient": "Route by district to reduce transfers, leave a 20-minute buffer every 2 hours.",
     "calendar.sheet.template.family": "Prioritize indoor family-friendly spots, fixed midday break, no long night transfers.",
@@ -607,6 +716,18 @@ const TRANSLATIONS = {
     "ops.capacityRisk": "Near capacity threshold",
     "ops.sloOk": "SLO healthy",
     "ops.sloRisk": "SLO needs attention",
+    "cost.total": "Total",
+    "cost.perPerson": "Per person",
+    "cost.transport": "Transport",
+    "cost.stay": "Stay",
+    "cost.food": "Food",
+    "cost.tickets": "Tickets & activities",
+    "cost.misc": "Flex budget",
+    "map.nearbySpots": "Nearby attractions",
+    "map.nearbyFoods": "Nearby food",
+    "map.nodeDay": "Day {day}",
+    "auth.modal.title": "Account Access",
+    "auth.modal.subtitle": "Sign in to store memory, sync traces, and personalize planning.",
     "label.owner": "Owner",
     "label.status": "Status",
     "label.comment": "Comment",
@@ -621,6 +742,7 @@ const TRANSLATIONS = {
     "label.context": "Context",
     "label.trace": "Trace",
     "label.timestamp": "Timestamp",
+    "label.distance": "Distance",
     "common.enabled": "Enabled",
     "common.disabled": "Disabled",
     "security.workspaceTrusted": "Workspace trust",
@@ -688,17 +810,28 @@ const state = {
   personaTemperament: "all",
   personaExpanded: false,
   festivalFeed: [],
+  festivalCatalog: [],
   festivalIndex: 0,
+  festivalScope: "nearby",
   festivalMediaMode: "image",
   festivalTimer: null,
+  mapBound: false,
+  mapNodes: [],
+  mapActiveNodeId: null,
+  mapRouteLocked: false,
   calendarView: "month",
+  calendarMultiMode: false,
   calendarAnchor: null,
   selectedDate: null,
+  selectedDates: [],
+  editingDates: [],
   dayPlans: {},
   groupMembers: [],
   festivalBound: false,
+  locationAttempted: false,
   calendarBound: false,
   groupBound: false,
+  promptTemplateBound: false,
   hubBound: false,
   editingDate: null,
   securityOverview: null,
@@ -714,13 +847,30 @@ const state = {
   },
   auth: {
     token: "",
-    user: null
+    user: null,
+    rememberUsername: true,
+    savedUsername: "",
+    pending: false,
+    passwordVisible: false,
+    statusTimer: null,
+    modalOpen: false,
+    mode: "login",
+    particleSessionId: 0,
+    particleResizeBound: false,
+    particleResizeHandler: null
   },
   confirmationCount: 0,
   requestContext: {
     sessionId: "",
     contextId: "",
     traceId: ""
+  },
+  location: {
+    lat: null,
+    lng: null,
+    city: "",
+    country: "",
+    status: "unknown"
   },
   identityRefreshTimer: null
 };
@@ -731,6 +881,8 @@ const FESTIVAL_ROTATE_MS = 12000;
 const MAX_GROUP_MEMBERS = 8;
 const TRACE_LIST_LIMIT = 24;
 const AUTH_TOKEN_STORAGE_KEY = "otterlife-auth-token";
+const AUTH_USERNAME_STORAGE_KEY = "otterlife-auth-username";
+const AUTH_REMEMBER_USERNAME_STORAGE_KEY = "otterlife-auth-remember";
 
 const FESTIVAL_LIBRARY = {
   "zh-CN": [
@@ -749,6 +901,37 @@ const FESTIVAL_LIBRARY = {
   ]
 };
 
+const FESTIVAL_GLOBAL_LIBRARY = {
+  "zh-CN": [
+    { id: "overseas-tokyo", date: "2026-05-02", name: "樱花尾季周", city: "东京", pois: ["浅草寺", "上野公园", "代代木公园"], vibe: "出境轻松漫步 + 动线紧凑", source: "seeded", country: "JP", lat: 35.6762, lng: 139.6503, imageUrl: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" },
+    { id: "overseas-seoul", date: "2026-06-05", name: "初夏首尔周末", city: "首尔", pois: ["景福宫", "北村韩屋", "汉江公园"], vibe: "城市文化 + 夜景休闲", source: "seeded", country: "KR", lat: 37.5665, lng: 126.978, imageUrl: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
+    { id: "overseas-bangkok", date: "2026-07-18", name: "暑期曼谷放松游", city: "曼谷", pois: ["大皇宫", "暹罗商圈", "湄南河夜游"], vibe: "美食密集 + 购物体验", source: "seeded", country: "TH", lat: 13.7563, lng: 100.5018, imageUrl: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" }
+  ],
+  "en-US": [
+    { id: "overseas-tokyo", date: "2026-05-02", name: "Tokyo Blossom Week", city: "Tokyo", pois: ["Senso-ji", "Ueno Park", "Yoyogi Park"], vibe: "Overseas low-fatigue route with compact transit", source: "seeded", country: "JP", lat: 35.6762, lng: 139.6503, imageUrl: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" },
+    { id: "overseas-seoul", date: "2026-06-05", name: "Seoul Early Summer", city: "Seoul", pois: ["Gyeongbokgung", "Bukchon Hanok", "Han River Park"], vibe: "Culture-rich blocks with easy evening flow", source: "seeded", country: "KR", lat: 37.5665, lng: 126.978, imageUrl: "https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
+    { id: "overseas-bangkok", date: "2026-07-18", name: "Bangkok Summer Escape", city: "Bangkok", pois: ["Grand Palace", "Siam District", "Chao Phraya Night Cruise"], vibe: "Food-first journey with shopping flexibility", source: "seeded", country: "TH", lat: 13.7563, lng: 100.5018, imageUrl: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1400&q=80", videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4" }
+  ]
+};
+
+const CITY_GEO_INDEX = [
+  { city: "Shanghai", aliases: ["上海"], country: "CN", lat: 31.2304, lng: 121.4737 },
+  { city: "Hangzhou", aliases: ["杭州"], country: "CN", lat: 30.2741, lng: 120.1551 },
+  { city: "Suzhou", aliases: ["苏州"], country: "CN", lat: 31.2989, lng: 120.5853 },
+  { city: "Chengdu", aliases: ["成都"], country: "CN", lat: 30.5728, lng: 104.0668 },
+  { city: "Qingdao", aliases: ["青岛"], country: "CN", lat: 36.0671, lng: 120.3826 },
+  { city: "Beijing", aliases: ["北京"], country: "CN", lat: 39.9042, lng: 116.4074 },
+  { city: "Guangzhou", aliases: ["广州"], country: "CN", lat: 23.1291, lng: 113.2644 },
+  { city: "Shenzhen", aliases: ["深圳"], country: "CN", lat: 22.5431, lng: 114.0579 },
+  { city: "Tokyo", aliases: ["东京"], country: "JP", lat: 35.6762, lng: 139.6503 },
+  { city: "Seoul", aliases: ["首尔"], country: "KR", lat: 37.5665, lng: 126.978 },
+  { city: "Bangkok", aliases: ["曼谷"], country: "TH", lat: 13.7563, lng: 100.5018 },
+  { city: "Singapore", aliases: ["新加坡"], country: "SG", lat: 1.3521, lng: 103.8198 },
+  { city: "Paris", aliases: ["巴黎"], country: "FR", lat: 48.8566, lng: 2.3522 },
+  { city: "London", aliases: ["伦敦"], country: "GB", lat: 51.5074, lng: -0.1278 },
+  { city: "New York", aliases: ["纽约"], country: "US", lat: 40.7128, lng: -74.006 }
+];
+
 document.addEventListener("DOMContentLoaded", () => {
   const bootStartedAt = performance.now();
   const today = toIsoDate(new Date());
@@ -763,7 +946,9 @@ document.addEventListener("DOMContentLoaded", () => {
   bindSurfaceSwitch();
   bindTocDensitySwitch();
   bindIdentityInputs();
+  bindPromptTemplates();
   bindAuthActions();
+  initAuthModal();
   bindTraceFilters();
   bindActionButton("run-preview", runPreview);
   bindActionButton("run-agent", runAssistant);
@@ -778,10 +963,19 @@ document.addEventListener("DOMContentLoaded", () => {
   bindActionButton("trace-filter-apply", applyTraceFilters);
   bindActionButton("trace-filter-reset", resetTraceFilters);
   refreshContextStrip();
-  document.getElementById("profile-view").textContent = t("state.profileLoading");
+  const profileView = document.getElementById("profile-view");
+  if (profileView) {
+    profileView.textContent = t("state.profileLoading");
+  }
+
+  // Failsafe: never keep the whole page hidden when bootstrap has partial failures.
+  // 兜底：即使初始化部分失败，也不能让页面一直保持不可见。
+  let readyFallbackTimer = window.setTimeout(() => {
+    markReady();
+  }, 1200);
+
   bootstrap()
     .then(async () => {
-      markReady();
       postHostEvent("lifeos_ready", {
         userId: currentUserId(),
         surface: state.surface,
@@ -792,26 +986,34 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch(async error => {
       await sendUxMetric("page_bootstrap", bootStartedAt, false);
       handleError(error);
+    })
+    .finally(() => {
+      if (readyFallbackTimer) {
+        window.clearTimeout(readyFallbackTimer);
+        readyFallbackTimer = null;
+      }
+      markReady();
     });
 });
 
 async function bootstrap() {
   await hydrateAuthIdentity();
-  await Promise.all([
-    loadArchitecture(),
-    loadRagStatus(),
-    loadRuntime(),
-    loadOperations(),
-    loadTraceLinks(),
-    loadPersonas(),
-    loadConnectors(),
-    loadFestivalFeed()
+  await runBootstrapTasks([
+    () => loadArchitecture(),
+    () => loadRagStatus(),
+    () => loadRuntime(),
+    () => loadOperations(),
+    () => loadTraceLinks(),
+    () => loadPersonas(),
+    () => loadConnectors(),
+    () => loadFestivalFeed()
   ]);
   initializeDefaultPersona();
   loadWorkbenchState();
   initFestivalExperience();
   initCalendarExperience();
   initGroupExperience();
+  initTripMapExperience();
   initJourneyHub();
   initDayPlanSheet();
   // Hard-close any residual day-plan overlay state on bootstrap / 启动时强制收起弹层，避免历史状态或缓存导致首屏被遮挡。
@@ -819,35 +1021,91 @@ async function bootstrap() {
   renderFestivalView();
   renderCalendarView();
   renderGroupMembers();
+  renderTripMap();
+  renderCostDetails();
   renderJourneyHub();
-  await Promise.all([
-    loadSecurityOverview(),
-    loadAuditTrail(),
-    loadModules(),
-    loadProfile(),
-    loadKnowledge(),
-    loadConfirmations(),
-    loadPlans()
+  await runBootstrapTasks([
+    () => loadSecurityOverview(),
+    () => loadAuditTrail(),
+    () => loadModules(),
+    () => loadProfile(),
+    () => loadKnowledge(),
+    () => loadConfirmations(),
+    () => loadPlans()
   ]);
   renderSequence();
+}
+
+/**
+ * 非阻断式执行初始化任务，单项失败只记录，不中断整个首屏。
+ * Runs bootstrap tasks in non-blocking mode so one failure won't blank the whole page.
+ */
+async function runBootstrapTasks(tasks) {
+  await Promise.all(tasks.map(task => Promise.resolve()
+    .then(task)
+    .catch(reportBootstrapIssue)));
+}
+
+/**
+ * 记录初始化阶段的局部错误。
+ * Records non-fatal bootstrap issues for diagnosis.
+ */
+function reportBootstrapIssue(error) {
+  const originalError = error?.causeError || error;
+  console.error(originalError);
 }
 
 function restoreAuthState() {
   state.auth.token = window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) || "";
   state.auth.user = null;
+  state.auth.rememberUsername = window.localStorage.getItem(AUTH_REMEMBER_USERNAME_STORAGE_KEY) !== "0";
+  state.auth.savedUsername = window.localStorage.getItem(AUTH_USERNAME_STORAGE_KEY) || "";
+  if (!state.auth.rememberUsername) {
+    state.auth.savedUsername = "";
+  }
+  state.auth.pending = false;
+  state.auth.passwordVisible = false;
 }
 
 function bindAuthActions() {
   const usernameInput = document.getElementById("auth-username");
   const passwordInput = document.getElementById("auth-password");
+  const rememberInput = document.getElementById("auth-remember");
+  const passwordToggle = document.getElementById("auth-password-toggle");
+  const loginButton = document.getElementById("auth-login");
   if (!usernameInput || !passwordInput) {
+    setAuthBusy(false);
+    renderAuthStatus();
+    syncAuthEntry();
     return;
   }
+
+  if (state.auth.savedUsername && !usernameInput.value.trim()) {
+    usernameInput.value = state.auth.savedUsername;
+  }
+  if (rememberInput) {
+    rememberInput.checked = state.auth.rememberUsername;
+    rememberInput.addEventListener("change", () => {
+      state.auth.rememberUsername = Boolean(rememberInput.checked);
+      window.localStorage.setItem(AUTH_REMEMBER_USERNAME_STORAGE_KEY, state.auth.rememberUsername ? "1" : "0");
+      persistRememberedUsername(usernameInput.value);
+    });
+  }
+
+  usernameInput.addEventListener("input", () => {
+    if (state.auth.rememberUsername) {
+      persistRememberedUsername(usernameInput.value);
+    }
+  });
 
   passwordInput.addEventListener("keydown", event => {
     if (event.key === "Enter") {
       event.preventDefault();
-      runSafely(() => loginWithPassword());
+      if (loginButton && !loginButton.disabled) {
+        loginButton.click();
+      } else {
+        runSafely(() => loginWithPassword());
+      }
     }
   });
 
@@ -858,7 +1116,147 @@ function bindAuthActions() {
     }
   });
 
+  if (passwordToggle) {
+    passwordToggle.addEventListener("click", () => toggleAuthPasswordVisibility());
+  }
+
+  updateAuthPasswordVisibility();
+  setAuthBusy(false);
   renderAuthStatus();
+  syncAuthEntry();
+}
+
+function initAuthModal() {
+  const authEntry = document.getElementById("auth-entry");
+  const missionEntry = document.getElementById("mission-auth-open");
+  const closeButton = document.getElementById("auth-modal-close");
+  const overlay = document.getElementById("auth-modal");
+  const modeLogin = document.getElementById("auth-mode-login");
+  const modeRegister = document.getElementById("auth-mode-register");
+  const topbarLogout = document.getElementById("topbar-logout");
+  if (!overlay) {
+    return;
+  }
+
+  authEntry?.addEventListener("click", () => {
+    if (state.auth.user) {
+      return;
+    }
+    openAuthModal("login");
+  });
+  missionEntry?.addEventListener("click", () => openAuthModal("login"));
+  closeButton?.addEventListener("click", closeAuthModal);
+  topbarLogout?.addEventListener("click", () => runSafely(() => logoutCurrentUser()));
+  modeLogin?.addEventListener("click", () => setAuthMode("login"));
+  modeRegister?.addEventListener("click", () => setAuthMode("register"));
+
+  // Event delegation fallback keeps login-entry clickable even if direct binding is interrupted.
+  // 事件委托兜底：即使直接绑定失效，登录入口仍可点击。
+  document.addEventListener("click", event => {
+    const trigger = event.target instanceof Element ? event.target.closest("[data-auth-open]") : null;
+    if (!trigger) {
+      return;
+    }
+    event.preventDefault();
+    if (!state.auth.user) {
+      openAuthModal(trigger.getAttribute("data-auth-open") || "login");
+    }
+  });
+
+  overlay.addEventListener("click", event => {
+    if (event.target === overlay) {
+      closeAuthModal();
+    }
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && state.auth.modalOpen) {
+      closeAuthModal();
+    }
+  });
+  syncAuthEntry();
+}
+
+function setAuthMode(mode) {
+  state.auth.mode = mode === "register" ? "register" : "login";
+  const loginButton = document.getElementById("auth-mode-login");
+  const registerButton = document.getElementById("auth-mode-register");
+  if (loginButton) {
+    loginButton.classList.toggle("is-active", state.auth.mode === "login");
+  }
+  if (registerButton) {
+    registerButton.classList.toggle("is-active", state.auth.mode === "register");
+  }
+  const hint = document.getElementById("auth-modal-hint");
+  if (hint) {
+    hint.textContent = state.auth.mode === "register"
+      ? (isChineseLocale() ? "新用户注册后将自动登录并建立个人记忆空间。" : "New users will be signed in automatically after registration.")
+      : t("auth.modal.subtitle");
+  }
+}
+
+function openAuthModal(mode = "login") {
+  const overlay = document.getElementById("auth-modal");
+  if (!overlay) {
+    return;
+  }
+  state.auth.modalOpen = true;
+  overlay.removeAttribute("hidden");
+  overlay.classList.add("is-open");
+  document.body.classList.add("auth-open");
+  setAuthMode(mode);
+  startAuthParticles();
+  const usernameInput = document.getElementById("auth-username");
+  if (usernameInput) {
+    window.setTimeout(() => usernameInput.focus(), 30);
+  }
+}
+
+function closeAuthModal() {
+  const overlay = document.getElementById("auth-modal");
+  if (!overlay) {
+    return;
+  }
+  state.auth.modalOpen = false;
+  overlay.classList.remove("is-open");
+  overlay.setAttribute("hidden", "hidden");
+  document.body.classList.remove("auth-open");
+  stopAuthParticles();
+}
+
+function syncAuthEntry() {
+  const name = document.getElementById("auth-entry-name");
+  const meta = document.getElementById("auth-entry-meta");
+  const logout = document.getElementById("topbar-logout");
+  const missionAuth = document.getElementById("mission-auth-open");
+  if (state.auth.user) {
+    const displayName = state.auth.user.displayName || state.auth.user.username || state.auth.user.userId || "user";
+    if (name) {
+      name.textContent = displayName;
+    }
+    if (meta) {
+      meta.textContent = state.auth.user.userId || t("state.authLoggedIn");
+    }
+    if (logout) {
+      logout.style.display = "inline-flex";
+    }
+    if (missionAuth) {
+      missionAuth.textContent = isChineseLocale() ? "账号已连接" : "Account connected";
+    }
+    return;
+  }
+
+  if (name) {
+    name.textContent = t("actions.login");
+  }
+  if (meta) {
+    meta.textContent = t("state.authGuestShort");
+  }
+  if (logout) {
+    logout.style.display = "none";
+  }
+  if (missionAuth) {
+    missionAuth.textContent = t("actions.loginOrRegister");
+  }
 }
 
 async function hydrateAuthIdentity() {
@@ -875,6 +1273,7 @@ async function hydrateAuthIdentity() {
     if (usernameInput && me.username) {
       usernameInput.value = me.username;
     }
+    persistRememberedUsername(me.username || "");
     const userInput = document.getElementById("user-id");
     if (userInput && me.userId) {
       userInput.value = me.userId;
@@ -886,74 +1285,258 @@ async function hydrateAuthIdentity() {
     renderAuthStatus();
   } catch (error) {
     clearAuthState();
-    renderAuthStatus(t("state.authExpired"));
+    renderAuthStatus(t("state.authExpired"), "error");
   }
 }
 
 function clearAuthState() {
   state.auth.token = "";
   state.auth.user = null;
+  state.auth.pending = false;
+  if (state.auth.statusTimer) {
+    window.clearTimeout(state.auth.statusTimer);
+    state.auth.statusTimer = null;
+  }
   window.localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
 }
 
-function renderAuthStatus(explicitMessage) {
+function renderAuthStatus(explicitMessage, tone = "neutral") {
   const status = document.getElementById("auth-status");
   if (!status) {
+    syncAuthEntry();
     return;
   }
+  status.classList.toggle("is-error", tone === "error");
+  status.classList.toggle("is-success", tone === "success");
+  status.classList.toggle("is-neutral", tone === "neutral");
+
+  const sessionExpiry = !explicitMessage ? formatAuthSessionExpiry(state.auth.user?.sessionExpiresAt) : "";
   const message = explicitMessage || (state.auth.user
     ? t("state.authLoggedIn", {
       name: state.auth.user.displayName || state.auth.user.username || state.auth.user.userId || "user",
       userId: state.auth.user.userId || "unknown"
-    })
+    }) + (sessionExpiry ? ` · ${sessionExpiry}` : "")
     : t("state.authGuest"));
   status.textContent = message;
+  syncAuthEntry();
+}
+
+function showAuthFeedback(message, tone = "success", durationMs = 2200) {
+  if (state.auth.statusTimer) {
+    window.clearTimeout(state.auth.statusTimer);
+    state.auth.statusTimer = null;
+  }
+  renderAuthStatus(message, tone);
+  state.auth.statusTimer = window.setTimeout(() => {
+    state.auth.statusTimer = null;
+    renderAuthStatus();
+  }, durationMs);
+}
+
+function setAuthBusy(isBusy, action = "login") {
+  state.auth.pending = isBusy;
+  const ids = ["auth-username", "auth-password", "auth-remember", "auth-register", "auth-login", "auth-logout"];
+  ids.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.disabled = isBusy;
+    }
+  });
+  const passwordToggle = document.getElementById("auth-password-toggle");
+  if (passwordToggle) {
+    passwordToggle.disabled = isBusy;
+  }
+  if (isBusy) {
+    const message = action === "register"
+      ? t("state.authRegistering")
+      : action === "logout"
+      ? t("state.authLoggingOut")
+      : t("state.authLoggingIn");
+    renderAuthStatus(message, "neutral");
+  }
+}
+
+async function withAuthFlow(action, task) {
+  if (state.auth.pending) {
+    return;
+  }
+  setAuthBusy(true, action);
+  try {
+    return await task();
+  } catch (error) {
+    throw createUiError("auth", resolveAuthErrorMessage(error, action), error);
+  } finally {
+    setAuthBusy(false, action);
+  }
+}
+
+function resolveAuthErrorMessage(error, action) {
+  if (error?.userMessage && error?.uiScope === "auth") {
+    return error.userMessage;
+  }
+  const raw = String(error?.message || "");
+  if (raw.includes("missing_username_or_password")) {
+    return t("state.authMissingCredentials");
+  }
+  if (raw.includes("Username length must be 3-32")) {
+    return t("state.authUsernameRule");
+  }
+  if (raw.includes("Password length must be 6-128")) {
+    return t("state.authPasswordRule");
+  }
+  if (raw.includes("Username already exists")) {
+    return t("state.authRegisterConflict");
+  }
+  if (raw.includes("Registration is disabled")) {
+    return t("state.authRegisterDisabled");
+  }
+  if (raw.includes("Invalid username or password")) {
+    return t("state.authInvalidCredentials");
+  }
+  if (raw.includes("Account disabled")) {
+    return t("state.authAccountDisabled");
+  }
+
+  const statusMatch = raw.match(/failed:\s*(\d{3})/i);
+  const status = statusMatch ? Number(statusMatch[1]) : null;
+  if (status === 401) {
+    return t("state.authInvalidCredentials");
+  }
+  if (status === 409 && action === "register") {
+    return t("state.authRegisterConflict");
+  }
+  if (status === 403 && action === "register") {
+    return t("state.authRegisterDisabled");
+  }
+  if (status === 403 && action !== "register") {
+    return t("state.authAccountDisabled");
+  }
+  if (status === 400) {
+    return t("state.authMissingCredentials");
+  }
+  if (raw.toLowerCase().includes("failed to fetch") || raw.toLowerCase().includes("network")) {
+    return t("state.authNetworkError");
+  }
+  return t("state.authUnknownError");
+}
+
+function normalizeAuthIdentityInput(username, password) {
+  const normalizedUsername = String(username || "").trim().toLowerCase();
+  const normalizedPassword = String(password || "").trim();
+  if (!normalizedUsername || !normalizedPassword) {
+    throw createUiError("auth", t("state.authMissingCredentials"));
+  }
+  if (normalizedUsername.length < 3 || normalizedUsername.length > 32) {
+    throw createUiError("auth", t("state.authUsernameRule"));
+  }
+  if (normalizedPassword.length < 6 || normalizedPassword.length > 128) {
+    throw createUiError("auth", t("state.authPasswordRule"));
+  }
+  return {
+    username: normalizedUsername,
+    password: normalizedPassword
+  };
+}
+
+function persistRememberedUsername(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  state.auth.savedUsername = normalized;
+  if (state.auth.rememberUsername && normalized) {
+    window.localStorage.setItem(AUTH_USERNAME_STORAGE_KEY, normalized);
+    return;
+  }
+  window.localStorage.removeItem(AUTH_USERNAME_STORAGE_KEY);
+}
+
+function toggleAuthPasswordVisibility() {
+  state.auth.passwordVisible = !state.auth.passwordVisible;
+  updateAuthPasswordVisibility();
+}
+
+function updateAuthPasswordVisibility() {
+  const passwordInput = document.getElementById("auth-password");
+  const toggle = document.getElementById("auth-password-toggle");
+  if (passwordInput) {
+    passwordInput.type = state.auth.passwordVisible ? "text" : "password";
+  }
+  if (toggle) {
+    const key = state.auth.passwordVisible ? "actions.hidePassword" : "actions.showPassword";
+    toggle.textContent = t(key);
+    toggle.setAttribute("aria-label", t(key));
+    toggle.setAttribute("aria-pressed", state.auth.passwordVisible ? "true" : "false");
+  }
+}
+
+function formatAuthSessionExpiry(value) {
+  if (!value) {
+    return "";
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  const formatted = new Intl.DateTimeFormat(state.locale, {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(date);
+  return t("state.authSessionExpiresAt", { time: formatted });
+}
+
+function createUiError(scope, userMessage, cause) {
+  const error = new Error(cause?.message || userMessage);
+  error.uiScope = scope;
+  error.userMessage = userMessage;
+  if (cause) {
+    error.causeError = cause;
+  }
+  return error;
 }
 
 async function registerWithPassword() {
-  const usernameInput = document.getElementById("auth-username");
-  const passwordInput = document.getElementById("auth-password");
-  const username = usernameInput?.value.trim() || "";
-  const password = passwordInput?.value.trim() || "";
-  if (!username || !password) {
-    throw new Error("missing_username_or_password");
-  }
+  await withAuthFlow("register", async () => {
+    const usernameInput = document.getElementById("auth-username");
+    const passwordInput = document.getElementById("auth-password");
+    const identity = normalizeAuthIdentityInput(usernameInput?.value, passwordInput?.value);
+    persistRememberedUsername(identity.username);
 
-  const response = await api("/api/v1/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    skipAuth: true,
-    body: JSON.stringify({
-      username,
-      password,
-      displayName: username,
-      locale: state.locale
-    })
+    const response = await api("/api/v1/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      skipAuth: true,
+      body: JSON.stringify({
+        username: identity.username,
+        password: identity.password,
+        displayName: identity.username,
+        locale: state.locale
+      })
+    });
+    await applyAuthSession(response, "register");
   });
-  await applyAuthSession(response);
 }
 
 async function loginWithPassword() {
-  const usernameInput = document.getElementById("auth-username");
-  const passwordInput = document.getElementById("auth-password");
-  const username = usernameInput?.value.trim() || "";
-  const password = passwordInput?.value.trim() || "";
-  if (!username || !password) {
-    throw new Error("missing_username_or_password");
-  }
+  await withAuthFlow("login", async () => {
+    const usernameInput = document.getElementById("auth-username");
+    const passwordInput = document.getElementById("auth-password");
+    const identity = normalizeAuthIdentityInput(usernameInput?.value, passwordInput?.value);
+    persistRememberedUsername(identity.username);
 
-  const response = await api("/api/v1/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    skipAuth: true,
-    body: JSON.stringify({ username, password })
+    const response = await api("/api/v1/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      skipAuth: true,
+      body: JSON.stringify(identity)
+    });
+    await applyAuthSession(response, "login");
   });
-  await applyAuthSession(response);
 }
 
-async function applyAuthSession(session) {
+async function applyAuthSession(session, action = "login") {
   if (!session?.token) {
-    throw new Error("invalid_auth_response");
+    throw createUiError("auth", t("state.authUnknownError"));
   }
 
   state.auth.token = session.token;
@@ -965,6 +1548,7 @@ async function applyAuthSession(session) {
     sessionExpiresAt: session.expiresAt
   };
   window.localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, session.token);
+  persistRememberedUsername(session.username || "");
   const userInput = document.getElementById("user-id");
   if (userInput && session.userId) {
     userInput.value = session.userId;
@@ -981,28 +1565,36 @@ async function applyAuthSession(session) {
     state.traceFilter.userId = session.userId;
   }
   syncTraceFilterInputs();
-  renderAuthStatus();
-  document.getElementById("preview-summary").textContent = t("state.authLoginSuccess");
+  showAuthFeedback(t(action === "register" ? "state.authRegisterSuccess" : "state.authLoginSuccess"), "success");
+  document.getElementById("preview-summary").textContent = t(action === "register" ? "state.authRegisterSuccess" : "state.authLoginSuccess");
   flashElement("preview-summary", "is-updated");
+  closeAuthModal();
   await handleIdentityChange();
   await loadOperations();
 }
 
 async function logoutCurrentUser() {
-  if (state.auth.token) {
-    try {
-      await api("/api/v1/auth/logout", { method: "POST" });
-    } catch (error) {
-      // Local logout should still succeed even if server token is already expired.
-      console.debug("auth logout request failed", error);
+  await withAuthFlow("logout", async () => {
+    if (state.auth.token) {
+      try {
+        await api("/api/v1/auth/logout", { method: "POST" });
+      } catch (error) {
+        // Local logout should still succeed even if server token is already expired.
+        console.debug("auth logout request failed", error);
+      }
     }
-  }
-  clearAuthState();
-  state.traceFilter.userId = "";
-  syncTraceFilterInputs();
-  renderAuthStatus(t("state.authLogoutSuccess"));
-  await handleIdentityChange();
-  await loadOperations();
+    clearAuthState();
+    state.traceFilter.userId = "";
+    syncTraceFilterInputs();
+    showAuthFeedback(t("state.authLogoutSuccess"), "success");
+    const usernameInput = document.getElementById("auth-username");
+    if (usernameInput && !state.auth.rememberUsername) {
+      usernameInput.value = "";
+    }
+    closeAuthModal();
+    await handleIdentityChange();
+    await loadOperations();
+  });
 }
 
 function bindTraceFilters() {
@@ -1277,6 +1869,45 @@ function bindIdentityInputs() {
   }
 }
 
+// Keep prompt entry fast with one-click templates / 一键模板填充，降低首次使用门槛。
+function bindPromptTemplates() {
+  if (state.promptTemplateBound) {
+    return;
+  }
+  const container = document.getElementById("section-control");
+  if (!container) {
+    return;
+  }
+
+  container.addEventListener("click", event => {
+    const templateButton = event.target.closest("[data-prompt-template-zh],[data-prompt-template-en]");
+    if (!templateButton) {
+      return;
+    }
+
+    const input = document.getElementById("plan-input");
+    if (!input) {
+      return;
+    }
+
+    const template = isChineseLocale()
+      ? (templateButton.dataset.promptTemplateZh || templateButton.dataset.promptTemplateEn || "")
+      : (templateButton.dataset.promptTemplateEn || templateButton.dataset.promptTemplateZh || "");
+    if (!template) {
+      return;
+    }
+
+    input.value = template;
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+    document.getElementById("preview-summary").textContent = t("state.templateApplied");
+    flashElement("preview-summary", "is-updated");
+    renderSequence();
+  });
+
+  state.promptTemplateBound = true;
+}
+
 // Toggle consumer/operator views without reloading the page / 不刷新页面切换 ToC 与 ToB 视角。
 function applySurfaceMode(surface) {
   state.surface = surface === "tob" ? "tob" : "toc";
@@ -1306,6 +1937,9 @@ function bindActionButton(id, action) {
 
 async function withButtonState(button, action) {
   const startedAt = performance.now();
+  if (!ensureAuthForAction(button.id)) {
+    return;
+  }
   rotateRequestTrace(button.id);
   button.disabled = true;
   button.classList.add("is-loading");
@@ -1332,6 +1966,26 @@ async function withButtonState(button, action) {
     button.disabled = false;
     button.classList.remove("is-loading");
   }
+}
+
+function ensureAuthForAction(actionId) {
+  const authRequiredActions = new Set([
+    "run-preview",
+    "run-agent",
+    "h5-run-preview",
+    "h5-run-agent",
+    "save-profile",
+    "add-knowledge"
+  ]);
+  if (!authRequiredActions.has(actionId)) {
+    return true;
+  }
+  if (state.auth.user) {
+    return true;
+  }
+  openAuthModal("login");
+  renderAuthStatus(t("state.authRequired"), "error");
+  return false;
 }
 
 async function runPreview() {
@@ -1437,16 +2091,21 @@ async function loadFestivalFeed() {
     const travelers = Math.max(1, (state.groupMembers?.length || 0) + 1);
     const budget = document.getElementById("budget-level")?.value || "";
     const timeWindow = state.selectedDate || "";
+    const locationCity = state.location.city || "";
+    const locationCountry = state.location.country || "";
     const cards = await api(
       `/api/v1/poi/festivals?locale=${encodeURIComponent(state.locale)}`
       + `&query=${encodeURIComponent(query)}`
       + `&travelers=${encodeURIComponent(String(travelers))}`
       + `&budget=${encodeURIComponent(budget)}`
       + `&timeWindow=${encodeURIComponent(timeWindow)}`
+      + `&tripMode=${encodeURIComponent(state.festivalScope)}`
+      + `&userCity=${encodeURIComponent(locationCity)}`
+      + `&userCountry=${encodeURIComponent(locationCountry)}`
     );
-    state.festivalFeed = Array.isArray(cards) ? cards : [];
+    state.festivalCatalog = Array.isArray(cards) ? cards : [];
   } catch (error) {
-    state.festivalFeed = [];
+    state.festivalCatalog = [];
   }
 }
 
@@ -1484,6 +2143,12 @@ async function loadModules() {
 async function loadRuntime() {
   const runtime = await api("/api/v1/assistant/runtime");
   state.runtime = runtime;
+  const runtimeHint = document.getElementById("runtime-hint");
+  if (runtimeHint) {
+    runtimeHint.textContent = runtime.mode === "agentscope-react"
+      ? t("state.runtimeLiveHint")
+      : t("state.runtimeFallbackHint");
+  }
   document.getElementById("runtime-view").innerHTML = `
     <div class="list-item">
       <strong>${escapeHtml(formatRuntimeMode(runtime.mode))}</strong>
@@ -1634,8 +2299,10 @@ function loadWorkbenchState() {
   const today = toIsoDate(new Date());
   const fallback = {
     calendarView: "month",
+    calendarMultiMode: false,
     calendarAnchor: today,
     selectedDate: today,
+    selectedDates: [today],
     dayPlans: {},
     groupMembers: []
   };
@@ -1643,14 +2310,21 @@ function loadWorkbenchState() {
     const raw = window.localStorage.getItem(workbenchStorageKey());
     const stored = raw ? JSON.parse(raw) : {};
     state.calendarView = ["month", "year", "day"].includes(stored.calendarView) ? stored.calendarView : fallback.calendarView;
+    state.calendarMultiMode = Boolean(stored.calendarMultiMode);
     state.calendarAnchor = stored.calendarAnchor || fallback.calendarAnchor;
     state.selectedDate = stored.selectedDate || fallback.selectedDate;
+    state.selectedDates = uniqueDates(Array.isArray(stored.selectedDates) ? stored.selectedDates : fallback.selectedDates);
+    if (state.selectedDates.length === 0) {
+      state.selectedDates = [state.selectedDate];
+    }
     state.dayPlans = stored.dayPlans && typeof stored.dayPlans === "object" ? stored.dayPlans : {};
     state.groupMembers = Array.isArray(stored.groupMembers) ? stored.groupMembers.slice(0, MAX_GROUP_MEMBERS) : [];
   } catch (error) {
     state.calendarView = fallback.calendarView;
+    state.calendarMultiMode = fallback.calendarMultiMode;
     state.calendarAnchor = fallback.calendarAnchor;
     state.selectedDate = fallback.selectedDate;
+    state.selectedDates = fallback.selectedDates;
     state.dayPlans = fallback.dayPlans;
     state.groupMembers = fallback.groupMembers;
   }
@@ -1659,8 +2333,10 @@ function loadWorkbenchState() {
 function persistWorkbenchState() {
   const payload = {
     calendarView: state.calendarView,
+    calendarMultiMode: state.calendarMultiMode,
     calendarAnchor: state.calendarAnchor,
     selectedDate: state.selectedDate,
+    selectedDates: selectedDatesForPlan(),
     dayPlans: state.dayPlans,
     groupMembers: state.groupMembers
   };
@@ -1690,8 +2366,36 @@ function initFestivalExperience() {
         renderFestivalView();
       }
     });
+
+    document.querySelectorAll("[data-festival-scope]").forEach(button => {
+      button.addEventListener("click", () => {
+        const targetScope = button.dataset.festivalScope;
+        if (!["nearby", "holiday", "overseas"].includes(targetScope || "")) {
+          return;
+        }
+        if (targetScope === state.festivalScope) {
+          return;
+        }
+        state.festivalScope = targetScope;
+        state.festivalIndex = 0;
+        updateFestivalScopeControls();
+        runSafely(async () => {
+          await loadFestivalFeed();
+          renderFestivalView();
+          renderSequence();
+          renderJourneyHub();
+        });
+      });
+    });
+
+    const detectButton = document.getElementById("festival-detect-location");
+    if (detectButton) {
+      detectButton.addEventListener("click", () => runSafely(() => detectCurrentLocation()));
+    }
     state.festivalBound = true;
   }
+  updateFestivalScopeControls();
+  renderFestivalLocationLabel();
   if (state.festivalTimer) {
     window.clearInterval(state.festivalTimer);
   }
@@ -1700,6 +2404,10 @@ function initFestivalExperience() {
       shiftFestival(1, true);
     }
   }, FESTIVAL_ROTATE_MS);
+  if (!state.locationAttempted) {
+    state.locationAttempted = true;
+    runSafely(() => detectCurrentLocation({ silent: true }));
+  }
 }
 
 function renderFestivalView() {
@@ -1707,7 +2415,8 @@ function renderFestivalView() {
   if (!container) {
     return;
   }
-  const feed = state.festivalFeed.length > 0 ? state.festivalFeed : resolveFestivalFeed();
+  const sourceFeed = state.festivalCatalog.length > 0 ? state.festivalCatalog : resolveFestivalFeed();
+  const feed = filterFestivalFeed(sourceFeed);
   if (feed.length === 0) {
     container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.festivalEmpty"))}</div>`;
     return;
@@ -1728,6 +2437,10 @@ function renderFestivalView() {
       ? `<img class="festival-media" src="${escapeHtml(current.imageUrl)}" alt="${escapeHtml(current.name)}">`
       : "";
   const sourceText = formatPoiSource(current.source || "seeded");
+  const scopeText = festivalScopeLabel(state.festivalScope);
+  const distanceText = typeof current.distanceKm === "number"
+    ? `${current.distanceKm} km`
+    : "-";
   container.innerHTML = `
     <article class="festival-card-panel">
       <div class="festival-head">
@@ -1736,6 +2449,10 @@ function renderFestivalView() {
           <p>${escapeHtml(current.vibe)}</p>
         </div>
         <span class="meta-pill">${escapeHtml(current.date)} · ${escapeHtml(sourceText)}</span>
+      </div>
+      <div class="festival-context-pills">
+        <span class="meta-pill">${escapeHtml(scopeText)}</span>
+        <span class="meta-pill">${escapeHtml(t("label.distance"))}: ${escapeHtml(distanceText)}</span>
       </div>
       ${mediaToggle}
       ${mediaView}
@@ -1750,14 +2467,17 @@ function renderFestivalView() {
 }
 
 function resolveFestivalFeed() {
-  const bundle = FESTIVAL_LIBRARY[state.locale] || FESTIVAL_LIBRARY["en-US"];
+  const bundle = [
+    ...(FESTIVAL_LIBRARY[state.locale] || FESTIVAL_LIBRARY["en-US"]),
+    ...(FESTIVAL_GLOBAL_LIBRARY[state.locale] || FESTIVAL_GLOBAL_LIBRARY["en-US"])
+  ];
   const today = new Date(`${toIsoDate(new Date())}T00:00:00`);
   const upcoming = bundle.filter(item => new Date(`${item.date}T00:00:00`) >= today);
-  if (upcoming.length >= 3) {
-    return upcoming.slice(0, 5);
+  if (upcoming.length >= 4) {
+    return upcoming.slice(0, 8);
   }
   const history = bundle.filter(item => new Date(`${item.date}T00:00:00`) < today);
-  return [...upcoming, ...history].slice(0, 5);
+  return [...upcoming, ...history].slice(0, 8);
 }
 
 function shiftFestival(delta, auto = false) {
@@ -1789,8 +2509,627 @@ function applyFestivalToPrompt() {
   renderSequence();
 }
 
+function initTripMapExperience() {
+  if (state.mapBound) {
+    return;
+  }
+  const map = document.getElementById("trip-map");
+  const mapDetail = document.getElementById("map-detail");
+  const mapOpenButton = document.getElementById("map-open-lightbox");
+  const mapPlanButton = document.getElementById("map-plan-route");
+  const lightbox = document.getElementById("map-lightbox");
+  const lightboxClose = document.getElementById("map-lightbox-close");
+  const lightboxPlan = document.getElementById("map-lightbox-plan");
+
+  map?.addEventListener("click", event => {
+    const node = event.target.closest("[data-map-node]");
+    if (!node) {
+      return;
+    }
+    state.mapActiveNodeId = node.dataset.mapNode || null;
+    renderTripMap();
+  });
+  mapDetail?.addEventListener("click", event => {
+    const hotspot = event.target.closest("[data-map-hotspot]");
+    if (!hotspot) {
+      return;
+    }
+    state.mapActiveNodeId = hotspot.dataset.mapHotspot || null;
+    renderTripMap();
+  });
+  mapOpenButton?.addEventListener("click", () => openMapLightbox());
+  mapPlanButton?.addEventListener("click", () => {
+    state.mapRouteLocked = !state.mapRouteLocked;
+    renderTripMap();
+  });
+  lightboxClose?.addEventListener("click", closeMapLightbox);
+  lightboxPlan?.addEventListener("click", () => {
+    state.mapRouteLocked = !state.mapRouteLocked;
+    renderTripMap();
+  });
+  lightbox?.addEventListener("click", event => {
+    if (event.target === lightbox) {
+      closeMapLightbox();
+    }
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && lightbox && !lightbox.hidden) {
+      closeMapLightbox();
+    }
+  });
+
+  state.mapBound = true;
+}
+
+function openMapLightbox() {
+  const lightbox = document.getElementById("map-lightbox");
+  if (!lightbox) {
+    return;
+  }
+  lightbox.hidden = false;
+  document.body.classList.add("map-open");
+  renderTripMap();
+}
+
+function closeMapLightbox() {
+  const lightbox = document.getElementById("map-lightbox");
+  if (!lightbox) {
+    return;
+  }
+  lightbox.hidden = true;
+  document.body.classList.remove("map-open");
+}
+
+function buildTripMapModel() {
+  const nodes = [];
+  const homeCity = state.location.city || (isChineseLocale() ? "当前位置" : "Current city");
+  const homeCountry = resolveHomeCountry();
+  nodes.push({
+    id: "node-home",
+    name: homeCity,
+    day: 0,
+    x: 12,
+    y: 70,
+    nearbySpots: isChineseLocale() ? ["商圈步行街", "城市公园"] : ["Downtown walk", "City park"],
+    nearbyFoods: isChineseLocale() ? ["本地早餐", "街头小吃"] : ["Local breakfast", "Street bites"],
+    country: homeCountry
+  });
+
+  if (state.festivalFeed.length > 0) {
+    const festival = state.festivalFeed[state.festivalIndex];
+    nodes.push({
+      id: `node-festival-${festival.id || "main"}`,
+      name: `${festival.city} · ${festival.name}`,
+      day: 1,
+      x: 38,
+      y: 48,
+      nearbySpots: (festival.pois || []).slice(0, 3),
+      nearbyFoods: deriveFoodSuggestions(festival.city),
+      country: festival.country || inferCountryByText(festival) || homeCountry
+    });
+  }
+
+  const selected = selectedDatesForPlan();
+  selected.slice(0, 5).forEach((date, index) => {
+    const text = state.dayPlans[date] || "";
+    nodes.push({
+      id: `node-day-${date}`,
+      name: `${t("map.nodeDay", { day: String(index + 1) })} · ${date}`,
+      day: index + 1,
+      x: 55 + (index % 3) * 13,
+      y: 26 + index * 12,
+      nearbySpots: deriveSpotHints(text),
+      nearbyFoods: deriveFoodHints(text),
+      country: homeCountry
+    });
+  });
+
+  if (nodes.length === 1) {
+    nodes.push({
+      id: "node-auto-1",
+      name: isChineseLocale() ? "节日热门片区" : "Holiday hotspot area",
+      day: 1,
+      x: 44,
+      y: 42,
+      nearbySpots: isChineseLocale() ? ["热门打卡点", "城市地标"] : ["Trending spot", "City landmark"],
+      nearbyFoods: isChineseLocale() ? ["特色餐厅", "夜宵街区"] : ["Signature restaurant", "Night food street"],
+      country: homeCountry
+    });
+    nodes.push({
+      id: "node-auto-2",
+      name: isChineseLocale() ? "夜间休闲片区" : "Evening leisure district",
+      day: 2,
+      x: 78,
+      y: 60,
+      nearbySpots: isChineseLocale() ? ["河畔步道", "灯光秀"] : ["Riverside walk", "Light show"],
+      nearbyFoods: isChineseLocale() ? ["甜品店", "小酒馆"] : ["Dessert bar", "Small bistro"],
+      country: homeCountry
+    });
+  }
+
+  if (state.mapRouteLocked) {
+    return reorderNodesForRoute(nodes);
+  }
+  return nodes;
+}
+
+function reorderNodesForRoute(nodes) {
+  if (nodes.length < 3) {
+    return nodes;
+  }
+  const anchor = nodes[0];
+  const rest = nodes.slice(1).sort((a, b) => a.y - b.y || a.x - b.x);
+  return [anchor, ...rest];
+}
+
+function renderTripMap() {
+  const map = document.getElementById("trip-map");
+  const detail = document.getElementById("map-detail");
+  if (!map || !detail) {
+    return;
+  }
+  const nodes = buildTripMapModel();
+  state.mapNodes = nodes;
+  if (nodes.length === 0) {
+    map.innerHTML = `<div class="empty-state">${escapeHtml(t("state.mapEmpty"))}</div>`;
+    detail.innerHTML = "";
+    return;
+  }
+  if (!state.mapActiveNodeId || !nodes.some(node => node.id === state.mapActiveNodeId)) {
+    state.mapActiveNodeId = nodes[0].id;
+  }
+  const activeNode = nodes.find(node => node.id === state.mapActiveNodeId) || nodes[0];
+  const polylines = nodes.map(node => `${node.x},${node.y}`).join(" ");
+
+  map.innerHTML = `
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="trip-map-svg">
+      <defs>
+        <linearGradient id="route-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4de8ff" />
+          <stop offset="100%" stop-color="#b05cff" />
+        </linearGradient>
+      </defs>
+      <polyline points="${escapeHtml(polylines)}" class="trip-map-route"></polyline>
+      ${nodes.map(node => `
+        <g class="trip-map-node ${node.id === activeNode.id ? "is-active" : ""}" data-map-node="${escapeHtml(node.id)}">
+          <circle cx="${node.x}" cy="${node.y}" r="${node.id === activeNode.id ? 2.4 : 1.9}"></circle>
+          <text x="${node.x + 1.8}" y="${node.y - 1.8}">${escapeHtml(String(node.day || 0))}</text>
+        </g>
+      `).join("")}
+    </svg>
+  `;
+
+  detail.innerHTML = `
+    <article class="list-item">
+      <strong>${escapeHtml(activeNode.name)}</strong>
+      <small>${escapeHtml(t("map.nearbySpots"))}: ${escapeHtml((activeNode.nearbySpots || []).join(isChineseLocale() ? "、" : ", "))}</small>
+      <small>${escapeHtml(t("map.nearbyFoods"))}: ${escapeHtml((activeNode.nearbyFoods || []).join(isChineseLocale() ? "、" : ", "))}</small>
+      <div class="list-item-meta">
+        ${nodes.map(node => `<button type="button" class="secondary ${node.id === activeNode.id ? "is-active" : ""}" data-map-hotspot="${escapeHtml(node.id)}">${escapeHtml(node.name)}</button>`).join("")}
+      </div>
+    </article>
+  `;
+
+  renderTripMapLightbox(nodes, activeNode);
+}
+
+function renderTripMapLightbox(nodes, activeNode) {
+  const map = document.getElementById("map-lightbox-map");
+  const detail = document.getElementById("map-lightbox-detail");
+  if (!map || !detail) {
+    return;
+  }
+  map.innerHTML = document.getElementById("trip-map")?.innerHTML || "";
+  detail.innerHTML = document.getElementById("map-detail")?.innerHTML || "";
+  map.querySelectorAll("[data-map-node]").forEach(node => {
+    node.addEventListener("click", () => {
+      state.mapActiveNodeId = node.dataset.mapNode;
+      renderTripMap();
+    });
+  });
+  detail.querySelectorAll("[data-map-hotspot]").forEach(button => {
+    button.addEventListener("click", () => {
+      state.mapActiveNodeId = button.dataset.mapHotspot;
+      renderTripMap();
+    });
+  });
+}
+
+function deriveSpotHints(text) {
+  const keywords = isChineseLocale()
+    ? ["博物馆", "公园", "商圈", "街区", "地标", "夜景"]
+    : ["museum", "park", "district", "landmark", "night view", "market"];
+  const source = String(text || "").toLowerCase();
+  const picks = keywords.filter(keyword => source.includes(keyword.toLowerCase())).slice(0, 3);
+  if (picks.length > 0) {
+    return picks;
+  }
+  return isChineseLocale() ? ["热门地标", "步行街区", "休闲公园"] : ["City landmark", "Walkable district", "Leisure park"];
+}
+
+function deriveFoodHints(text) {
+  const keywords = isChineseLocale()
+    ? ["寿司", "拉面", "咖啡", "甜品", "火锅", "小吃", "烧烤"]
+    : ["sushi", "ramen", "coffee", "dessert", "bbq", "street food"];
+  const source = String(text || "").toLowerCase();
+  const picks = keywords.filter(keyword => source.includes(keyword.toLowerCase())).slice(0, 3);
+  if (picks.length > 0) {
+    return picks;
+  }
+  return isChineseLocale() ? ["本地餐厅", "特色甜品", "夜间小吃"] : ["Local restaurant", "Signature dessert", "Night snacks"];
+}
+
+function deriveFoodSuggestions(city) {
+  const cityText = String(city || "").toLowerCase();
+  if (cityText.includes("东京") || cityText.includes("tokyo")) {
+    return isChineseLocale() ? ["拉面店", "寿司店", "抹茶甜品"] : ["Ramen bar", "Sushi counter", "Matcha dessert"];
+  }
+  if (cityText.includes("上海") || cityText.includes("shanghai")) {
+    return isChineseLocale() ? ["本帮菜", "咖啡店", "夜市小吃"] : ["Local cuisine", "Cafe", "Night market snacks"];
+  }
+  return isChineseLocale() ? ["特色餐厅", "甜品店", "街头小吃"] : ["Signature restaurant", "Dessert bar", "Street bites"];
+}
+
+function renderCostDetails() {
+  const container = document.getElementById("cost-view");
+  if (!container) {
+    return;
+  }
+  const breakdown = estimateCostBreakdown();
+  if (!breakdown) {
+    container.innerHTML = `<div class="empty-state">${escapeHtml(t("state.costEmpty"))}</div>`;
+    return;
+  }
+  const list = [
+    ["cost.transport", breakdown.transport],
+    ["cost.stay", breakdown.stay],
+    ["cost.food", breakdown.food],
+    ["cost.tickets", breakdown.tickets],
+    ["cost.misc", breakdown.misc]
+  ];
+  container.innerHTML = `
+    <div class="list-item">
+      <strong>${escapeHtml(t("cost.total"))}: ${escapeHtml(formatCurrency(breakdown.total))}</strong>
+      <small>${escapeHtml(t("cost.perPerson"))}: ${escapeHtml(formatCurrency(breakdown.perPerson))}</small>
+      <div class="chip-list">
+        ${list.map(([key, value]) => `
+          <div class="chip-card">
+            <strong>${escapeHtml(t(key))}</strong>
+            <span>${escapeHtml(formatCurrency(value))}</span>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function estimateCostBreakdown() {
+  const travelers = Math.max(1, (state.groupMembers?.length || 0) + 1);
+  const days = Math.max(1, selectedDatesForPlan().length);
+  const overseas = state.festivalScope === "overseas";
+  const basePerDay = overseas ? 2200 : state.festivalScope === "holiday" ? 900 : 580;
+  const transport = Math.round(basePerDay * 0.22 * days * travelers);
+  const stay = Math.round(basePerDay * 0.34 * days * travelers);
+  const food = Math.round(basePerDay * 0.2 * days * travelers);
+  const tickets = Math.round(basePerDay * 0.16 * days * travelers);
+  const misc = Math.round(basePerDay * 0.08 * days * travelers);
+  const total = transport + stay + food + tickets + misc;
+  return {
+    days,
+    travelers,
+    transport,
+    stay,
+    food,
+    tickets,
+    misc,
+    total,
+    perPerson: Math.round(total / travelers)
+  };
+}
+
+function formatCurrency(value) {
+  const code = isChineseLocale() ? "CNY" : "USD";
+  return new Intl.NumberFormat(state.locale, {
+    style: "currency",
+    currency: code,
+    maximumFractionDigits: 0
+  }).format(Math.max(0, Number(value) || 0));
+}
+
+function filterFestivalFeed(cards) {
+  const normalized = (cards || [])
+    .map(normalizeFestivalCard)
+    .filter(card => Array.isArray(card.pois) && card.pois.length > 0);
+  if (normalized.length === 0) {
+    return [];
+  }
+
+  const homeCountry = resolveHomeCountry();
+  let filtered;
+  if (state.festivalScope === "nearby") {
+    filtered = normalized
+      .filter(card => card.country === homeCountry && (card.distanceKm === null || card.distanceKm <= 1200))
+      .sort((a, b) => compareNullableNumber(a.distanceKm, b.distanceKm) || compareDateString(a.date, b.date));
+  } else if (state.festivalScope === "overseas") {
+    filtered = normalized
+      .filter(card => card.country !== homeCountry)
+      .sort((a, b) => compareDateString(a.date, b.date));
+  } else {
+    filtered = [...normalized].sort((a, b) => compareHolidayRelevance(a.date, b.date));
+  }
+
+  if (filtered.length === 0) {
+    filtered = [...normalized].sort((a, b) => compareHolidayRelevance(a.date, b.date));
+  }
+  return filtered.slice(0, 8);
+}
+
+function normalizeFestivalCard(card) {
+  const city = String(card?.city || (isChineseLocale() ? "未知城市" : "Unknown city"));
+  const geo = resolveCityGeo(city);
+  const country = String(card?.country || geo?.country || inferCountryByText(card) || resolveHomeCountry()).toUpperCase();
+  const lat = toFiniteNumber(card?.lat) ?? (geo ? geo.lat : null);
+  const lng = toFiniteNumber(card?.lng) ?? (geo ? geo.lng : null);
+  const distanceKm = calculateDistanceKm(lat, lng);
+  return {
+    ...card,
+    city,
+    country,
+    lat,
+    lng,
+    distanceKm
+  };
+}
+
+function resolveCityGeo(cityText) {
+  const raw = String(cityText || "").trim().toLowerCase();
+  if (!raw) {
+    return null;
+  }
+  return CITY_GEO_INDEX.find(item => {
+    if (raw.includes(item.city.toLowerCase())) {
+      return true;
+    }
+    return (item.aliases || []).some(alias => raw.includes(alias.toLowerCase()));
+  }) || null;
+}
+
+function inferCountryByText(card) {
+  const seed = `${card?.city || ""} ${card?.name || ""} ${card?.vibe || ""}`.toLowerCase();
+  if (!seed) {
+    return "";
+  }
+  const mapping = [
+    { country: "JP", keys: ["tokyo", "japan", "东京", "日本"] },
+    { country: "KR", keys: ["seoul", "korea", "首尔", "韩国"] },
+    { country: "TH", keys: ["bangkok", "thailand", "曼谷", "泰国"] },
+    { country: "SG", keys: ["singapore", "新加坡"] },
+    { country: "FR", keys: ["paris", "france", "巴黎", "法国"] },
+    { country: "GB", keys: ["london", "uk", "伦敦", "英国"] },
+    { country: "US", keys: ["new york", "usa", "美国", "纽约"] }
+  ];
+  const hit = mapping.find(item => item.keys.some(keyword => seed.includes(keyword)));
+  return hit ? hit.country : "";
+}
+
+function resolveHomeCountry() {
+  if (state.location.country) {
+    return String(state.location.country).toUpperCase();
+  }
+  return isChineseLocale() ? "CN" : "US";
+}
+
+function toFiniteNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function calculateDistanceKm(lat, lng) {
+  if (!Number.isFinite(state.location.lat) || !Number.isFinite(state.location.lng)) {
+    return null;
+  }
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return null;
+  }
+  return Math.round(haversineDistance(state.location.lat, state.location.lng, lat, lng));
+}
+
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const toRadians = degree => degree * (Math.PI / 180);
+  const earthRadiusKm = 6371;
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+    + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2))
+    * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return earthRadiusKm * c;
+}
+
+function compareNullableNumber(left, right) {
+  if (left == null && right == null) {
+    return 0;
+  }
+  if (left == null) {
+    return 1;
+  }
+  if (right == null) {
+    return -1;
+  }
+  return left - right;
+}
+
+function compareDateString(left, right) {
+  const leftTime = Number.isFinite(Date.parse(left || "")) ? Date.parse(left || "") : Number.MAX_SAFE_INTEGER;
+  const rightTime = Number.isFinite(Date.parse(right || "")) ? Date.parse(right || "") : Number.MAX_SAFE_INTEGER;
+  return leftTime - rightTime;
+}
+
+function compareHolidayRelevance(leftDate, rightDate) {
+  const leftDays = daysFromToday(leftDate);
+  const rightDays = daysFromToday(rightDate);
+  const leftUpcoming = leftDays >= 0;
+  const rightUpcoming = rightDays >= 0;
+  if (leftUpcoming !== rightUpcoming) {
+    return leftUpcoming ? -1 : 1;
+  }
+  const byAbsolute = Math.abs(leftDays) - Math.abs(rightDays);
+  if (byAbsolute !== 0) {
+    return byAbsolute;
+  }
+  return leftDays - rightDays;
+}
+
+function daysFromToday(dateText) {
+  const target = new Date(`${dateText || toIsoDate(new Date())}T00:00:00`);
+  if (Number.isNaN(target.getTime())) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+  const today = new Date(`${toIsoDate(new Date())}T00:00:00`);
+  return Math.round((target.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+}
+
+function festivalScopeLabel(scope) {
+  if (scope === "overseas") {
+    return t("actions.useOverseasTrip");
+  }
+  if (scope === "holiday") {
+    return t("actions.useHolidayTrip");
+  }
+  return t("actions.useNearbyTrip");
+}
+
+function updateFestivalScopeControls() {
+  document.querySelectorAll("[data-festival-scope]").forEach(button => {
+    button.classList.toggle("is-active", button.dataset.festivalScope === state.festivalScope);
+  });
+}
+
+function renderFestivalLocationLabel() {
+  const label = document.getElementById("festival-location-label");
+  if (!label) {
+    return;
+  }
+  if (state.location.status === "locating") {
+    label.textContent = t("state.locationLocating");
+    return;
+  }
+  if (state.location.status === "ready" && state.location.city) {
+    label.textContent = t("state.locationReady", { city: state.location.city });
+    return;
+  }
+  if (state.location.status === "denied") {
+    label.textContent = t("state.locationDenied");
+    return;
+  }
+  if (state.location.status === "unavailable") {
+    label.textContent = t("state.locationUnavailable");
+    return;
+  }
+  label.textContent = t("state.locationUnknown");
+}
+
+async function detectCurrentLocation(options = {}) {
+  const silent = Boolean(options.silent);
+  state.location.status = "locating";
+  renderFestivalLocationLabel();
+
+  if (!navigator.geolocation || typeof navigator.geolocation.getCurrentPosition !== "function") {
+    setDefaultLocation("unavailable");
+    await loadFestivalFeed();
+    state.festivalIndex = 0;
+    renderFestivalView();
+    renderSequence();
+    renderJourneyHub();
+    return;
+  }
+
+  try {
+    const position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: false,
+        timeout: 8000,
+        maximumAge: 10 * 60 * 1000
+      });
+    });
+    applyNearestLocation(position.coords.latitude, position.coords.longitude);
+    renderFestivalLocationLabel();
+    await loadFestivalFeed();
+    state.festivalIndex = 0;
+    renderFestivalView();
+    renderSequence();
+    renderJourneyHub();
+    if (!silent) {
+      document.getElementById("preview-summary").textContent = t("state.locationReady", { city: state.location.city });
+      flashElement("preview-summary", "is-updated");
+    }
+  } catch (error) {
+    const denied = Number(error?.code) === 1;
+    setDefaultLocation(denied ? "denied" : "unavailable");
+    await loadFestivalFeed();
+    state.festivalIndex = 0;
+    renderFestivalView();
+    renderSequence();
+    renderJourneyHub();
+    if (!silent) {
+      document.getElementById("preview-summary").textContent = denied
+        ? t("state.locationDenied")
+        : t("state.locationUnavailable");
+      flashElement("preview-summary", "is-updated");
+    }
+  }
+}
+
+function setDefaultLocation(status) {
+  const fallback = isChineseLocale()
+    ? (CITY_GEO_INDEX.find(item => item.country === "CN") || CITY_GEO_INDEX[0])
+    : (CITY_GEO_INDEX.find(item => item.country === "US") || CITY_GEO_INDEX[0]);
+  if (fallback) {
+    state.location.lat = fallback.lat;
+    state.location.lng = fallback.lng;
+    state.location.city = isChineseLocale() ? (fallback.aliases?.[0] || fallback.city) : fallback.city;
+    state.location.country = fallback.country;
+  }
+  state.location.status = status;
+  renderFestivalLocationLabel();
+}
+
+function applyNearestLocation(lat, lng) {
+  const nearest = CITY_GEO_INDEX
+    .map(item => ({
+      ...item,
+      distance: haversineDistance(lat, lng, item.lat, item.lng)
+    }))
+    .sort((a, b) => a.distance - b.distance)[0];
+  if (nearest) {
+    state.location.city = isChineseLocale() ? (nearest.aliases?.[0] || nearest.city) : nearest.city;
+    state.location.country = nearest.country;
+  } else {
+    state.location.city = `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+    state.location.country = resolveHomeCountry();
+  }
+  state.location.lat = lat;
+  state.location.lng = lng;
+  state.location.status = "ready";
+}
+
 function initCalendarExperience() {
   if (!state.calendarBound) {
+    const multiButton = document.getElementById("calendar-multi-toggle");
+    if (multiButton) {
+      multiButton.addEventListener("click", () => {
+        state.calendarMultiMode = !state.calendarMultiMode;
+        if (state.calendarMultiMode) {
+          state.selectedDates = uniqueDates([state.selectedDate, ...state.selectedDates]).slice(0, 14);
+        } else {
+          state.selectedDates = [state.selectedDate];
+        }
+        persistWorkbenchState();
+        renderCalendarView();
+        renderSequence();
+      });
+    }
+
     document.querySelectorAll("[data-calendar-view]").forEach(button => {
       button.addEventListener("click", () => {
         state.calendarView = button.dataset.calendarView;
@@ -1823,7 +3162,16 @@ function initCalendarExperience() {
         }
         const dayButton = event.target.closest("[data-date]");
         if (dayButton) {
-          state.selectedDate = dayButton.dataset.date;
+          if (state.calendarMultiMode) {
+            state.selectedDates = toggleDateInCollection(state.selectedDates, dayButton.dataset.date).slice(0, 14);
+            if (state.selectedDates.length === 0) {
+              state.selectedDates = [dayButton.dataset.date];
+            }
+            state.selectedDate = state.selectedDates[state.selectedDates.length - 1];
+          } else {
+            state.selectedDate = dayButton.dataset.date;
+            state.selectedDates = [state.selectedDate];
+          }
           renderCalendarView();
           persistWorkbenchState();
           renderSequence();
@@ -1847,7 +3195,9 @@ function initCalendarExperience() {
           editDayPlan();
         }
         if (action === "clear") {
-          delete state.dayPlans[state.selectedDate];
+          selectedDatesForPlan().forEach(date => {
+            delete state.dayPlans[date];
+          });
           persistWorkbenchState();
           renderCalendarView();
           renderSequence();
@@ -1869,6 +3219,10 @@ function renderCalendarView() {
   document.querySelectorAll("[data-calendar-view]").forEach(button => {
     button.classList.toggle("is-active", button.dataset.calendarView === state.calendarView);
   });
+  const multiToggle = document.getElementById("calendar-multi-toggle");
+  if (multiToggle) {
+    multiToggle.classList.toggle("is-active", state.calendarMultiMode);
+  }
 
   range.textContent = calendarRangeLabel();
   if (state.calendarView === "year") {
@@ -1879,17 +3233,32 @@ function renderCalendarView() {
     container.innerHTML = renderCalendarMonth();
   }
 
-  const plan = state.dayPlans[state.selectedDate];
-  detail.innerHTML = `
-    <div class="list-item">
-      <strong>${escapeHtml(state.selectedDate)}</strong>
-      <small>${escapeHtml(plan || t("state.calendarEmpty"))}</small>
-      <div class="actions">
-        <button type="button" class="secondary" data-calendar-action="edit">${escapeHtml(t("actions.editDayPlan"))}</button>
-        <button type="button" class="secondary" data-calendar-action="clear">${escapeHtml(t("actions.clearDayPlan"))}</button>
+  if (state.calendarMultiMode && selectedDatesForPlan().length > 1) {
+    const days = selectedDatesForPlan();
+    const hints = days.map(date => state.dayPlans[date]).filter(Boolean);
+    detail.innerHTML = `
+      <div class="list-item">
+        <strong>${escapeHtml(t("state.calendarMultiSelection", { count: String(days.length) }))}</strong>
+        <small>${escapeHtml(hints[0] || t("state.calendarEmpty"))}</small>
+        <div class="actions">
+          <button type="button" class="secondary" data-calendar-action="edit">${escapeHtml(t("actions.editDayPlan"))}</button>
+          <button type="button" class="secondary" data-calendar-action="clear">${escapeHtml(t("actions.clearDayPlan"))}</button>
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  } else {
+    const plan = state.dayPlans[state.selectedDate];
+    detail.innerHTML = `
+      <div class="list-item">
+        <strong>${escapeHtml(state.selectedDate)}</strong>
+        <small>${escapeHtml(plan || t("state.calendarEmpty"))}</small>
+        <div class="actions">
+          <button type="button" class="secondary" data-calendar-action="edit">${escapeHtml(t("actions.editDayPlan"))}</button>
+          <button type="button" class="secondary" data-calendar-action="clear">${escapeHtml(t("actions.clearDayPlan"))}</button>
+        </div>
+      </div>
+    `;
+  }
   flashElement("calendar-detail", "is-calendar-updated");
 }
 
@@ -1911,8 +3280,11 @@ function renderCalendarMonth() {
     const date = toIsoDate(new Date(year, month, day));
     const note = state.dayPlans[date] || "";
     const shortNote = note.length > 16 ? `${note.slice(0, 16)}...` : note;
+    const selected = state.calendarMultiMode
+      ? selectedDatesForPlan().includes(date)
+      : state.selectedDate === date;
     cells.push(`
-      <button type="button" class="calendar-day ${state.selectedDate === date ? "is-selected" : ""} ${note ? "is-planned" : ""}" data-date="${date}">
+      <button type="button" class="calendar-day ${selected ? "is-selected" : ""} ${note ? "is-planned" : ""}" data-date="${date}">
         <strong>${day}</strong>
         <small>${escapeHtml(shortNote)}</small>
       </button>
@@ -1976,13 +3348,19 @@ function shiftCalendar(delta) {
   }
   state.calendarAnchor = toIsoDate(anchor);
   state.selectedDate = toIsoDate(selected);
+  if (!state.calendarMultiMode) {
+    state.selectedDates = [state.selectedDate];
+  } else if (!state.selectedDates.includes(state.selectedDate)) {
+    state.selectedDates = uniqueDates([state.selectedDate, ...state.selectedDates]).slice(0, 14);
+  }
   persistWorkbenchState();
   renderCalendarView();
   renderSequence();
 }
 
 function editDayPlan() {
-  openDayPlanSheet(state.selectedDate);
+  const dates = selectedDatesForPlan();
+  openDayPlanSheet(dates[0], dates);
 }
 
 function calendarRangeLabel() {
@@ -2207,12 +3585,15 @@ function initDayPlanSheet() {
 
   closeButton?.addEventListener("click", closeDayPlanSheet);
   cancelButton?.addEventListener("click", closeDayPlanSheet);
-  saveButton?.addEventListener("click", saveDayPlanSheet);
+  saveButton?.addEventListener("click", () => runSafely(() => saveDayPlanSheet()));
   clearButton?.addEventListener("click", () => {
-    if (!state.editingDate) {
+    const targets = state.editingDates?.length ? state.editingDates : (state.editingDate ? [state.editingDate] : []);
+    if (targets.length === 0) {
       return;
     }
-    delete state.dayPlans[state.editingDate];
+    targets.forEach(date => {
+      delete state.dayPlans[date];
+    });
     persistWorkbenchState();
     closeDayPlanSheet();
     renderCalendarView();
@@ -2250,12 +3631,13 @@ function initDayPlanSheet() {
   overlay.hidden = true;
   document.body.classList.remove("sheet-open");
   state.editingDate = null;
+  state.editingDates = [];
   renderDayPlanQuickTemplates();
   updateDayPlanInputMeta();
   overlay.dataset.bound = "true";
 }
 
-function openDayPlanSheet(date) {
+function openDayPlanSheet(date, dates = []) {
   const overlay = document.getElementById("day-plan-sheet");
   const dateLabel = document.getElementById("day-plan-date");
   const input = document.getElementById("day-plan-input");
@@ -2265,9 +3647,13 @@ function openDayPlanSheet(date) {
   if (!date) {
     return;
   }
+  const targetDates = uniqueDates((dates && dates.length ? dates : [date]).filter(Boolean));
   state.editingDate = date;
-  dateLabel.textContent = date;
-  input.value = state.dayPlans[date] || "";
+  state.editingDates = targetDates;
+  dateLabel.textContent = targetDates.length > 1
+    ? t("calendar.sheet.multiple", { count: String(targetDates.length), range: `${targetDates[0]} ~ ${targetDates[targetDates.length - 1]}` })
+    : date;
+  input.value = state.dayPlans[date] || state.dayPlans[targetDates.find(item => state.dayPlans[item])] || "";
   renderDayPlanQuickTemplates();
   updateDayPlanInputMeta();
   overlay.hidden = false;
@@ -2286,18 +3672,28 @@ function closeDayPlanSheet() {
   overlay.hidden = true;
   document.body.classList.remove("sheet-open");
   state.editingDate = null;
+  state.editingDates = [];
 }
 
-function saveDayPlanSheet() {
+async function saveDayPlanSheet() {
   const input = document.getElementById("day-plan-input");
-  if (!input || !state.editingDate) {
+  const targets = state.editingDates?.length ? state.editingDates : (state.editingDate ? [state.editingDate] : []);
+  if (!input || targets.length === 0) {
     return;
   }
   const value = input.value.trim();
-  if (!value) {
-    delete state.dayPlans[state.editingDate];
+  let finalValue = value;
+  if (value) {
+    finalValue = await refineDayPlanWithAssistant(value, targets);
+  }
+  if (!finalValue) {
+    targets.forEach(date => {
+      delete state.dayPlans[date];
+    });
   } else {
-    state.dayPlans[state.editingDate] = value;
+    targets.forEach(date => {
+      state.dayPlans[date] = finalValue;
+    });
   }
   persistWorkbenchState();
   closeDayPlanSheet();
@@ -2327,6 +3723,82 @@ function updateDayPlanInputMeta() {
     return;
   }
   length.textContent = t("calendar.sheet.length", { count: String(input.value.trim().length) });
+}
+
+function uniqueDates(dates) {
+  return [...new Set((dates || []).filter(Boolean))].sort((left, right) => left.localeCompare(right));
+}
+
+function toggleDateInCollection(collection, date) {
+  const items = uniqueDates(collection || []);
+  if (items.includes(date)) {
+    return items.filter(item => item !== date);
+  }
+  return uniqueDates([...items, date]);
+}
+
+function selectedDatesForPlan() {
+  if (state.calendarMultiMode) {
+    const selected = uniqueDates(state.selectedDates || []);
+    if (selected.length > 0) {
+      return selected;
+    }
+  }
+  return [state.selectedDate].filter(Boolean);
+}
+
+async function refineDayPlanWithAssistant(text, dates) {
+  const input = String(text || "").trim();
+  if (!input) {
+    return "";
+  }
+  const length = document.getElementById("day-plan-length");
+  const originalMeta = length ? length.textContent : "";
+  if (length) {
+    length.textContent = t("state.dayPlanRefining");
+  }
+
+  try {
+    const summaryPrompt = isChineseLocale()
+      ? `请把下面的日程内容精简为不超过80字的可执行要点，保留时间节奏和关键地点：${input}`
+      : `Refine the itinerary below into actionable points within 80 words, preserving timing rhythm and key places: ${input}`;
+    const response = await api("/api/v1/assistant/message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: currentUserId(),
+        threadId: currentThreadId(),
+        input: summaryPrompt,
+        locale: state.locale,
+        sessionId: state.requestContext.sessionId,
+        contextId: state.requestContext.contextId,
+        traceId: state.requestContext.traceId
+      })
+    });
+    const message = String(response?.message || "").trim();
+    const refined = compressAssistantMessage(message) || compressAssistantMessage(input);
+    return refined;
+  } catch (error) {
+    return compressAssistantMessage(input);
+  } finally {
+    if (length) {
+      length.textContent = originalMeta || t("calendar.sheet.length", { count: String(input.length) });
+    }
+  }
+}
+
+function compressAssistantMessage(text) {
+  const raw = String(text || "")
+    .replace(/\s+/g, " ")
+    .replace(/Runtime note:[\s\S]*$/i, "")
+    .trim();
+  if (!raw) {
+    return "";
+  }
+  if (isChineseLocale()) {
+    return raw.replace(/[。！？]/g, "，").split("，").filter(Boolean).slice(0, 3).join("，").slice(0, 80);
+  }
+  return raw.split(/[.!?]/).map(item => item.trim()).filter(Boolean).slice(0, 3).join(". ").slice(0, 160);
 }
 
 // Default the first-load experience to a clean persona instead of the legacy generic user / 首次加载优先进入干净 persona，避免历史测试数据污染真实体验。
@@ -3000,6 +4472,8 @@ function renderSequence() {
 
   animateChildren("sequence-view");
   renderJourneyHub();
+  renderTripMap();
+  renderCostDetails();
 }
 
 async function api(url, options = {}) {
@@ -3068,6 +4542,89 @@ function flashElement(target, className = "is-flashed") {
   element.offsetHeight;
   element.classList.add(className);
   window.setTimeout(() => element.classList.remove(className), 760);
+}
+
+function startAuthParticles() {
+  const canvas = document.getElementById("auth-particle-canvas");
+  const modal = document.getElementById("auth-modal");
+  if (!canvas || !modal || canvas.dataset.running === "true") {
+    return;
+  }
+  const context = canvas.getContext("2d");
+  if (!context) {
+    return;
+  }
+  canvas.dataset.running = "true";
+  state.auth.particleSessionId += 1;
+  const sessionId = state.auth.particleSessionId;
+
+  const resize = () => {
+    const rect = modal.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.floor(rect.width * window.devicePixelRatio));
+    canvas.height = Math.max(1, Math.floor(rect.height * window.devicePixelRatio));
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.scale(window.devicePixelRatio, window.devicePixelRatio);
+  };
+  resize();
+
+  const particles = Array.from({ length: 80 }, () => ({
+    x: Math.random() * modal.clientWidth,
+    y: Math.random() * modal.clientHeight,
+    r: 0.8 + Math.random() * 2.2,
+    vx: (Math.random() - 0.5) * 0.36,
+    vy: (Math.random() - 0.5) * 0.36,
+    hue: 190 + Math.random() * 120
+  }));
+
+  const draw = () => {
+    if (!state.auth.modalOpen || sessionId !== state.auth.particleSessionId || canvas.dataset.running !== "true") {
+      return;
+    }
+    context.clearRect(0, 0, modal.clientWidth, modal.clientHeight);
+    context.globalCompositeOperation = "lighter";
+    particles.forEach(particle => {
+      particle.x += particle.vx;
+      particle.y += particle.vy;
+      if (particle.x < -20) {
+        particle.x = modal.clientWidth + 20;
+      }
+      if (particle.x > modal.clientWidth + 20) {
+        particle.x = -20;
+      }
+      if (particle.y < -20) {
+        particle.y = modal.clientHeight + 20;
+      }
+      if (particle.y > modal.clientHeight + 20) {
+        particle.y = -20;
+      }
+      const gradient = context.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, particle.r * 9);
+      gradient.addColorStop(0, `hsla(${particle.hue}, 96%, 74%, 0.85)`);
+      gradient.addColorStop(1, `hsla(${particle.hue}, 96%, 60%, 0)`);
+      context.fillStyle = gradient;
+      context.beginPath();
+      context.arc(particle.x, particle.y, particle.r * 9, 0, Math.PI * 2);
+      context.fill();
+    });
+    context.globalCompositeOperation = "source-over";
+    window.requestAnimationFrame(draw);
+  };
+
+  if (!state.auth.particleResizeBound) {
+    state.auth.particleResizeHandler = () => resize();
+    window.addEventListener("resize", state.auth.particleResizeHandler);
+    state.auth.particleResizeBound = true;
+  }
+  window.requestAnimationFrame(draw);
+}
+
+function stopAuthParticles() {
+  const canvas = document.getElementById("auth-particle-canvas");
+  if (!canvas) {
+    return;
+  }
+  canvas.dataset.running = "false";
+  const context = canvas.getContext("2d");
+  context?.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function setMetricText(id, value) {
@@ -3163,11 +4720,15 @@ function applyTranslations() {
   document.querySelectorAll("[data-i18n-placeholder]").forEach(node => {
     node.setAttribute("placeholder", t(node.dataset.i18nPlaceholder));
   });
+  updateAuthPasswordVisibility();
   renderDayPlanQuickTemplates();
   updateDayPlanInputMeta();
   refreshContextStrip();
   syncTraceFilterInputs();
   renderAuthStatus();
+  renderFestivalLocationLabel();
+  updateFestivalScopeControls();
+  setAuthMode(state.auth.mode);
 }
 
 function runSafely(action) {
@@ -3175,8 +4736,19 @@ function runSafely(action) {
 }
 
 function handleError(error) {
-  console.error(error);
-  document.getElementById("preview-summary").textContent = `${t("state.requestFailed")} ${error.message || ""}`.trim();
+  const originalError = error?.causeError || error;
+  const userMessage = error?.userMessage || error?.message || t("state.requestFailed");
+  console.error(originalError);
+  if (error?.uiScope === "auth") {
+    if (state.auth.statusTimer) {
+      window.clearTimeout(state.auth.statusTimer);
+      state.auth.statusTimer = null;
+    }
+    renderAuthStatus(userMessage, "error");
+    flashElement("auth-status", "is-flashed");
+    return;
+  }
+  document.getElementById("preview-summary").textContent = `${t("state.requestFailed")} ${userMessage}`.trim();
 }
 
 function formatStatus(status) {
