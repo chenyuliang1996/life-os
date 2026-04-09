@@ -95,7 +95,14 @@ public class TravelIntentRouter {
             );
         }
 
-        return TravelIntentRoute.generalQa("No travel-related signal was detected.");
+        // The search tool in this service is travel-first by default.
+        // Use explicit intent=general to force non-travel routing.
+        return TravelIntentRoute.travel(
+                "travel-default",
+                "ai-search",
+                List.of("keyword-search"),
+                "Defaulted to travel route because no explicit non-travel intent was provided."
+        );
     }
 
     /**

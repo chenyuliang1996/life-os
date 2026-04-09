@@ -131,6 +131,10 @@ public class PoiDiscoveryService {
             }
             Map<String, String> metadata = result.metadata() == null ? Map.of() : result.metadata();
             String provider = metadata.getOrDefault("provider", "seeded-fallback");
+            if ("seeded-fallback".equalsIgnoreCase(provider)) {
+                // Seed cards already cover fallback display; avoid rendering synthetic "missed-search" cards.
+                return null;
+            }
             String source = sourceFromProvider(provider);
             String title = switch (source) {
                 case "claw-skill" -> locale.startsWith("zh") ? "Claw 实时发现" : "Claw Live Discovery";
